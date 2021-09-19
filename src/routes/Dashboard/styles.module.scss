@@ -1,0 +1,58 @@
+.packsList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+
+  @media screen and (max-width: 1280px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media screen and (max-width: 1000px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .packBase {
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    overflow: hidden;
+    aspect-ratio: 400 / 220;
+
+    $focusedColor: #ffffff;
+    $unfocusedColor: scale-color($focusedColor, $alpha: -40%);
+    &.newPack {
+      border: 2px dashed $unfocusedColor;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 1.0rem;
+      color: $unfocusedColor;
+      transition-property: color, border;
+      transition-duration: 200ms;
+
+      &:hover {
+        border: 2px dashed $focusedColor;
+        color: $focusedColor;
+      }
+    }
+
+    &.loading {
+      cursor: default;
+    }
+
+    span {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  }
+}
