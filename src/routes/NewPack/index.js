@@ -4,6 +4,8 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { v4 as uuidv4 } from 'uuid'
 import { useHistory } from 'react-router-dom'
+import { saveLocalPack } from '../../localStorage/localPacks'
+import dayjs from 'dayjs'
 
 export default function NewPack() {
   const [packName, setPackName] = React.useState('')
@@ -13,8 +15,12 @@ export default function NewPack() {
     const uuid = uuidv4()
     const pack = {
       uuid,
-      name: packName
+      name: packName,
+      date: dayjs().format('DD.MM.YYYY'),
+      creationTime: Date.now(),
+      language: 'ru-RU'
     }
+    saveLocalPack(pack)
     history.push(`/pack/${uuid}`)
   }
 

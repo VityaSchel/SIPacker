@@ -1,3 +1,13 @@
 .link {
   color: #b1b1b1;
 }
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.buttons {
+  display: flex;
+}

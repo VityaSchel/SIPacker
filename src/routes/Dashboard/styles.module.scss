@@ -16,6 +16,22 @@
     grid-template-columns: repeat(1, 1fr);
   }
 
+  $focusedColor: #ffffff;
+  $unfocusedColor: scale-color($focusedColor, $alpha: -40%);
+  $focusDuration: 200ms;
+  .hoverUnfocused {
+    border-color: $unfocusedColor;
+    color: $unfocusedColor;
+    transition-property: color, border-color;
+    transition-duration: $focusDuration;
+  }
+
+  .hoverFocused {
+    border-color: $focusedColor;
+    color: $focusedColor;
+    transition-duration: $focusDuration;
+  }
+
   .packBase {
     border-radius: 10px;
     width: 100%;
@@ -26,33 +42,68 @@
     user-select: none;
     overflow: hidden;
     aspect-ratio: 400 / 220;
+    border: 2px solid;
+    @extend .hoverUnfocused;
 
-    $focusedColor: #ffffff;
-    $unfocusedColor: scale-color($focusedColor, $alpha: -40%);
     &.newPack {
-      border: 2px dashed $unfocusedColor;
       padding: 10px;
       font-weight: 600;
       font-size: 1.0rem;
-      color: $unfocusedColor;
-      transition-property: color, border;
-      transition-duration: 200ms;
-
-      &:hover {
-        border: 2px dashed $focusedColor;
-        color: $focusedColor;
-      }
+      border-style: dashed;
     }
 
     &.loading {
       cursor: default;
+      border: 0;
     }
 
-    span {
+    & > span {
       text-align: center;
       display: flex;
       align-items: center;
       gap: 5px;
+    }
+
+    &:hover {
+      @extend .hoverFocused;
+
+      .pack {
+        .thumbnail {
+          background-color: $focusedColor;
+        }
+        .info {
+          @extend .hoverFocused;
+        }
+      }
+    }
+
+    .pack {
+      align-self: stretch;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .thumbnail {
+        flex: 1;
+        background-color: $unfocusedColor;
+        transition: background-color $focusDuration;
+      }
+
+      .info {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-top: 2px solid;
+
+        .name {
+          font-weight: 600;
+        }
+
+        .time {
+          font-size: 0.9rem;
+        }
+      }
     }
   }
 }

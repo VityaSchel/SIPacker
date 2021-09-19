@@ -7,10 +7,11 @@ import Dashboard from './routes/Dashboard'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import Navigation from './components/Navigation/index.js'
 import NewPack from './routes/NewPack'
-import Pack from './routes/Pack'
+import { PackPageMain, PackPageSettings } from './routes/Pack'
 import sipackerStore from './reducers'
 import { Provider } from 'react-redux'
 import Container from './components/Container'
+import 'dayjs/locale/ru'
 
 const darkTheme = createTheme({
   palette: {
@@ -32,8 +33,11 @@ export default function App() {
               <Route path='/create'>
                 <NewPack />
               </Route>
-              <Route path='/pack/:packUUID'>
-                <Pack />
+              <Route path='/pack/:packUUID/settings'>
+                <PackPageSettings />
+              </Route>
+              <Route path='/pack/:packUUID/'>
+                <PackPageMain />
               </Route>
               <Route path='/'>
                 <Dashboard />

@@ -1,0 +1,32 @@
+.container {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    max-width: 400px;
+  }
+
+  .info {
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        color: #444;
+        font-size: 0.8rem;
+
+        span {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

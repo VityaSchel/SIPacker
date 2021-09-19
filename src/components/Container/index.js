@@ -6,21 +6,23 @@ import { connect } from 'react-redux'
 import { loadLocalPack } from '../../localStorage/localPacks'
 
 Container.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  dispatch: PropTypes.func
 }
 function Container(props) {
-  // const route = useLocation()
+  const route = useLocation()
 
-  // React.useEffect(() => {
-  //   routeChanged(route.split('/').filter(String))
-  // }, [route])
+  React.useEffect(() => {
+    routeChanged(route.pathname.split('/').filter(String))
+  }, [route])
 
-  // const routeChanged = pathParts => {
-  //   if(pathParts[0] === 'pack') {
-  //     const packUUID = pathParts[1]
-  //     props.dispatch({ type: 'pack/load', pack: loadLocalPack(packUUID) })
-  //   }
-  // }
+  const routeChanged = pathParts => {
+    if(pathParts[0] === 'pack') {
+      const packUUID = pathParts[1]
+      const pack = loadLocalPack(packUUID)
+      props.dispatch({ type: 'pack/load', pack })
+    }
+  }
 
   return (
     <div className={styles.container}>
