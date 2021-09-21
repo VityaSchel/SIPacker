@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import xmlJS from 'xml-js'
 
 export const componentsPropTypes = {
   pack: {
@@ -12,6 +13,28 @@ export const componentsPropTypes = {
 
 export const format = {
   xmlVersion: '1.0',
-  encoding: 'UTF-8',
+  encoding: 'utf-8',
   version: 4
+}
+
+export const formatDefaults = {
+  contentTypes: xmlJS.js2xml({
+    _declaration: {
+      _attributes: {
+        version: format.xmlVersion,
+        encoding: format.encoding
+      }
+    },
+    Types: {
+      _attributes: {
+        xmlns: 'http://schemas.openxmlformats.org/package/2006/content-types',
+      },
+      Default: {
+        _attributes: {
+          Extension: 'xml',
+          ContentType: 'si/xml'
+        }
+      }
+    }
+  }, { compact: true })
 }
