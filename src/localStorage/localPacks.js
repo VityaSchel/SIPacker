@@ -15,3 +15,7 @@ export function saveLocalPack(pack) {
   let packData = JSON.stringify(pack)
   window.localStorage.setItem(`packs/${packUUID}`, packData)
 }
+
+export function deleteLocalPack(packUUID) {
+  window.localStorage.removeItem(`packs/${packUUID}`)
+}

@@ -18,6 +18,7 @@ function PackBreadcrumbs(props) {
   const [path, setPath] = React.useState([])
 
   React.useEffect(() => {
+    console.log()
     const pathParts = route.pathname.split('/').filter(String)
     const crumbs = {
       dashboard: { to: '/', name: 'Паки' },
@@ -33,7 +34,7 @@ function PackBreadcrumbs(props) {
         setPath([crumbs.dashboard, crumbs.currentPack])
         break
     }
-  }, [route])
+  }, [route, props.pack])
 
   return (
     <Breadcrumbs>
