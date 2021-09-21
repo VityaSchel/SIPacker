@@ -1,7 +1,8 @@
 {
   "name": "sipacker",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.1.1",
+  "homepage": ".",
+  "description": "Онлайн-редактор паков для Своей Игры (SiGame Владимиря Хиля)"
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import { Field, useFormik } from 'formik'
+import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { componentsPropTypes } from '../../../consts'
-import FormikField, { FormikAutocomplete } from '../../../components/FormikField'
+import { FormikTextField, FormikAutocomplete, FormikSelect, FormikCheckbox } from '../../../components/FormikField'
 import { connect } from 'react-redux'
 import Button from '@mui/material/Button'
 import styles from './styles.module.scss'
@@ -21,13 +21,15 @@ const schema = {
     .min(0)
     .integer('Число должно быть целым')
     .required('Заполните поле сложности'),
-  comment: yup.
-    string('Введите комментарий'),
+  comment: yup
+    .string('Введите комментарий'),
   tags: yup
     .string('Введите теги'),
-  lang: yup
+  language: yup
     .string('Введите язык пака')
-    .required('Заполните поле язык')
+    .required('Заполните поле язык'),
+  over18: yup
+    .bool('Введите ограничения пакета')
 }
 const validationSchema = yup.object(schema)
 
@@ -43,14 +45,14 @@ function Settings(props) {
     initialValues,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(JSON.stringify(values, null, 2))
+      console.log(values)
     },
   })
 
   return (
     <div className={styles.container}>
-      <form onSubmit={formik.handleSubmit} className={styles.form}>
-        <FormikField
+      <form onSubmit={e => {console.log(e); formik.handleSubmit(e)}} className={styles.form}>
+        <FormikTextField
           name='name'
           formik={formik}
           label='Название'
@@ -60,14 +62,24 @@ function Settings(props) {
           formik={formik}
           label='Авторы'
         />
-        <FormikField
+        <FormikTextField
           name='difficulty'
           label='Сложность'
           formik={formik}
           type='number'
           min={0}
         />
-        <FormikField
+        <FormikSelect
+          name='language'
+          formik={formik}
+          label='Язык пакета'
+          options={{
+            '': 'Не указано',
+            'ru-RU': 'Русский (ru-RU)',
+            'en-US': 'Английский (en-US)'
+          }}
+        />
+        <FormikTextField
           name='comment'
           formik={formik}
           label='Описание (необязательно)'
@@ -76,6 +88,11 @@ function Settings(props) {
           name='tags'
           formik={formik}
           label='Теги (необязательно)'
+        />
+        <FormikCheckbox
+          name='restrictions'
+          formik={formik}
+          label='Добавить метку 18+'
         />
         <Button color='primary' variant='contained' type='submit'>
           Сохранить
