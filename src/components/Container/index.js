@@ -16,10 +16,10 @@ function Container(props) {
     routeChanged(route.pathname.split('/').filter(String))
   }, [route])
 
-  const routeChanged = pathParts => {
+  const routeChanged = async pathParts => {
     if(pathParts[0] === 'pack') {
       const packUUID = pathParts[1]
-      const pack = loadLocalPack(packUUID)
+      const pack = await loadLocalPack(packUUID)
       props.dispatch({ type: 'pack/load', pack })
     }
   }

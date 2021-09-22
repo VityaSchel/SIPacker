@@ -32,10 +32,13 @@ module.exports = {
       'single'
     ],
     'semi': [
-      'error',
+      'warn',
       'never'
     ],
     'react/jsx-uses-react': 'off',
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
+    'no-duplicate-imports': [
+      'error'
+    ]
   }
 }

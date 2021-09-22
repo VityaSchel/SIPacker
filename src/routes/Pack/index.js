@@ -33,7 +33,7 @@ function _PackPageContainer(props) {
     })
     const isConfirmed = await confirmationDialogRef.current.open()
     if(isConfirmed) {
-      deleteLocalPack(props.pack.uuid)
+      await deleteLocalPack(props.pack.uuid)
       history.push('/')
     }
   }

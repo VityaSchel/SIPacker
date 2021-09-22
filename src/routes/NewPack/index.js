@@ -11,16 +11,17 @@ export default function NewPack() {
   const [packName, setPackName] = React.useState('')
   const history = useHistory()
 
-  const createPack = () => {
+  const createPack = async () => {
     const uuid = uuidv4()
     const pack = {
       uuid,
       name: packName,
       date: dayjs().format('DD.MM.YYYY'),
       creationTime: Date.now(),
-      language: 'ru-RU'
+      language: 'ru-RU',
+      difficulty: 5
     }
-    saveLocalPack(pack)
+    await saveLocalPack(pack)
     history.push(`/pack/${uuid}`)
   }
 

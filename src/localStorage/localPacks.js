@@ -1,21 +1,29 @@
-export function loadLocalPack(packUUID) {
-  const pack = window.localStorage.getItem(`packs/${packUUID}`)
-  return pack ? JSON.parse(pack) : null
+import Dexie from 'dexie'
+
+const init = () => {
+  const db = new Dexie('sipacker')
+  db.version(1).stores({ packs: ['uuid'].join(', ') })
+  return db
 }
 
-export function loadLocalPacks() {
-  const packs = Object.keys(window.localStorage)
-    .filter(rname => rname.indexOf('packs/') === 0)
-    .map(rname => rname.split('packs/', 2)[1])
+export async function loadLocalPack(packUUID) {
+  const db = init()
+  let pack = await db.packs.get(packUUID)
+  return pack ?? null
+}
+
+export async function loadLocalPacks() {
+  const db = init()
+  const packs = await db.packs.toArray()
   return packs
 }
 
-export function saveLocalPack(pack) {
-  const packUUID = pack.uuid
-  let packData = JSON.stringify(pack)
-  window.localStorage.setItem(`packs/${packUUID}`, packData)
+export async function saveLocalPack(pack) {
+  const db = init()
+  await db.packs.put(pack)
 }
 
-export function deleteLocalPack(packUUID) {
-  window.localStorage.removeItem(`packs/${packUUID}`)
+export async function deleteLocalPack(packUUID) {
+  const db = init()
+  await db.packs.delete(packUUID)
 }

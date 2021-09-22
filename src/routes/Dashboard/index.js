@@ -7,7 +7,7 @@ import { BsPlus } from 'react-icons/bs'
 import { MdFileUpload } from 'react-icons/md'
 import Skeleton from '@mui/material/Skeleton'
 import { Link } from 'react-router-dom'
-import { loadLocalPacks, loadLocalPack } from '../../localStorage/localPacks'
+import { loadLocalPacks } from '../../localStorage/localPacks'
 
 export default function Dashboard() {
   return (
@@ -18,13 +18,14 @@ export default function Dashboard() {
 function LocalPacks() {
   const [savedLocalPacks, setSavedLocalPacks] = React.useState()
 
-  React.useEffect(() => {
-    const packsUUID = loadLocalPacks()
+  const loadPacks = async () => {
+    const packsUUID = await loadLocalPacks()
     const packs = packsUUID
-      .map(uuid => loadLocalPack(uuid))
       .sort((a,b) => a.creationTime - b.creationTime)
     setSavedLocalPacks(packs)
-  }, [])
+  }
+
+  React.useEffect(() => loadPacks(), [])
 
   return (
     <div className={styles.packsList}>
