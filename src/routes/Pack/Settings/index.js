@@ -146,7 +146,7 @@ function Settings(props) {
         <ul>
           <li>Версия XML для описания формата: <span>{format.xmlVersion}</span></li>
           <li>Кодировка текста в формате: <span>{format.encoding}</span></li>
-          <li>Версия формата: <span>{format.version}</span></li>
+          <li>Версия формата: <span>{props.pack.version}</span></li>
           <li>UUID: <span>{props.pack.uuid}</span></li>
           <li>Дата создания: <span>{props.pack.date}</span></li>
         </ul>

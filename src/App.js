@@ -1,5 +1,5 @@
 import {
-  BrowserRouter as Router,
+  Router,
   Switch,
   Route
 } from 'react-router-dom'
@@ -12,6 +12,7 @@ import sipackerStore from './reducers'
 import { Provider } from 'react-redux'
 import Container from './components/Container'
 import 'dayjs/locale/ru'
+import { history } from './utils'
 
 const darkTheme = createTheme({
   palette: {
@@ -26,7 +27,7 @@ export default function App() {
   return (
     <Provider store={sipackerStore}>
       <ThemeProvider theme={darkTheme}>
-        <Router>
+        <Router history={history}>
           <Container>
             <Navigation />
             <Switch>

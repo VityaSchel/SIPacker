@@ -14,7 +14,7 @@ export const componentsPropTypes = {
 export const format = {
   xmlVersion: '1.0',
   encoding: 'utf-8',
-  version: 4
+  latestVersion: 4
 }
 
 export const formatDefaults = {

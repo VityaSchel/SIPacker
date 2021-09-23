@@ -1,6 +1,8 @@
 import JSZip from 'jszip'
 import { format, formatDefaults } from '../consts'
 import xmlJS from 'xml-js'
+import { saveLocalPack } from '../localStorage/localPacks'
+import { removeUndefined, history } from '../utils'
 
 const packErrors = {
   noAuthor: 'Добавьте как минимум одного автора в настройках пака',
@@ -47,7 +49,7 @@ export async function generate(pack) {
           xmlns: 'http://vladimirkhil.com/ygpackage3.0.xsd',
           id: pack.uuid,
           name: pack.name,
-          version: format.version,
+          version: pack.version,
           restriction: pack.over18 ? '18+' : undefined,
           date: pack.date,
           publisher: pack.publisher,
@@ -95,9 +97,28 @@ export async function generate(pack) {
 export async function parse(blob) {
   try {
     const zip = await JSZip.loadAsync(blob)
-    const packContent = await zip.files['content.xml'].async('string')
+    const contentXML = zip.files['content.xml']
+    if(!contentXML) { return { error: 'noContentXML' }}
+    const packContent = await contentXML.async('string')
     const content = xmlJS.xml2js(packContent)
-    console.log(content)
+    const packageTag = content.elements.filter(e => e.name === 'package')[0]
+    const { id, name, version, difficulty, restriction, date, publisher, logo, language } = packageTag.attributes
+
+    const pack = removeUndefined({
+      uuid: id,
+      name,
+      version: Number(version),
+      difficulty: Number(difficulty),
+      creationTime: Date.now(),
+      restriction,
+      date,
+      publisher,
+      logo,
+      language: language || ''
+    })
+    await saveLocalPack(pack)
+    history.push(`/pack/${id}`)
+    return true
   } catch(e) {
     return { errors: e }
   }

@@ -58,7 +58,14 @@ function PackContainer(props) {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
 
   React.useEffect(() => {
-    acceptedFiles && acceptedFiles.forEach(parsePackGenerator)
+    if(!acceptedFiles) { return }
+    for (let pack of acceptedFiles) {
+      parsePackGenerator(pack).then(result => {
+        if(result.error) {
+          console.error(result.error)
+        }
+      })
+    }
   }, [acceptedFiles])
 
   return (

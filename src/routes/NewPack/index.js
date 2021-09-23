@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { useHistory } from 'react-router-dom'
 import { saveLocalPack } from '../../localStorage/localPacks'
 import dayjs from 'dayjs'
+import { format } from '../../consts.js'
 
 export default function NewPack() {
   const [packName, setPackName] = React.useState('')
@@ -19,6 +20,7 @@ export default function NewPack() {
       date: dayjs().format('DD.MM.YYYY'),
       creationTime: Date.now(),
       language: '',
+      version: format.latestVersion,
       difficulty: 5
     }
     await saveLocalPack(pack)
