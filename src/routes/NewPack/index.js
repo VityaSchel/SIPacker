@@ -18,11 +18,15 @@ export default function NewPack() {
       name: packName,
       date: dayjs().format('DD.MM.YYYY'),
       creationTime: Date.now(),
-      language: 'ru-RU',
+      language: '',
       difficulty: 5
     }
     await saveLocalPack(pack)
     history.push(`/pack/${uuid}`)
+  }
+
+  const handleCheckSubmit = e => {
+    if(e.key === 'Enter') createPack()
   }
 
   const examples = ['Вопросы от славян', 'Игры, музыка и многое другое', 'Кинопак', 'Аниме и прочий буллщит', 'Мемная Солянка']
@@ -36,6 +40,7 @@ export default function NewPack() {
         onChange={e => setPackName(e.target.value)}
         className={styles.field}
         placeholder={examples[Math.floor(Math.random()*examples.length)]}
+        onKeyUp={handleCheckSubmit}
       />
       <Button
         variant='contained'

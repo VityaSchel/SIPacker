@@ -8,6 +8,8 @@ import { MdFileUpload } from 'react-icons/md'
 import Skeleton from '@mui/material/Skeleton'
 import { Link } from 'react-router-dom'
 import { loadLocalPacks } from '../../localStorage/localPacks'
+import { useDropzone } from 'react-dropzone'
+import { parse as parsePackGenerator } from 'localStorage/packGenerator'
 
 export default function Dashboard() {
   return (
@@ -46,13 +48,19 @@ PackBase.propTypes = PackContainer.propTypes = {
 
 function PackBase(props) {
   return (
-    props.type === 'loading'
+    ['loading', 'upload'].includes(props.type)
       ? <PackContainer {...props} />
       : <Link to={props.type === 'pack' ? `/pack/${props.pack.uuid}` : `${props.type}`}><PackContainer {...props} /></Link>
   )
 }
 
 function PackContainer(props) {
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
+
+  React.useEffect(() => {
+    acceptedFiles && acceptedFiles.forEach(parsePackGenerator)
+  }, [acceptedFiles])
+
   return (
     <div className={cx(
       styles.packBase,
@@ -60,11 +68,11 @@ function PackContainer(props) {
         [styles.newPack]: ['create', 'upload'].includes(props.type),
         [styles.loading]: props.type === 'loading'
       }
-    )}>
+    )} {...(props.type === 'upload' && { ...getRootProps() })}>
       {
         {
           'create': <span><BsPlus /> Создать новый пак</span>,
-          'upload': <span><MdFileUpload /> Загрузить файл пака</span>,
+          'upload': <span><input {...getInputProps()} /><MdFileUpload /> Загрузить файл пака</span>,
           'loading': <Skeleton variant='rectangular' width='100%' height='100%' />,
           'pack': <Pack pack={props.pack} />
         }[props.type]

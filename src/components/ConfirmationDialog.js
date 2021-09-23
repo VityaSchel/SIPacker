@@ -34,7 +34,7 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
       <DialogTitle>{props.title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          {props.description}
+          {props.children}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -51,7 +51,7 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
 
 ConfirmationDialog.propTypes = {
   title: PropTypes.string,
-  description: PropTypes.string
+  children: PropTypes.node
 }
 ConfirmationDialog.displayName = 'ConfirmationDialog'
 export default ConfirmationDialog
