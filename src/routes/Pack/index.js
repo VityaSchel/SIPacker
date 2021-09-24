@@ -3,8 +3,8 @@ import styles from './styles.module.scss'
 import PackBreadcrumbs from './PackBreadcrumbs'
 import { connect } from 'react-redux'
 import { componentsPropTypes } from '../../consts'
-import PackToolbar from './PackToolbar'
-import Main from './Main'
+import PackToolbar from './PackToolbar/'
+import Rounds from './Rounds'
 import Settings from './Settings/'
 import {
   Switch,
@@ -30,7 +30,7 @@ function PackPageContainer(props) {
       </div>
       <Switch>
         <Route exact path={path}>
-          <Main />
+          <Rounds />
         </Route>
         <Route path={`${path}/settings`}>
           <Settings />

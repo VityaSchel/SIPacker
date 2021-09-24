@@ -14,7 +14,7 @@ import Container from './components/Container'
 import 'dayjs/locale/ru'
 import { history } from './utils'
 
-const darkTheme = createTheme({
+export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {

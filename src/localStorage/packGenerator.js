@@ -57,31 +57,39 @@ export async function generate(pack) {
           logo: pack.logo,
           language: pack.language,
           software: 'sipacker'
-        }
-      },
-      {
-        type: 'element',
-        name: 'tags',
-        elements: generateTags(pack.tags)
-      },
-      {
-        type: 'element',
-        name: 'info',
+        },
         elements: [
+          pack.tags && {
+            type: 'element',
+            name: 'tags',
+            elements: pack.tags.split(',').map(tag => ({
+              type: 'element',
+              name: 'tag',
+              elements: [{ type: 'text', text: tag }]
+            }))
+          },
           {
             type: 'element',
-            name: 'authors',
-            attributes: {
-              author: pack.authors.split(',')
-            }
-          },
-          pack.comment && {
-            type: 'element',
-            name: 'comments',
+            name: 'info',
             elements: [
               {
-                type: 'text',
-                text: pack.comment
+                type: 'element',
+                name: 'authors',
+                elements: pack.authors.split(',').map(author => ({
+                  type: 'element',
+                  name: 'author',
+                  elements: [{ type: 'text', text: author }]
+                }))
+              },
+              pack.comment && {
+                type: 'element',
+                name: 'comments',
+                elements: [
+                  {
+                    type: 'text',
+                    text: pack.comment
+                  }
+                ]
               }
             ]
           }
@@ -101,8 +109,22 @@ export async function parse(blob) {
     if(!contentXML) { return { error: 'noContentXML' }}
     const packContent = await contentXML.async('string')
     const content = xmlJS.xml2js(packContent)
-    const packageTag = content.elements.filter(e => e.name === 'package')[0]
+
+    const n = (object, property) => {
+      const target = object.elements.filter(e => e.name === property)
+      return target && target[0]
+    }
+
+    const mapText = array => {
+      if(!array) { return undefined }
+      return array.elements.map(t => t.elements[0].text)
+    }
+
+    const packageTag = n(content, 'package')
     const { id, name, version, difficulty, restriction, date, publisher, logo, language } = packageTag.attributes
+    const infoTag = n(packageTag, 'info')
+    const authors = mapText(n(infoTag, 'authors'))
+    const tags = mapText(n(packageTag, 'tags'))
 
     const pack = removeUndefined({
       uuid: id,
@@ -110,16 +132,17 @@ export async function parse(blob) {
       version: Number(version),
       difficulty: Number(difficulty),
       creationTime: Date.now(),
-      restriction,
+      over18: restriction === '18+',
       date,
+      authors: authors.join(','),
       publisher,
+      tags: tags?.join(','),
       logo,
       language: language || ''
     })
     await saveLocalPack(pack)
-    history.push(`/pack/${id}`)
     return true
   } catch(e) {
-    return { errors: e }
+    return { error: e }
   }
 }

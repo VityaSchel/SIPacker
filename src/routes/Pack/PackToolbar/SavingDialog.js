@@ -7,7 +7,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Zoom from '@mui/material/Zoom'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
-import { generate, check } from '../../localStorage/packGenerator'
+import { generate, check } from 'localStorage/packGenerator'
 import { saveAs } from 'file-saver'
 import { slugify } from 'transliteration'
 

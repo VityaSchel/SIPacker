@@ -18,7 +18,7 @@ export default function Navigation() {
   const [infoShown, setInfoShown] = React.useState(false)
 
   return (
-    <AppBar position='static'>
+    <AppBar position='static' style={{ zIndex: 4 }}>
       <Toolbar color='primary'>
         <div className={styles.logoContainer}>
           <Link to='/' className={styles.logo}>

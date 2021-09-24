@@ -4,7 +4,7 @@
 
 ## Развернутая версия
 
-[https://vityaschel.github.io/SIPacker](https://vityaschel.github.io/SIPacker) (ветка master)
+[https://vityaschel.github.io/SIPacker](https://vityaschel.github.io/SIPacker) (ветка gh-pages)
 
 ## Запуск локально
 

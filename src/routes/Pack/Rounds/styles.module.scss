@@ -1,0 +1,17 @@
+.rounds {
+  max-width: 600px;
+
+  .heading {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .text {
+      flex: 1;
+    }
+  }
+
+  .cardOfRound {
+    margin-bottom: 10px;
+  }
+}
