@@ -13,7 +13,7 @@ export default function Dashboard() {
   )
 }
 
-export const LocalPacks = connect(state => ({ pack: state.pack }))(props => {
+export const LocalPacks = connect(state => ({ dashboard: state.dashboard }))(props => {
   const [savedLocalPacks, setSavedLocalPacks] = React.useState()
 
   const loadPacks = async () => {
@@ -29,7 +29,7 @@ export const LocalPacks = connect(state => ({ pack: state.pack }))(props => {
     <div className={styles.packsList}>
       <PackBase type='create' />
       <PackBase type='upload' reloadPacks={loadPacks} />
-      { props.pack?.uploading.reverse().map(({ name }, i) => <PackBase type='loading' name={name} key={i} />) }
+      { props.dashboard?.uploading?.reverse().map(({ name }, i) => <PackBase type='loading' name={name} key={i} />) }
       { savedLocalPacks
         ? savedLocalPacks.map(pack => <PackBase type='pack' key={pack.uuid} pack={pack} />)
         : new Array(5).fill().map((_, i) => <PackBase type='loading' key={i} />)

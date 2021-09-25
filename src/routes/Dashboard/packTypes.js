@@ -24,7 +24,7 @@ export function Create() {
 
 const SlideTransition = props => <Slide {...props} direction="right" />
 
-export const Upload = connect(state => ({ packState: state.pack }))(props => {
+export const Upload = connect(state => ({ dashboard: state.dashboard }))(props => {
   const [entered, setEntered] = React.useState(false)
   const [content, setContent] = React.useState([])
 
@@ -32,9 +32,9 @@ export const Upload = connect(state => ({ packState: state.pack }))(props => {
     setEntered(false)
     if(!acceptedFiles) { return }
     for (let pack of acceptedFiles) {
-      let previousState = props.packState?.uploading ?? []
+      let previousState = props.dashboard?.uploading ?? []
       const id = Date.now()
-      props.dispatch({ type: 'pack/setUploading', uploading: previousState.concat({ id, name: pack.name }) })
+      props.dispatch({ type: 'dashboard/setUploading', uploading: previousState.concat({ id, name: pack.name }) })
       parsePackGenerator(pack).then(result => {
         if(result.error) {
           const error = {
@@ -45,7 +45,7 @@ export const Upload = connect(state => ({ packState: state.pack }))(props => {
         } else {
           props.reloadPacks()
         }
-        props.dispatch({ type: 'pack/setUploading', uploading: store.getState().pack?.uploading.filter(pack => id !== pack.id) })
+        props.dispatch({ type: 'dashboard/setUploading', uploading: store.getState().pack?.uploading.filter(pack => id !== pack.id) })
       })
     }
   }
