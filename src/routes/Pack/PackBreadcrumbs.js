@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Typography from '@mui/material/Typography'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 import styles from './styles.module.scss'
 import { connect } from 'react-redux'
 import { componentsPropTypes } from '../../consts'
@@ -18,7 +18,6 @@ function PackBreadcrumbs(props) {
   const [path, setPath] = React.useState([])
 
   React.useEffect(() => {
-    console.log()
     const pathParts = route.pathname.split('/').filter(String)
     const crumbs = {
       dashboard: { to: '/', name: 'Паки' },

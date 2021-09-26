@@ -1,10 +1,4 @@
-import Dexie from 'dexie'
-
-const init = () => {
-  const db = new Dexie('sipacker')
-  db.version(1).stores({ packs: ['uuid'].join(', ') })
-  return db
-}
+import { init } from './indexeddb'
 
 export async function loadLocalPack(packUUID) {
   const db = init()

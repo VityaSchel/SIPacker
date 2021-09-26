@@ -94,9 +94,6 @@ export const Upload = connect(state => ({ dashboard: state.dashboard }))(props =
 
 Loading.propTypes = { name: PropTypes.string }
 export function Loading(props) {
-  React.useEffect(() => {
-    console.log(props.name)
-  }, [props.name])
   return (
     <div className={[styles.packBase, styles.loading].join(' ')}>
       <Skeleton variant='rectangular' width='100%' height='100%' className={styles.skeleton} />
