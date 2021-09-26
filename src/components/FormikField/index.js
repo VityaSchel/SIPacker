@@ -11,6 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import Slider from '@mui/material/Slider'
 import styles from './styles.module.scss'
+export { default as FormikImageField } from './ImageField'
 
 const formikMuiErrors = (formik, name) => ({
   error: formik.touched[name] && Boolean(formik.errors[name]),

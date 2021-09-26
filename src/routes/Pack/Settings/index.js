@@ -8,7 +8,8 @@ import {
   FormikAutocomplete,
   FormikSelect,
   FormikCheckbox,
-  FormikSlider
+  FormikSlider,
+  FormikImageField
 } from 'components/FormikField'
 import { connect } from 'react-redux'
 import Button from '@mui/material/Button'
@@ -18,6 +19,8 @@ import { useHistory, Prompt } from 'react-router-dom'
 import { saveLocalPack } from 'localStorage/localPacks'
 
 const schema = {
+  logo: yup
+    .string('Добавьте логотип пака'),
   name: yup
     .string('Введите название пака')
     .required('Заполните поле названия'),
@@ -41,7 +44,7 @@ const schema = {
     .string('Введите язык пака')
     .required('Заполните поле язык'),
   over18: yup
-    .bool('Введите ограничения пакета')
+    .bool('Введите ограничения пака')
 }
 const validationSchema = yup.object(schema)
 
@@ -52,6 +55,7 @@ Settings.propTypes = {
 
 function Settings(props) {
   const initialValues = {}
+  props.pack.logo = 'jLZkOF6kfQ0yMtHnE3DWo'
   Object.keys(schema).forEach(key => initialValues[key] = props.pack[key] || '')
   const [submitting, setSubmitting] = React.useState(false)
   const history = useHistory()
@@ -87,6 +91,11 @@ function Settings(props) {
           label='Авторы'
           disabled={submitting}
         />
+        <FormikImageField
+          name='logo'
+          formik={formik}
+          label='Логотип'
+        />
         <FormikTextField
           name='publisher'
           formik={formik}
@@ -103,7 +112,7 @@ function Settings(props) {
         <FormikSelect
           name='language'
           formik={formik}
-          label='Язык пакета'
+          label='Язык пака'
           options={{
             '': 'Не указано',
             'ru-RU': 'Русский (ru-RU)',

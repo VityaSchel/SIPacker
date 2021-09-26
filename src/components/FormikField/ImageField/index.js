@@ -4,10 +4,11 @@ import styles from './styles.module.scss'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { getFile } from 'localStorage/fileStorage'
+import filesize from 'filesize'
+const symbols = { B: 'Б', kB: 'кБ', MB: 'МБ', GB: 'ГБ', TB: 'ТБ', PB: 'ПБ', EB: 'ЭБ', ZB: 'ЗБ', YB: 'ЙБ' }
 
 ImageField.propTypes = {
   label: PropTypes.string,
-  fileURI: PropTypes.string,
   formik: PropTypes.object,
   name: PropTypes.string,
 }
@@ -16,23 +17,26 @@ export default function ImageField(props) {
   const { formik, name } = props
 
   React.useEffect(() => {
+    const fileURI = formik.values[name]
     let cleanup = () => {}
-    if(props.fileURI) {
+    if(fileURI) {
       (async () => {
-        const file = await getFile(props.fileURI)
+        const file = await getFile(fileURI)
         if(!file) return
 
         const blob = file.blob
         const url = URL.createObjectURL(blob)
-        const name = blob.filename
+        const name = file.filename
         const size = blob.size
         setSrc({ url, name, size })
 
         cleanup = () => URL.revokeObjectURL(url)
       })()
+    } else {
+      setSrc({})
     }
     return () => cleanup()
-  }, [props.fileURI])
+  }, [formik.values[name]])
 
   const handleClick = () => {
     handleChange('helloworld')
@@ -49,16 +53,25 @@ export default function ImageField(props) {
 
   return (
     <div className={styles.container}>
-      <Typography variant='body' color='text.primary'>{props.label}</Typography>
+      <Typography
+        variant='body'
+        color='text.primary'
+        gutterBottom
+        className={styles.label}
+      >{props.label}:</Typography>
       <div className={styles.preview}>
-        <img
-          src={src.url}
-          alt={`Изображение для поля ${props.label} с именем «${src.name}»`}
-          onClick={handleClick}
-        />
+        { src.url
+          ? <img
+            src={src.url}
+            alt={`Изображение для поля ${props.label} с именем «${src.name}»`}
+            onClick={handleClick}
+            className={styles.image}
+          />
+          : <div className={styles.placeholder}><span>Нажмите, чтобы выбрать</span></div>
+        }
         <div className={styles.info}>
-          <p>Название файла: {src.name ?? '-'}</p>
-          <p>Размер файла: {src.size ?? '-'}</p>
+          <span>Название файла: {src.name ?? '-'}</span>
+          <span>Размер файла: {src.size ? filesize(src.size, { symbols }) : '-'}</span>
           <Button
             variant='contained'
             onClick={handleClear}

@@ -15,7 +15,7 @@ export async function saveFile(blob, packUUID) {
 
   const db = init()
   const hash = await hashFile(blob)
-  
+
   let results = await db.files.where({ packUUID, hash }).toArray()
   if(results.length) throw 'File with such hash already exist'
 
@@ -24,7 +24,7 @@ export async function saveFile(blob, packUUID) {
     fileURI,
     type: blob.type,
     blob: blob,
-    filename: blob.filename,
+    fileName: blob.filename,
     hash,
     packUUID,
     addedAt: Date.now()

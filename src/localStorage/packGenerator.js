@@ -2,7 +2,7 @@ import JSZip from 'jszip'
 import { format, formatDefaults } from '../consts'
 import xmlJS from 'xml-js'
 import { saveLocalPack } from '../localStorage/localPacks'
-import { removeUndefined, history } from '../utils'
+import { removeUndefined } from '../utils'
 
 const packErrors = {
   noAuthor: 'Добавьте как минимум одного автора в настройках пака',
@@ -22,13 +22,6 @@ export async function generate(pack) {
   // zip.folder('Audio')
   // zip.folder('Images')
   // zip.folder('Texts')
-
-  const generateTags = tags => {
-    if(!tags) { return }
-
-    tags = tags.split(',').map(tag => ({ _text: tag }))
-    return { tag: tags }
-  }
 
   const packContent = {
     declaration: {
