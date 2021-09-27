@@ -6,6 +6,7 @@ import Button from '@mui/material/Button'
 import { getFile } from 'localStorage/fileStorage'
 import filesize from 'filesize'
 const symbols = { B: 'Б', kB: 'кБ', MB: 'МБ', GB: 'ГБ', TB: 'ТБ', PB: 'ПБ', EB: 'ЭБ', ZB: 'ЗБ', YB: 'ЙБ' }
+import FileStorage from 'components/FileStorage'
 
 ImageField.propTypes = {
   label: PropTypes.string,
@@ -79,6 +80,7 @@ export default function ImageField(props) {
           >Очистить поле</Button>
         </div>
       </div>
+      <FileStorage />
     </div>
   )
 }

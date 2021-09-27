@@ -56,7 +56,6 @@ const SavingDialog = React.forwardRef((props, ref) => {
       maxWidth="xs"
       open={open}
       TransitionComponent={Transition}
-      keepMounted
       onClose={() => errors.length && setOpen(false)}
     >
       <DialogTitle>Генерация архива</DialogTitle>
