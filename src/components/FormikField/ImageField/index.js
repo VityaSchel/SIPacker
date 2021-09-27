@@ -15,32 +15,39 @@ ImageField.propTypes = {
 }
 export default function ImageField(props) {
   const [src, setSrc] = React.useState({})
+  const [srcUrl, setSrcUrl] = React.useState(null)
   const { formik, name } = props
+  const fileStorage = React.useRef()
 
   React.useEffect(() => {
     const fileURI = formik.values[name]
     let cleanup = () => {}
+    setSrcUrl()
     if(fileURI) {
       (async () => {
         const file = await getFile(fileURI)
         if(!file) return
 
         const blob = file.blob
-        const url = URL.createObjectURL(blob)
         const name = file.filename
         const size = blob.size
-        setSrc({ url, name, size })
+        setSrc({ name, size })
 
+        const url = URL.createObjectURL(blob)
+        setSrcUrl(url)
         cleanup = () => URL.revokeObjectURL(url)
       })()
     } else {
       setSrc({})
+      setSrcUrl(null)
     }
     return () => cleanup()
   }, [formik.values[name]])
 
-  const handleClick = () => {
-    handleChange('helloworld')
+  const handleClick = async () => {
+    let result = await new Promise(resolve => fileStorage.current.open(resolve))
+    if(!result) { return }
+    handleChange(result)
   }
 
   const handleChange = fileURI => {
@@ -61,14 +68,20 @@ export default function ImageField(props) {
         className={styles.label}
       >{props.label}:</Typography>
       <div className={styles.preview}>
-        { src.url
-          ? <img
-            src={src.url}
-            alt={`Изображение для поля ${props.label} с именем «${src.name}»`}
-            onClick={handleClick}
-            className={styles.image}
-          />
-          : <div className={styles.placeholder}><span>Нажмите, чтобы выбрать</span></div>
+        { srcUrl === null
+          ? <>
+            <div className={styles.placeholder} onClick={handleClick}>
+              <span>Нажмите, чтобы выбрать</span>
+            </div>
+          </>
+          : <>
+            <img
+              src={srcUrl}
+              alt={srcUrl ? `Изображение для поля ${props.label} с именем «${src.name}»` : ''}
+              onClick={handleClick}
+              className={styles.image}
+            />
+          </>
         }
         <div className={styles.info}>
           <span>Название файла: {src.name ?? '-'}</span>
@@ -76,11 +89,11 @@ export default function ImageField(props) {
           <Button
             variant='contained'
             onClick={handleClear}
-            disabled={!src.url}
+            disabled={!srcUrl}
           >Очистить поле</Button>
         </div>
       </div>
-      <FileStorage />
+      <FileStorage ref={fileStorage} />
     </div>
   )
 }

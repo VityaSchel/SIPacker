@@ -1,0 +1,60 @@
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dialog {
+  width: 600px;
+  padding: 0 !important;
+
+  .files {
+    display: flex;
+
+    .filters {
+      align-items: center;
+      padding-right: 9px;
+      margin: 0 10px;
+
+      .text {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+    }
+
+    .list {
+      flex: 1;
+      padding-top: 5px;
+      max-height: 400px;
+      box-shadow: inset 0 0 6px 0 rgba(0, 0, 0, 0.5);
+
+      .content {
+        overflow-y: auto;
+        height: 100%;
+        padding: 20px;
+        padding-top: 0;
+        width: 100%;
+
+        .packDivider {
+          position: sticky;
+          top: 0;
+          width: 100%;
+          padding: 10px 0;
+          background-color: #383838;
+          -webkit-mask-image: linear-gradient(
+180deg, black calc(100% - 5px), transparent);
+
+        }
+
+        .grid {
+          margin: 0;
+
+          .item {
+            padding: 0;
+          }
+        }
+      }
+    }
+  }
+}
