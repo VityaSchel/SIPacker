@@ -10,20 +10,57 @@ import cx from 'classnames'
 
 CheckList.propTypes = { pack: PropTypes.object }
 function CheckList(props) {
+  const hasAtLeast1Question = Boolean(props.pack.questions.some(round => round.some(theme => theme.questionsList.length)))
+  const hasAtLeast5Themes = Boolean(props.pack.questions.some(round => round.length >= 5))
+  const hasAtLeast25Questions = Boolean(
+    props.pack.questions.reduce(
+      (prev, round) => prev+round.reduce(
+        (prev, theme) => prev+theme.questionsList.length, 0
+      ), 0
+    ) >= 25
+  )
+  const hasQuestionWithAuction = Boolean(
+    props.pack.questions.some(
+      round => round.some(
+        theme => theme.questionsList.some(
+          question => question.type === 'auction'
+        )
+      )
+    )
+  )
+  const hasQuestionWithBagCat = Boolean(
+    props.pack.questions.some(
+      round => round.some(
+        theme => theme.questionsList.some(
+          question => question.type === 'bagcat'
+        )
+      )
+    )
+  )
+
   const items = {
     required: [
       { name: 'Добавить авторов пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.authors) },
-      { name: 'Добавить авторов пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.authors) },
-      { name: 'Добавить авторов пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.authors) },
-      { name: 'Добавить авторов пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.authors) }
+      { name: 'Установить язык пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.language) },
+      { name: 'Создать раунд', link: '/pack/%packUUID%/', done: Boolean(props.pack.rounds.length) },
+      { name: 'Создать тему', link: props.pack.rounds.length && '/pack/%packUUID%/rounds/1', done: Boolean(props.pack.questions.length) },
+      { name: 'Создать вопрос', link: props.pack.questions.length && '/pack/%packUUID%/rounds/1/1', done: hasAtLeast1Question }
+      //Установить равное колво вопросов во всех темах одного раунда
     ],
     optional: [
-      { name: 'Добавить иконку пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.icon) }
+      { name: 'Добавить иконку пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.icon) },
+      { name: 'Добавить теги пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.tags) },
+      { name: 'Добавить не менее 5 тем', done: hasAtLeast5Themes },
+      { name: 'Добавить не менее 25 вопросов', done: hasAtLeast25Questions },
+      { name: 'Добавить вопрос со ставкой', done: hasQuestionWithAuction },
+      { name: 'Добавить вопрос Кот в мешке', done: hasQuestionWithBagCat },
+      { name: 'Сжать файлы, чтобы размер каждого был менее 1 МБ' }
     ]
   }
+  const filterItems = f => f.filter(item => item.done !== undefined)
   const reducer = (progress, point) => progress+Number(point.done)
-  const progress = items.required.reduce(reducer, 0) + items.optional.reduce(reducer, 0)
-  const max = items.required.length + items.optional.length
+  const progress = filterItems(items.required).reduce(reducer, 0) + filterItems(items.optional).reduce(reducer, 0)
+  const max = filterItems(items.required).length + filterItems(items.optional).length
 
   return (
     <div className={styles.container}>
@@ -61,16 +98,18 @@ function Item(props) {
   const location = useLocation()
   const path = location.pathname.split('/').filter(String)
   const packUUID = path[1]
-  const link = props.children.link
-    .replace('%packUUID%', packUUID)
+  const link = props.children.link && props.children.link.replace('%packUUID%', packUUID)
 
   return (
     <li className={props.children.done && styles.done}>
       <Marker first={props.first} last={props.last} />
-      <Link to={link} className={styles.link}>
-        <span>{props.children.name}</span>
-        <MdKeyboardArrowRight/>
-      </Link>
+      { link
+        ? <Link to={link} className={styles.link}>
+          <span>{props.children.name}</span>
+          <MdKeyboardArrowRight/>
+        </Link>
+        : <span>{props.children.name}</span>
+      }
     </li>
   )
 }

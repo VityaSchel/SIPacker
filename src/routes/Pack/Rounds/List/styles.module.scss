@@ -21,6 +21,7 @@
       display: flex;
       align-items: center;
       padding: 0 8px;
+      width: 100%;
     }
 
     .link {
@@ -30,6 +31,17 @@
 
     .flex1 {
       flex: 1;
+    }
+
+    .flex2 {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      .inputField {
+        flex: 1;
+        margin-left: 10px;
+      }
     }
 
     .handle {

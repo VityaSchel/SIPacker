@@ -26,14 +26,16 @@ export const LocalPacks = connect(state => ({ dashboard: state.dashboard }))(pro
   React.useEffect(() => loadPacks(), [])
 
   return (
-    <div className={styles.packsList}>
-      <PackBase type='create' />
-      <PackBase type='upload' reloadPacks={loadPacks} />
-      { props.dashboard?.uploading?.reverse().map(({ name }, i) => <PackBase type='loading' name={name} key={i} />) }
-      { savedLocalPacks
-        ? savedLocalPacks.map(pack => <PackBase type='pack' key={pack.uuid} pack={pack} />)
-        : new Array(5).fill().map((_, i) => <PackBase type='loading' key={i} />)
-      }
+    <div>
+      <div className={styles.packsList}>
+        <PackBase type='create' />
+        <PackBase type='upload' reloadPacks={loadPacks} />
+        { props.dashboard?.uploading?.reverse().map(({ name }, i) => <PackBase type='loading' name={name} key={i} />) }
+        { savedLocalPacks
+          ? savedLocalPacks.map(pack => <PackBase type='pack' key={pack.uuid} pack={pack} />)
+          : new Array(5).fill().map((_, i) => <PackBase type='loading' key={i} />)
+        }
+      </div>
     </div>
   )
 })

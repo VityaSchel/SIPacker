@@ -55,7 +55,6 @@ Settings.propTypes = {
 
 function Settings(props) {
   const initialValues = {}
-  props.pack.logo = 'jLZkOF6kfQ0yMtHnE3DWo'
   Object.keys(schema).forEach(key => initialValues[key] = props.pack[key] || '')
   const [submitting, setSubmitting] = React.useState(false)
   const history = useHistory()

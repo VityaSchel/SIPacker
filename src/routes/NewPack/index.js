@@ -22,7 +22,8 @@ export default function NewPack() {
       language: '',
       version: format.latestVersion,
       difficulty: 5,
-      rounds: []
+      rounds: [],
+      questions: []
     }
     await saveLocalPack(pack)
     history.push(`/pack/${uuid}`)

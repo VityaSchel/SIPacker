@@ -84,8 +84,8 @@ function Handle(props) {
 function ItemContent(props) {
   return (
     <CardContent style={{ paddingBottom: darkTheme.spacing(2) }} className={styles.flex1}>
-      <Typography variant='body2' color='text.secondary'>
-        Раунд {props.index+1}. {
+      <Typography variant='body2' color='text.secondary' className={styles.flex2}>
+        <span>Раунд {props.index+1}.</span> {
           props.editing
             ? <TextField
               value={props.roundNameTextInput}
@@ -93,6 +93,7 @@ function ItemContent(props) {
               variant='outlined'
               onChange={e => props.handleRoundNameChange(e, props.index)}
               size='small'
+              className={styles.inputField}
             />
             : props.round.name
         }

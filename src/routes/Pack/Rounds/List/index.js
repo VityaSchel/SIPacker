@@ -10,7 +10,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import { useParams } from 'react-router-dom'
 import Round from './Round'
-import { MdEdit, MdAdd, MdCancel, MdDone, MdSave } from 'react-icons/md'
+import { MdEdit, MdAdd, MdCancel, MdDone } from 'react-icons/md'
 import cx from 'classnames'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
@@ -27,55 +27,52 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
   const [rounds, setRounds] = React.useState(props.pack.rounds)
   const [editing, setEditing] = React.useState(false)
   const [addingRound, setAddingRound] = React.useState(false)
-  const [names, setNames] = React.useState()
+  const [names, setNames] = React.useState([])
   const pack = useParams()
 
   const handleAddRound = async name => {
     let packRounds = [...props.pack.rounds]
     packRounds.push({ name })
-    let newPack = { ...props.pack, rounds: packRounds }
-    await saveLocalPack(newPack)
-    props.dispatch({
-      type: 'pack/load',
-      pack: newPack
-    })
-    setRounds(packRounds)
+    updateRounds(packRounds)
   }
 
-  const handleRemoveRound = async index => {
+  const handleRemoveRound = index => {
     let packRounds = [...props.pack.rounds]
     packRounds.splice(index, 1)
-    let newPack = { ...props.pack, rounds: packRounds }
-    await saveLocalPack(newPack)
-    props.dispatch({ type: 'pack/load', pack: newPack })
-    setRounds(packRounds)
+    updateRounds(packRounds)
   }
 
-  const onDragEnd = async result => {
+  const onDragEnd = result => {
     if (!result.destination) return
     const items = reorder(rounds, result.source.index, result.destination.index)
+    updateRounds(items)
+  }
+
+  const handleSwitchEditing = () => {
+    setEditing(!editing)
+    updateNames(props.pack.rounds)
+  }
+
+  const updateRounds = async items => {
     setRounds(items)
+    updateNames(items)
     let newPack = { ...props.pack, rounds: items }
     await saveLocalPack(newPack)
     props.dispatch({ type: 'pack/load', pack: newPack })
   }
 
-  const handleSwitchEditing = () => {
-    setEditing(!editing)
-    setNames(props.pack.rounds.map(pack => pack.name))
-  }
+  const updateNames = rounds => setNames(rounds.map(pack => pack.name))
 
   const handleRoundNameChange = (e, index) => {
     names[index] = e.target.value
     setNames(names)
-    console.log(names)
   }
 
   return (
     <div className={styles.rounds}>
       <div className={styles.heading}>
         <Typography variant='h6' className={styles.text}>Раунды:</Typography>
-        <IconButton onClick={handleSwitchEditing}>{ editing ? <MdSave /> : <MdEdit /> }</IconButton>
+        {Boolean(rounds.length) && <IconButton onClick={handleSwitchEditing}>{ editing ? <MdDone /> : <MdEdit /> }</IconButton>}
       </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='rounds'>
@@ -113,6 +110,7 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
           setAddingRound={setAddingRound}
           handleAddRound={handleAddRound}
           className={cx(styles.button, { [styles.expand]: addingRound })}
+          addingRound={addingRound}
         />
         <div className={cx([styles.button, styles.addButtonOuter], { [styles.expand]: !addingRound })}>
           <Button
@@ -130,10 +128,13 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
 RoundName.propTypes = {
   setAddingRound: PropTypes.func,
   handleAddRound: PropTypes.func,
-  className: PropTypes.string
+  onKeyDown: PropTypes.func,
+  className: PropTypes.string,
+  addingRound: PropTypes.bool
 }
 function RoundName(props) {
   const [value, setValue] = React.useState('')
+  const outlinedInput = React.useRef()
 
   const handleDone = () => {
     props.setAddingRound(false)
@@ -142,6 +143,10 @@ function RoundName(props) {
       setValue('')
     }
   }
+
+  React.useEffect(() => {
+    props.addingRound && outlinedInput.current.focus()
+  }, [props.addingRound])
 
   return (
     <FormControl variant='outlined' className={props.className}>
@@ -152,7 +157,9 @@ function RoundName(props) {
         type='text'
         value={value}
         onChange={e => setValue(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && handleDone()}
         style={{ paddingRight: 0 }}
+        inputRef={outlinedInput}
         endAdornment={
           <InputAdornment position='end'>
             <IconButton onClick={handleDone}>
