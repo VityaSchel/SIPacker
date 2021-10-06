@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import { Draggable } from 'react-beautiful-dnd'
 import { MdDragHandle, MdDelete } from 'react-icons/md'
 import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
 
 function getStyle(style) {
   if (style.transform) {
@@ -32,7 +33,9 @@ Round.propTypes = ItemContent.propTypes = {
   index: PropTypes.number,
   pack: PropTypes.object,
   editing: PropTypes.bool,
-  handleRemoveRound: PropTypes.func
+  handleRemoveRound: PropTypes.func,
+  roundNameTextInput: PropTypes.string,
+  handleRoundNameChange: PropTypes.func
 }
 
 export default function Round(props) {
@@ -82,7 +85,17 @@ function ItemContent(props) {
   return (
     <CardContent style={{ paddingBottom: darkTheme.spacing(2) }} className={styles.flex1}>
       <Typography variant='body2' color='text.secondary'>
-        Раунд {props.index+1}. {props.round.name}
+        Раунд {props.index+1}. {
+          props.editing
+            ? <TextField
+              value={props.roundNameTextInput}
+              label='Название раунда'
+              variant='outlined'
+              onChange={e => props.handleRoundNameChange(e, props.index)}
+              size='small'
+            />
+            : props.round.name
+        }
       </Typography>
     </CardContent>
   )

@@ -13,6 +13,8 @@ import Round from './Round'
 import { MdEdit, MdAdd, MdCancel, MdDone, MdSave } from 'react-icons/md'
 import cx from 'classnames'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { connect } from 'react-redux'
+import { saveLocalPack } from 'localStorage/localPacks'
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list)
@@ -21,23 +23,52 @@ const reorder = (list, startIndex, endIndex) => {
   return result
 }
 
-export default function RoundsList() {
-  const [rounds, setRounds] = React.useState([{ name: 'Привет, мир!' },{ name: 'Пока, мир!' }])
+export default connect(state => ({ pack: state.pack }))(function RoundsList(props) {
+  const [rounds, setRounds] = React.useState(props.pack.rounds)
   const [editing, setEditing] = React.useState(false)
   const [addingRound, setAddingRound] = React.useState(false)
+  const [names, setNames] = React.useState()
   const pack = useParams()
 
-  const handleAddRound = name => setRounds(rounds.concat({ name }))
-  const handleRemoveRound = index => setRounds(rounds.filter((_, i) => i !== index))
+  const handleAddRound = async name => {
+    let packRounds = [...props.pack.rounds]
+    packRounds.push({ name })
+    let newPack = { ...props.pack, rounds: packRounds }
+    await saveLocalPack(newPack)
+    props.dispatch({
+      type: 'pack/load',
+      pack: newPack
+    })
+    setRounds(packRounds)
+  }
 
-  const onDragEnd = result => {
+  const handleRemoveRound = async index => {
+    let packRounds = [...props.pack.rounds]
+    packRounds.splice(index, 1)
+    let newPack = { ...props.pack, rounds: packRounds }
+    await saveLocalPack(newPack)
+    props.dispatch({ type: 'pack/load', pack: newPack })
+    setRounds(packRounds)
+  }
+
+  const onDragEnd = async result => {
     if (!result.destination) return
     const items = reorder(rounds, result.source.index, result.destination.index)
     setRounds(items)
+    let newPack = { ...props.pack, rounds: items }
+    await saveLocalPack(newPack)
+    props.dispatch({ type: 'pack/load', pack: newPack })
   }
 
   const handleSwitchEditing = () => {
     setEditing(!editing)
+    setNames(props.pack.rounds.map(pack => pack.name))
+  }
+
+  const handleRoundNameChange = (e, index) => {
+    names[index] = e.target.value
+    setNames(names)
+    console.log(names)
   }
 
   return (
@@ -63,6 +94,8 @@ export default function RoundsList() {
                     draggableId={i.toString()}
                     editing={editing}
                     handleRemoveRound={handleRemoveRound}
+                    handleRoundNameChange={handleRoundNameChange}
+                    roundNameTextInput={names[i]}
                   />)
                 : <Typography
                   variant='body1'
@@ -92,7 +125,7 @@ export default function RoundsList() {
       </div>
     </div>
   )
-}
+})
 
 RoundName.propTypes = {
   setAddingRound: PropTypes.func,
