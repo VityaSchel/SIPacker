@@ -20,7 +20,7 @@ function PackToolbar(props) {
   const history = useHistory()
 
   const handleSave = () => savingDialogRef.current.save(props.pack)
-  const handleDelete = async () => {
+  const handleDeletePack = async () => {
     const { confirmed, deleteFiles } = await confirmationDialogRef.current.open()
     if(confirmed) {
       await deleteLocalPack(props.pack.uuid)
@@ -28,22 +28,27 @@ function PackToolbar(props) {
     }
   }
 
+  const handleDeleteRound = () => alert(1)
+
   const buttons = props.pack && {
-    [props.pack.uuid]: [
+    '^/?$': [
       [handleSave, <MdFileDownload key='download' />],
-      [`${props.pack.uuid}/settings`, <MdSettings key='settings' />],
-      [handleDelete, <MdDelete key='delete' />]
+      [`/pack/${props.pack.uuid}/settings`, <MdSettings key='settings' />],
+      [handleDeletePack, <MdDelete key='delete' />]
+    ],
+    '^/rounds/\\d/?$': [
+      [handleDeleteRound, <MdDelete key='delete' />]
     ]
   }
 
   const { pathname } = useLocation()
-  const path = pathname.split('/').filter(String)
-  const pageToolbar = buttons[path[path.length - 1]]
+  const path = pathname.split(`/${props.pack.uuid}`, 2)[1]
+  const pageToolbar = Object.entries(buttons).find(([regex, toolbar]) => new RegExp(regex).test(path) && toolbar)
 
   return (
     <>
       <div className={styles.buttons}>
-        {pageToolbar && pageToolbar.map(([action, icon], i) => <>
+        {pageToolbar && pageToolbar[1].map(([action, icon], i) => <>
           {
             typeof action === 'string'
               ? <Link to={action} key={i}>

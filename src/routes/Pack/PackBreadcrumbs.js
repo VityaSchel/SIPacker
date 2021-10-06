@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import { useLocation } from 'react-router'
 import styles from './styles.module.scss'
 import { connect } from 'react-redux'
-import { componentsPropTypes } from '../../consts'
+import { componentsPropTypes, uuidRegex } from '../../consts'
 
 PackBreadcrumbs.propTypes = {
   pack: PropTypes.shape(componentsPropTypes.pack)
@@ -18,20 +18,21 @@ function PackBreadcrumbs(props) {
   const [path, setPath] = React.useState([])
 
   React.useEffect(() => {
-    const pathParts = route.pathname.split('/').filter(String)
+    const page = route.pathname.split(new RegExp(`/pack/${uuidRegex}`), 2)[1]
+
     const crumbs = {
       dashboard: { to: '/', name: 'Паки' },
       currentPack: { to: `/pack/${props.pack.uuid}`, name: props.pack.name },
-      settings: { to: `/pack/${props.pack.uuid}/settings`, name: 'Настройки' }
+      settings: { to: `/pack/${props.pack.uuid}/settings`, name: 'Настройки' },
+      rounds: { to: `/pack/${props.pack.uuid}/rounds`, name: `Раунд ${page.split('/')[2]}` }
     }
-    switch(pathParts[2]) {
-      case 'settings':
-        setPath([crumbs.dashboard, crumbs.currentPack, crumbs.settings])
-        break
 
-      case undefined:
-        setPath([crumbs.dashboard, crumbs.currentPack])
-        break
+    if(/^\/rounds\/\d\/?$/.test(page)){
+      setPath([crumbs.dashboard, crumbs.currentPack, crumbs.rounds])
+    } else if(/^\/settings\/?$/.test(page)) {
+      setPath([crumbs.dashboard, crumbs.currentPack, crumbs.settings])
+    } else {
+      setPath([crumbs.dashboard, crumbs.currentPack])
     }
   }, [route, props.pack])
 

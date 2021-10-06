@@ -37,7 +37,7 @@ export default function App() {
               <Route path='/create'>
                 <NewPack />
               </Route>
-              <Route path='/pack/:packUUID'>
+              <Route path={['/pack/:packUUID', '/pack/:packUUID/*']}>
                 <Pack />
               </Route>
             </Switch>

@@ -11,6 +11,7 @@ import {
   Route,
   useRouteMatch
 } from 'react-router-dom'
+import RoundThemes from './RoundThemes'
 
 PackPageContainer.propTypes = {
   children: PropTypes.node,
@@ -34,6 +35,9 @@ function PackPageContainer(props) {
         </Route>
         <Route path={`${path}/settings`}>
           <Settings />
+        </Route>
+        <Route path={`${path}/rounds/:roundIndex`}>
+          <RoundThemes />
         </Route>
       </Switch>
     </div>

@@ -27,7 +27,6 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
   const [rounds, setRounds] = React.useState(props.pack.rounds)
   const [editing, setEditing] = React.useState(false)
   const [addingRound, setAddingRound] = React.useState(false)
-  const [names, setNames] = React.useState([])
   const pack = useParams()
 
   const handleAddRound = async name => {
@@ -50,22 +49,21 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
 
   const handleSwitchEditing = () => {
     setEditing(!editing)
-    updateNames(props.pack.rounds)
   }
 
   const updateRounds = async items => {
     setRounds(items)
-    updateNames(items)
     let newPack = { ...props.pack, rounds: items }
     await saveLocalPack(newPack)
     props.dispatch({ type: 'pack/load', pack: newPack })
   }
 
-  const updateNames = rounds => setNames(rounds.map(pack => pack.name))
+  const names = rounds.map(pack => pack.name)
 
   const handleRoundNameChange = (e, index) => {
-    names[index] = e.target.value
-    setNames(names)
+    const namesList = [...rounds]
+    namesList[index].name = e.target.value
+    updateRounds(namesList)
   }
 
   return (
