@@ -32,6 +32,7 @@ export default function Upload(props) {
       try {
         await saveFile(file, props.packUUID)
       } catch(e) {
+        console.error(e)
         hasErrors = true
         setErrors(errors.concat({ filename: file.name, errorMessage: e }))
       }

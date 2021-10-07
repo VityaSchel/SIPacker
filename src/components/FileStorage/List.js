@@ -15,7 +15,7 @@ export default function List(props) {
 
   React.useEffect(() => {
     getRecent(props.packs.map(pack => pack.uuid)).then(mapFiles)
-  }, [])
+  }, [props.packs])
 
   const mapFiles = files => {
     const mappedFiles = []

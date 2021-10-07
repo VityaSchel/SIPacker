@@ -19,14 +19,16 @@
     height: 400px;
 
     .filters {
-      align-items: center;
-      padding-right: 9px;
       margin: 20px;
 
       .text {
         display: flex;
         align-items: center;
         gap: 5px;
+      }
+
+      .checkbox {
+        user-select: none;
       }
     }
 
@@ -85,6 +87,7 @@
                   width: 100%;
                   height: 100%;
                   position: absolute;
+                  pointer-events: none;
                 }
 
                 .foreground {

@@ -2,13 +2,13 @@ import PropTypes from 'prop-types'
 import xmlJS from 'xml-js'
 
 export const componentsPropTypes = {
-  pack: {
+  pack: PropTypes.shape({
     uuid: PropTypes.string,
     name: PropTypes.string,
     creationTime: PropTypes.number,
     date: PropTypes.string,
     thumbnail: PropTypes.string
-  }
+  })
 }
 
 export const format = {

@@ -8,11 +8,19 @@ import Typography from '@mui/material/Typography'
 
 Filters.propTypes = {
   packs: PropTypes.arrayOf(PropTypes.string),
+  checkboxes: PropTypes.arrayOf(PropTypes.bool),
+  onChange: PropTypes.func
 }
 
 export default function Filters(props) {
+  const handleChange = (e, i) => {
+    const checkboxes = [...props.checkboxes]
+    checkboxes[i] = { ...checkboxes[i], checked: e.target.checked }
+    props.onChange(checkboxes)
+  }
+
   return (
-    <Stack spacing={2} className={styles.filters}>
+    <Stack className={styles.filters}>
       <div className={styles.text}>
         <MdFilterList />
         <Typography variant='overline' color='text.secondary'>
@@ -20,7 +28,17 @@ export default function Filters(props) {
         </Typography>
       </div>
       {props.packs.map((pack, i) =>
-        <FormControlLabel control={<Checkbox defaultChecked />} label={pack.name} key={i} />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={Boolean(props.checkboxes[i]?.checked)}
+              onChange={e => handleChange(e, i)}
+            />
+          }
+          className={styles.checkbox}
+          label={pack.name}
+          key={i}
+        />
       )}
     </Stack>
   )

@@ -13,7 +13,7 @@ const mimeTypes = {
   audio: ['audio/mpeg', 'audio/wav', 'audio/ogg'],
   video: ['video/mpeg']
 }
-export const allowedFileTypes = [...mimeTypes.image, mimeTypes.audio, mimeTypes.video]
+export const allowedFileTypes = [...mimeTypes.image, ...mimeTypes.audio, ...mimeTypes.video]
 export async function saveFile(blob, packUUID) {
   if(!allowedFileTypes.includes(blob.type)) { throw 'Mime-type is not supported' }
   if(!blob.filename) { throw 'Blob instance must have filename propery' }
@@ -32,7 +32,7 @@ export async function saveFile(blob, packUUID) {
   const fileObject = {
     fileURI,
     type,
-    blob: blob,
+    blob,
     fileName: blob.filename,
     hash,
     packUUID,
@@ -56,7 +56,8 @@ async function generateMiniature(blob) {
   img.src = src
   await new Promise(resolve => img.onload = resolve)
   const { width, height } = img
-  let newWidth, newHeight = Math.min(width, height, maxSize)
+  const size = Math.min(width, height, maxSize)
+  let newWidth = size, newHeight = size
   if(width > height) newHeight = newWidth*height/ width
   else newWidth = newHeight*width/height
 
@@ -65,7 +66,7 @@ async function generateMiniature(blob) {
   canvas.height = newHeight
   const ctx = canvas.getContext('2d')
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-  const miniature = canvas.toBlob()
+  const miniature = await new Promise(resolve => canvas.toBlob(resolve))
   URL.revokeObjectURL(src)
   return miniature
 }

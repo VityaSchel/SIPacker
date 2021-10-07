@@ -11,10 +11,10 @@ export default function File(props) {
   const [fileSrc, setFileSrc] = React.useState()
 
   React.useEffect(() => {
-    const src = URL.createObjectURL(props.file.blob)
+    const src = URL.createObjectURL(props.file.miniature)
     setFileSrc(src)
     return () => URL.revokeObjectURL(src)
-  }, [props.file.blob])
+  }, [props.file.miniature])
 
   const handleSelect = () => props.handleSelect(props.file.fileURI)
 

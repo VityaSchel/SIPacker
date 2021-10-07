@@ -19,6 +19,7 @@ const FileStorage = React.forwardRef((props, ref) => {
   const [callback, setCallback] = React.useState(() => emptyFunc)
   const [packs, setPacks] = React.useState([])
   const [packUUID, setPackUUID] = React.useState([])
+  const [checkboxes, setCheckboxes] = React.useState([])
 
   const handleClose = () => {
     setOpen(false)
@@ -33,11 +34,17 @@ const FileStorage = React.forwardRef((props, ref) => {
   React.useImperativeHandle(ref, () => ({
     async open(packUUID, callback) {
       setCallback(() => callback)
-      setPacks(await loadLocalPacks())
+      const packs = await loadLocalPacks()
+      setPacks(packs)
       setOpen(true)
       setPackUUID(packUUID)
+      setCheckboxes(packs.map(({ uuid }) => ({ uuid, checked: true })))
     }
   }))
+
+  const filteredPacks = checkboxes.filter(cb => cb.checked).map(
+    ({ uuid }) => packs.find(pack => pack.uuid === uuid)
+  )
 
   return (
     <Dialog
@@ -67,8 +74,15 @@ const FileStorage = React.forwardRef((props, ref) => {
         {
           tab === 'added' &&
           <div className={styles.files}>
-            <Filters packs={packs} />
-            <List packs={packs} handleSelect={handleSelect} />
+            <Filters
+              packs={packs}
+              checkboxes={checkboxes}
+              onChange={setCheckboxes}
+            />
+            <List
+              packs={filteredPacks}
+              handleSelect={handleSelect}
+            />
           </div>
         }
         {

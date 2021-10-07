@@ -32,8 +32,8 @@ function ImageField(props) {
         const file = await getFile(fileURI)
         if(!file) return
 
-        const blob = file.blob
-        const name = file.filename
+        const blob = file.miniature
+        const name = file.fileName
         const size = blob.size
         setSrc({ name, size })
 
