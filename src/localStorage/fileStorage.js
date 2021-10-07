@@ -8,8 +8,13 @@ export async function getFile(fileURI) {
   return file ?? null
 }
 
+const mimeTypes = {
+  image: ['image/png', 'image/jpeg'],
+  audio: ['audio/mpeg', 'audio/wav', 'audio/ogg'],
+  video: ['video/mpeg']
+}
+export const allowedFileTypes = [...mimeTypes.image, mimeTypes.audio, mimeTypes.video]
 export async function saveFile(blob, packUUID) {
-  const allowedFileTypes = ['image/png', 'image/jpeg', 'audio/mpeg']
   if(!allowedFileTypes.includes(blob.type)) { throw 'Mime-type is not supported' }
   if(!blob.filename) { throw 'Blob instance must have filename propery' }
 
@@ -19,19 +24,51 @@ export async function saveFile(blob, packUUID) {
   let results = await db.files.where({ packUUID, hash }).toArray()
   if(results.length) throw 'File with such hash already exist'
 
+  const type = Object.entries(mimeTypes).find(
+    ([,mimeType]) => mimeType.some(type => type === blob.type)
+  )[0]
+
   const fileURI = nanoid()
-  await db.files.put({
+  const fileObject = {
     fileURI,
-    type: blob.type,
+    type,
     blob: blob,
     fileName: blob.filename,
     hash,
     packUUID,
     addedAt: Date.now()
-  })
+  }
+
+  switch(type) {
+    case 'image':
+      fileObject.miniature = await generateMiniature(blob)
+      break
+  }
+
+  await db.files.put(fileObject)
   return fileURI
 }
 
+const maxSize = 100
+async function generateMiniature(blob) {
+  const img = document.createElement('img')
+  const src = URL.createObjectURL(blob)
+  img.src = src
+  await new Promise(resolve => img.onload = resolve)
+  const { width, height } = img
+  let newWidth, newHeight = Math.min(width, height, maxSize)
+  if(width > height) newHeight = newWidth*height/ width
+  else newWidth = newHeight*width/height
+
+  const canvas = document.createElement('canvas')
+  canvas.width = newWidth
+  canvas.height = newHeight
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+  const miniature = canvas.toBlob()
+  URL.revokeObjectURL(src)
+  return miniature
+}
 
 function hashFile(file) {
   return new Promise((resolve, reject) => {

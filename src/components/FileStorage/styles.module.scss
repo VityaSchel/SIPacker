@@ -49,6 +49,7 @@
           width: 100%;
           padding: 10px 0;
           background-color: #383838;
+          z-index: 3;
         }
 
         .grid {
@@ -156,15 +157,29 @@
       align-items: center;
       height: 100%;
 
-      .uploadingCaption {
+      .uploadingScreen {
         display: flex;
+        flex-direction: column;
         align-items: center;
+        gap: 30px;
 
-        .caption {
-          margin-left: 10px;
+        .uploadingCaption {
+          display: flex;
+          align-items: center;
+
+          .caption {
+            margin-left: 10px;
+          }
+        }
+
+        .errors {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-size: 0.9rem;
+          gap: 5px;
         }
       }
-
     }
   }
 }
