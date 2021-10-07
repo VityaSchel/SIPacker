@@ -93,5 +93,22 @@
         color: #777;
       }
     }
+
+    .uploadingFiles {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+
+      .uploadingCaption {
+        display: flex;
+        align-items: center;
+
+        .caption {
+          margin-left: 10px;
+        }
+      }
+
+    }
   }
 }

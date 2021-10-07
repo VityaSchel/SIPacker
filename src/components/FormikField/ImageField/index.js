@@ -7,17 +7,21 @@ import { getFile } from 'localStorage/fileStorage'
 import filesize from 'filesize'
 const symbols = { B: 'Б', kB: 'кБ', MB: 'МБ', GB: 'ГБ', TB: 'ТБ', PB: 'ПБ', EB: 'ЭБ', ZB: 'ЗБ', YB: 'ЙБ' }
 import FileStorage from 'components/FileStorage'
+import { connect } from 'react-redux'
 
 ImageField.propTypes = {
   label: PropTypes.string,
   formik: PropTypes.object,
   name: PropTypes.string,
+  pack: PropTypes.object
 }
-export default function ImageField(props) {
+
+function ImageField(props) {
   const [src, setSrc] = React.useState({})
   const [srcUrl, setSrcUrl] = React.useState(null)
   const { formik, name } = props
   const fileStorage = React.useRef()
+  console.log(props.pack)
 
   React.useEffect(() => {
     const fileURI = formik.values[name]
@@ -45,7 +49,7 @@ export default function ImageField(props) {
   }, [formik.values[name]])
 
   const handleClick = async () => {
-    let result = await new Promise(resolve => fileStorage.current.open(resolve))
+    let result = await new Promise(resolve => fileStorage.current.open(props.pack.uuid, resolve))
     if(!result) { return }
     handleChange(result)
   }
@@ -97,3 +101,5 @@ export default function ImageField(props) {
     </div>
   )
 }
+
+export default connect(state => ({ pack: state.pack }))(ImageField)

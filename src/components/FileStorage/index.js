@@ -18,6 +18,7 @@ const FileStorage = React.forwardRef((props, ref) => {
   const [open, setOpen] = React.useState(false)
   const [callback, setCallback] = React.useState(() => emptyFunc)
   const [packs, setPacks] = React.useState([])
+  const [packUUID, setPackUUID] = React.useState([])
 
   const handleClose = () => {
     setOpen(false)
@@ -27,10 +28,11 @@ const FileStorage = React.forwardRef((props, ref) => {
   }
 
   React.useImperativeHandle(ref, () => ({
-    async open(callback) {
+    async open(packUUID, callback) {
       setCallback(() => callback)
       setPacks(await loadLocalPacks())
       setOpen(true)
+      setPackUUID(packUUID)
     }
   }))
 
@@ -69,7 +71,7 @@ const FileStorage = React.forwardRef((props, ref) => {
         {
           tab === 'upload' &&
           <div className={styles.upload}>
-            <Upload />
+            <Upload packUUID={packUUID} setTab={setTab} />
           </div>
         }
       </DialogContent>
