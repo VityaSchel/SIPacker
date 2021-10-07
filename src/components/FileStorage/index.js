@@ -22,9 +22,12 @@ const FileStorage = React.forwardRef((props, ref) => {
 
   const handleClose = () => {
     setOpen(false)
-    let responseCallback = callback
-    setTimeout(() => responseCallback('3mIzYnMWUvpmxqyZsa3s6'), 1)
     setCallback(() => emptyFunc)
+  }
+
+  const handleSelect = selectedFile => {
+    handleClose()
+    setTimeout(() => callback(selectedFile), 1)
   }
 
   React.useImperativeHandle(ref, () => ({
@@ -65,7 +68,7 @@ const FileStorage = React.forwardRef((props, ref) => {
           tab === 'added' &&
           <div className={styles.files}>
             <Filters packs={packs} />
-            <List packs={packs} />
+            <List packs={packs} handleSelect={handleSelect} />
           </div>
         }
         {

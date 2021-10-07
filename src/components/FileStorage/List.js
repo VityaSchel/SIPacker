@@ -2,10 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
 import Grid from '@mui/material/Grid'
-import { getRecent } from 'localStorage/fileStorage.js'
+import { getRecent } from 'localStorage/fileStorage'
+import File from './File'
 
 List.propTypes = {
-  packs: PropTypes.array
+  packs: PropTypes.array,
+  handleSelect: PropTypes.func
 }
 
 export default function List(props) {
@@ -39,19 +41,13 @@ export default function List(props) {
           files.map((packGroup, i) => <div key={i}>
             <div className={styles.packDivider}>Пак <b>{packGroup.packName}</b></div>
             <Grid container spacing={2} className={styles.grid}>
-              {
-                packGroup.files.map((file, j) =>
-                  <Grid
-                    key={`${i}_${j}`}
-                    item
-                    xs={4}
-                    md={6}
-                    sm={12}
-                    className={styles.item}
-                  >
-                    {file.fileName}
-                  </Grid>
-                )}
+              {packGroup.files.map((file, j) =>
+                <File
+                  file={file}
+                  key={`${i}_${j}`}
+                  handleSelect={props.handleSelect}
+                />
+              )}
             </Grid>
           </div>
           )

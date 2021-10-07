@@ -15,7 +15,8 @@
     gap: 15px;
 
     .image,
-    .placeholder {
+    .placeholder,
+    .loading {
       background-color: #212121;
       $defaultSize: 100px;
       width: $defaultSize;
@@ -41,6 +42,13 @@
         color: #777;
         user-select: none;
       }
+    }
+
+    .loading {
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 

@@ -1,3 +1,5 @@
+@import '../../consts.scss';
+
 .title {
   display: flex;
   align-items: center;
@@ -51,9 +53,63 @@
 
         .grid {
           margin: 0;
+          width: 100%;
 
           .item {
-            padding: 0;
+            padding: 10px;
+            height: 140px;
+
+            .itemInner {
+              height: 100%;
+              border-radius: 10px;
+              background-color: #2b2b2b;
+              display: flex;
+              flex-direction: column;
+              overflow: hidden;
+              border: 2px solid #2b2b2b;
+              transition: border 200ms;
+              cursor: pointer;
+
+              &:hover {
+                border: 2px solid $materialColor;
+              }
+
+              .preview {
+                flex: 1;
+                position: relative;
+                overflow: hidden;
+
+                .foreground,
+                .background {
+                  width: 100%;
+                  height: 100%;
+                  position: absolute;
+                }
+
+                .foreground {
+                  object-fit: contain;
+                  z-index: 2;
+                }
+
+                .background {
+                  object-fit: cover;
+                  z-index: 1;
+                  filter: blur(10px);
+                }
+              }
+
+              .fileName {
+                width: 100%;
+                padding: 10px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                &:hover {
+                  overflow: auto;
+                  text-overflow: inherit;
+                }
+              }
+            }
           }
         }
       }

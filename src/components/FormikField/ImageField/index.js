@@ -8,6 +8,7 @@ import filesize from 'filesize'
 const symbols = { B: 'Б', kB: 'кБ', MB: 'МБ', GB: 'ГБ', TB: 'ТБ', PB: 'ПБ', EB: 'ЭБ', ZB: 'ЗБ', YB: 'ЙБ' }
 import FileStorage from 'components/FileStorage'
 import { connect } from 'react-redux'
+import CircularProgress from '@mui/material/CircularProgress'
 
 ImageField.propTypes = {
   label: PropTypes.string,
@@ -21,7 +22,6 @@ function ImageField(props) {
   const [srcUrl, setSrcUrl] = React.useState(null)
   const { formik, name } = props
   const fileStorage = React.useRef()
-  console.log(props.pack)
 
   React.useEffect(() => {
     const fileURI = formik.values[name]
@@ -78,14 +78,16 @@ function ImageField(props) {
               <span>Нажмите, чтобы выбрать</span>
             </div>
           </>
-          : <>
-            <img
+          : srcUrl === undefined
+            ? <div className={styles.loading}>
+              <CircularProgress />
+            </div>
+            : <img
               src={srcUrl}
               alt={srcUrl ? `Изображение для поля ${props.label} с именем «${src.name}»` : ''}
               onClick={handleClick}
               className={styles.image}
             />
-          </>
         }
         <div className={styles.info}>
           <span>Название файла: {src.name ?? '-'}</span>
