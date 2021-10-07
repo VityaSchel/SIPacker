@@ -8,13 +8,18 @@
   width: 600px;
   padding: 0 !important;
 
+  .tabs {
+    border-bottom: 1px solid rgba(#ffffff, 0.1);
+  }
+
   .files {
     display: flex;
+    height: 400px;
 
     .filters {
       align-items: center;
       padding-right: 9px;
-      margin: 0 10px;
+      margin: 20px;
 
       .text {
         display: flex;
@@ -42,7 +47,6 @@
           width: 100%;
           padding: 10px 0;
           background-color: #383838;
-          -webkit-mask-image: linear-gradient(180deg, black calc(100% - 5px), transparent);
         }
 
         .grid {
@@ -52,6 +56,41 @@
             padding: 0;
           }
         }
+      }
+    }
+  }
+
+  .upload {
+    height: 400px;
+    padding: 10px;
+
+    .dropzone {
+      height: 100%;
+      border: 3px dashed rgba(#777, 0.4);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: border 200ms;
+
+      &:hover {
+        border: 3px dashed rgba(#777, 0.8);
+      }
+
+      .flex > svg {
+        vertical-align: middle
+      }
+
+      .supportedTypes {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 0.8rem;
+        gap: 5px;
+        color: #777;
       }
     }
   }

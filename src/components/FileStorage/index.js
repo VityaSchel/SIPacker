@@ -9,8 +9,12 @@ import { emptyFunc } from '../../utils'
 import Filters from './Filters'
 import { loadLocalPacks } from 'localStorage/localPacks'
 import List from './List'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import Upload from './Upload'
 
 const FileStorage = React.forwardRef((props, ref) => {
+  const [tab, setTab] = React.useState('added')
   const [open, setOpen] = React.useState(false)
   const [callback, setCallback] = React.useState(() => emptyFunc)
   const [packs, setPacks] = React.useState([])
@@ -46,10 +50,28 @@ const FileStorage = React.forwardRef((props, ref) => {
         </IconButton>
       </DialogTitle>
       <DialogContent className={styles.dialog}>
-        <div className={styles.files}>
-          <Filters packs={packs} />
-          <List />
-        </div>
+        <Tabs
+          value={tab} variant='fullWidth'
+          onChange={(_, tab) => setTab(tab)}
+          textColor='inherit'
+          className={styles.tabs}
+        >
+          <Tab label='Добавленные' value='added' />
+          <Tab label='Загрузить' value='upload' />
+        </Tabs>
+        {
+          tab === 'added' &&
+          <div className={styles.files}>
+            <Filters packs={packs} />
+            <List packs={packs} />
+          </div>
+        }
+        {
+          tab === 'upload' &&
+          <div className={styles.upload}>
+            <Upload />
+          </div>
+        }
       </DialogContent>
     </Dialog>
   )

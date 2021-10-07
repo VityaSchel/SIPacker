@@ -67,3 +67,10 @@ function hashFile(file) {
     loadNext()
   })
 }
+
+const size = 20
+export async function getRecent(filters) {
+  const db = init()
+  const files = await db.files.where('packUUID').anyOf(filters).limit(size).offset(0).toArray()
+  return files
+}
