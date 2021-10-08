@@ -1,11 +1,7 @@
 import PropTypes from 'prop-types'
-import CardActionArea from '@mui/material/CardActionArea'
 import Item from 'components/ItemsList/Item'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import { darkTheme } from '../../../App'
 import { MdDragHandle, MdDelete, MdExpandMore } from 'react-icons/md'
 import IconButton from '@mui/material/IconButton'
 import Accordion from '@mui/material/Accordion'
@@ -16,7 +12,9 @@ import styles from './styles.module.scss'
 Theme.propTypes = {
   theme: PropTypes.object,
   pack: PropTypes.object,
-  i: PropTypes.number
+  i: PropTypes.number,
+  expand: PropTypes.bool,
+  setExpand: PropTypes.func
 }
 
 function Theme(props) {
@@ -27,9 +25,12 @@ function Theme(props) {
   return (
     <Item
       index={props.i}
-      draggableId={props.i.toString()}
+      draggableId={props.theme.id.toString()}
     >
-      {(provided) => <Accordion>
+      {(provided) => <Accordion
+        expanded={props.expand}
+        onChange={(_, isExpand) => props.setExpand(isExpand ? props.theme.id : undefined)}
+      >
         <AccordionSummary
           expandIcon={<MdExpandMore />}
         >
@@ -47,22 +48,7 @@ function Theme(props) {
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+          <ItemContent {...props} />
         </AccordionDetails>
       </Accordion>}
     </Item>

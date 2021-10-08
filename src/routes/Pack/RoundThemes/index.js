@@ -18,18 +18,19 @@ RoundThemes.propTypes = {
   dispatch: PropTypes.func
 }
 
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list)
-  const [removed] = result.splice(startIndex, 1)
-  result.splice(endIndex, 0, removed)
-  return result
-}
-
 function RoundThemes(props) {
   const [themes, setThemes] = React.useState([])
   const [found, setFound] = React.useState()
   const route = useLocation()
   const roundIndex = route.pathname.split(new RegExp(`/pack/${uuidRegex}/rounds/`), 2)[1]
+  const [expand, setExpand] = React.useState()
+
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list)
+    const [removed] = result.splice(startIndex, 1)
+    result.splice(endIndex, 0, removed)
+    return result
+  }
 
   const round = props.pack.rounds[roundIndex-1]
   React.useEffect(() => {
@@ -39,7 +40,7 @@ function RoundThemes(props) {
 
   const handleAddRound = async name => {
     let roundThemes = [...themes]
-    roundThemes.push({ name, questions: [] })
+    roundThemes.push({ name, id: Date.now(), questions: [] })
     updateThemes(roundThemes)
   }
 
@@ -75,9 +76,11 @@ function RoundThemes(props) {
                 >
                   {themes.length
                     ? themes.map((theme, i) => <Theme
+                      key={theme.id}
                       i={i}
                       theme={theme}
-                      key={i}
+                      expand={expand === theme.id}
+                      setExpand={setExpand}
                     />)
                     : <Typography
                       variant='body1'
