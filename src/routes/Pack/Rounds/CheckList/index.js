@@ -10,28 +10,43 @@ import cx from 'classnames'
 
 CheckList.propTypes = { pack: PropTypes.object }
 function CheckList(props) {
-  const hasAtLeast1Question = Boolean(props.pack.questions.some(round => round.some(theme => theme.questionsList.length)))
-  const hasAtLeast5Themes = Boolean(props.pack.questions.some(round => round.length >= 5))
+  const hasAtLeast1Question = Boolean(
+    props.pack.rounds.some(round =>
+      round.themes.some(theme =>
+        theme.questions.length
+      )
+    )
+  )
+  const hasAtLeast1Theme = Boolean(
+    props.pack.rounds.some(round =>
+      round.themes.length
+    )
+  )
+  const has5ThemesInEachRound = props.pack.rounds.length && Boolean(
+    props.pack.rounds.every(round =>
+      round.themes.length >= 5
+    )
+  )
   const hasAtLeast25Questions = Boolean(
-    props.pack.questions.reduce(
-      (prev, round) => prev+round.reduce(
-        (prev, theme) => prev+theme.questionsList.length, 0
+    props.pack.rounds.reduce(
+      (prev, round) => prev+round.themes.reduce(
+        (prev, theme) => prev+theme.questions.length, 0
       ), 0
     ) >= 25
   )
   const hasQuestionWithAuction = Boolean(
-    props.pack.questions.some(
-      round => round.some(
-        theme => theme.questionsList.some(
+    props.pack.rounds.some(
+      round => round.themes.some(
+        theme => theme.questions.some(
           question => question.type === 'auction'
         )
       )
     )
   )
   const hasQuestionWithBagCat = Boolean(
-    props.pack.questions.some(
-      round => round.some(
-        theme => theme.questionsList.some(
+    props.pack.rounds.some(
+      round => round.themes.some(
+        theme => theme.questions.some(
           question => question.type === 'bagcat'
         )
       )
@@ -43,15 +58,19 @@ function CheckList(props) {
       { name: 'Добавить авторов пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.authors) },
       { name: 'Установить язык пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.language) },
       { name: 'Создать раунд', link: '/pack/%packUUID%/', done: Boolean(props.pack.rounds.length) },
-      { name: 'Создать тему', link: props.pack.rounds.length && '/pack/%packUUID%/rounds/1', done: Boolean(props.pack.questions.length) },
-      { name: 'Создать вопрос', link: props.pack.questions.length && '/pack/%packUUID%/rounds/1/1', done: hasAtLeast1Question }
+      { name: 'Создать тему', link: props.pack.rounds.length && '/pack/%packUUID%/rounds/1', done: hasAtLeast1Theme },
+      { name: 'Создать вопрос', link:
+        props.pack.rounds.length &&
+        props.pack.rounds[0].questions?.length &&
+        '/pack/%packUUID%/rounds/1/1',
+      done: hasAtLeast1Question }
       //Установить равное колво вопросов во всех темах одного раунда
     ],
     optional: [
       { name: 'Добавить иконку пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.icon) },
       { name: 'Добавить теги пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.tags) },
-      { name: 'Добавить не менее 5 тем', done: hasAtLeast5Themes },
-      { name: 'Добавить не менее 25 вопросов', done: hasAtLeast25Questions },
+      { name: 'Добавить не менее 5 тем в каждом раунде', done: has5ThemesInEachRound },
+      { name: 'Добавить не менее 25 вопросов всего', done: hasAtLeast25Questions },
       { name: 'Добавить вопрос со ставкой', done: hasQuestionWithAuction },
       { name: 'Добавить вопрос Кот в мешке', done: hasQuestionWithBagCat },
       { name: 'Сжать файлы, чтобы размер каждого был менее 1 МБ' }

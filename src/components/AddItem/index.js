@@ -11,7 +11,9 @@ import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
 
 AddItem.propTypes = {
-  onAdd: PropTypes.func
+  onAdd: PropTypes.func,
+  inputLabel: PropTypes.string,
+  buttonLabel: PropTypes.string
 }
 export default function AddItem(props) {
   const [addingItem, setAddingItem] = React.useState(false)
@@ -23,6 +25,7 @@ export default function AddItem(props) {
         handleAddItem={props.onAdd}
         className={cx(styles.button, { [styles.expand]: addingItem })}
         addingItem={addingItem}
+        label={props.inputLabel}
       />
       <div className={cx([styles.button, styles.addButtonOuter], { [styles.expand]: !addingItem })}>
         <Button
@@ -30,7 +33,7 @@ export default function AddItem(props) {
           startIcon={<MdAdd />}
           onClick={() => setAddingItem(true)}
           className={styles.addButton}
-        >Добавить раунд</Button>
+        >{props.buttonLabel}</Button>
       </div>
     </div>
   )
@@ -41,7 +44,8 @@ ItemName.propTypes = {
   handleAddItem: PropTypes.func,
   onKeyDown: PropTypes.func,
   className: PropTypes.string,
-  addingItem: PropTypes.bool
+  addingItem: PropTypes.bool,
+  label: PropTypes.string
 }
 
 function ItemName(props) {
@@ -62,9 +66,9 @@ function ItemName(props) {
 
   return (
     <FormControl variant='outlined' className={props.className}>
-      <InputLabel size="small">Название раунда</InputLabel>
+      <InputLabel size="small">{props.label}</InputLabel>
       <OutlinedInput
-        label='Название раунда'
+        label={props.label}
         size='small'
         type='text'
         value={value}

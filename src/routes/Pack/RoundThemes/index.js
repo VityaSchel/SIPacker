@@ -7,6 +7,10 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { saveLocalPack } from 'localStorage/localPacks'
 import Typography from '@mui/material/Typography'
 import listStyles from '../dragNDrop.module.scss'
+import AddItem from 'components/AddItem'
+import clone from 'just-clone'
+import NotFound404 from 'components/NotFound404'
+import CircularProgress from '@mui/material/CircularProgress'
 
 RoundThemes.propTypes = {
   pack: PropTypes.object,
@@ -22,8 +26,21 @@ const reorder = (list, startIndex, endIndex) => {
 
 function RoundThemes(props) {
   const [themes, setThemes] = React.useState([])
+  const [found, setFound] = React.useState()
   const route = useLocation()
   const roundIndex = route.pathname.split(new RegExp(`/pack/${uuidRegex}/rounds/`), 2)[1]
+
+  const round = props.pack.rounds[roundIndex-1]
+  React.useEffect(() => {
+    if(round) setFound(true)
+    else setFound(false)
+  }, [])
+
+  const handleAddRound = async name => {
+    let roundThemes = [...themes]
+    roundThemes.push({ name, questions: [] })
+    updateThemes(roundThemes)
+  }
 
   const onDragEnd = result => {
     if (!result.destination) return
@@ -33,37 +50,51 @@ function RoundThemes(props) {
 
   const updateThemes = async items => {
     setThemes(items)
-    let newPack = { ...props.pack, rounds: items }
+    const newPack = clone(props.pack)
+    newPack.rounds[roundIndex-1].themes = items
     await saveLocalPack(newPack)
     props.dispatch({ type: 'pack/load', pack: newPack })
   }
 
+  React.useEffect(() => {
+    round && setThemes(round.themes)
+  }, [])
+
   return (
-    <div>
-      <h2>Вопросы раунда {props.pack.rounds[roundIndex-1].name}</h2>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId='themes'>
-          {provided => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {themes.length
-                ? themes.map((round, i) =>
-                  <div
-                  />)
-                : <Typography
-                  variant='body1'
-                  gutterBottom
-                  className={listStyles.noItems}
-                >Еще нет созданных тем</Typography>
-              }
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </div>
+    found !== undefined && (
+      found
+        ? <div>
+          <h2>Вопросы раунда {round.name}</h2>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId='themes'>
+              {provided => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  {themes.length
+                    ? themes.map((theme, i) =>
+                      <div key={theme.name}
+                      >{theme.name}</div>)
+                    : <Typography
+                      variant='body1'
+                      gutterBottom
+                      className={listStyles.noItems}
+                    >Еще нет созданных тем</Typography>
+                  }
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <AddItem
+            onAdd={handleAddRound}
+            inputLabel='Название темы'
+            buttonLabel='Добавить тему'
+          />
+        </div>
+        : <NotFound404 />
+    )
   )
 }
 

@@ -25,7 +25,7 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
 
   const handleAddRound = async name => {
     let packRounds = [...props.pack.rounds]
-    packRounds.push({ name })
+    packRounds.push({ name, themes: [] })
     updateRounds(packRounds)
   }
 
@@ -63,7 +63,7 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
   return (
     <div className={styles.rounds}>
       <div className={styles.heading}>
-        <Typography variant='h6' className={styles.text}>Раунды:</Typography>
+        <h2 className={styles.text}>Раунды пака</h2>
         {Boolean(rounds.length) && <IconButton onClick={handleSwitchEditing}>{ editing ? <MdDone /> : <MdEdit /> }</IconButton>}
       </div>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -97,7 +97,11 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
           )}
         </Droppable>
       </DragDropContext>
-      <AddItem onAdd={handleAddRound} />
+      <AddItem
+        onAdd={handleAddRound}
+        inputLabel='Название раунда'
+        buttonLabel='Добавить раунд'
+      />
     </div>
   )
 })
