@@ -51,36 +51,4 @@
       align-items: center;
     }
   }
-
-  .addRound {
-    display: flex;
-    align-items: stretch;
-    width: 200px;
-
-    .addButton {
-      min-width: max-content;
-      width: 100%;
-      height: 100%;
-    }
-
-    .button {
-      $zero: 0;
-      width: $zero;
-      min-width: $zero;
-      transition: width 200ms ease;
-
-      &.expand {
-        width: 200px;
-      }
-    }
-
-    .addButtonOuter {
-      overflow-x: hidden;
-    }
-  }
-
-  .noRounds {
-    color: #3c3c3c;
-    margin-bottom: 20px;
-  }
 }
