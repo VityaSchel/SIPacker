@@ -13,13 +13,14 @@ import IconButton from '@mui/material/IconButton'
 AddItem.propTypes = {
   onAdd: PropTypes.func,
   inputLabel: PropTypes.string,
-  buttonLabel: PropTypes.string
+  buttonLabel: PropTypes.string,
+  className: PropTypes.string
 }
 export default function AddItem(props) {
   const [addingItem, setAddingItem] = React.useState(false)
 
   return (
-    <div className={styles.addItem}>
+    <div className={[styles.addItem, props.className].join(' ')}>
       <ItemName
         setAddingItem={setAddingItem}
         handleAddItem={props.onAdd}

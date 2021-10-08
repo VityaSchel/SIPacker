@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import { useParams } from 'react-router-dom'
 import Round from './Round'
-import AddItem from 'components/AddItem'
+import AddItem from 'components/ItemsList/AddItem'
 import { MdEdit, MdDone } from 'react-icons/md'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
@@ -72,6 +72,7 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
+              className={styles.droppable}
             >
               {rounds.length
                 ? rounds.map((round, i) =>

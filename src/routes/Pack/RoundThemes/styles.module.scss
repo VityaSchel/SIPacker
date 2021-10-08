@@ -1,0 +1,24 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+
+  .handle {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+  }
+
+  .name {
+    flex: 1;
+  }
+
+  .delete {
+    margin-right: 20px;
+  }
+}
+
+.addTheme {
+  margin-top: 10px;
+}

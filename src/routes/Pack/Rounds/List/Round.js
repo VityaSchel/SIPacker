@@ -1,31 +1,14 @@
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
-import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import CardActionArea from '@mui/material/CardActionArea'
 import { darkTheme } from '../../../../App'
 import { Link } from 'react-router-dom'
-import { Draggable } from 'react-beautiful-dnd'
 import { MdDragHandle, MdDelete } from 'react-icons/md'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
-
-function getStyle(style) {
-  if (style.transform) {
-    const axisLockY =
-      'translate(0px' +
-      style.transform.slice(
-        style.transform.indexOf(','),
-        style.transform.length
-      )
-    return {
-      ...style,
-      transform: axisLockY
-    }
-  }
-  return style
-}
+import Item from 'components/ItemsList/Item'
 
 Round.propTypes = ItemContent.propTypes = {
   draggableId: PropTypes.string,
@@ -40,32 +23,20 @@ Round.propTypes = ItemContent.propTypes = {
 
 export default function Round(props) {
   return (
-    <Draggable
-      draggableId={props.draggableId}
-      index={props.index}
-    >
-      {provided =>
-        <Card
-          className={styles.cardOfRound}
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          style={getStyle(provided.draggableProps.style)}
-        >
-          {!props.editing
-            ? <Link to={`/pack/${props.pack.packUUID}/rounds/${props.index+1}`} className={styles.link}>
-              <CardActionArea>
-                <ItemContent {...props} />
-              </CardActionArea>
-            </Link>
-            : <div className={styles.item}>
-              <Handle provided={provided} />
-              <ItemContent {...props} />
-              <Toolbar handleRemoveRound={() => props.handleRemoveRound(props.index)} />
-            </div>
-          }
-        </Card>
+    <Item {...props} className={styles.cardOfRound}>
+      {(provided) => !props.editing
+        ? <Link to={`/pack/${props.pack.packUUID}/rounds/${props.index+1}`} className={styles.link}>
+          <CardActionArea>
+            <ItemContent {...props} />
+          </CardActionArea>
+        </Link>
+        : <div className={styles.item}>
+          <Handle provided={provided} />
+          <ItemContent {...props} />
+          <Toolbar handleRemoveRound={() => props.handleRemoveRound(props.index)} />
+        </div>
       }
-    </Draggable>
+    </Item>
   )
 }
 

@@ -7,10 +7,11 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { saveLocalPack } from 'localStorage/localPacks'
 import Typography from '@mui/material/Typography'
 import listStyles from '../dragNDrop.module.scss'
-import AddItem from 'components/AddItem'
+import AddItem from 'components/ItemsList/AddItem'
 import clone from 'just-clone'
 import NotFound404 from 'components/NotFound404'
-import CircularProgress from '@mui/material/CircularProgress'
+import Theme from './Theme'
+import styles from './styles.module.scss'
 
 RoundThemes.propTypes = {
   pack: PropTypes.object,
@@ -73,9 +74,11 @@ function RoundThemes(props) {
                   {...provided.droppableProps}
                 >
                   {themes.length
-                    ? themes.map((theme, i) =>
-                      <div key={theme.name}
-                      >{theme.name}</div>)
+                    ? themes.map((theme, i) => <Theme
+                      i={i}
+                      theme={theme}
+                      key={i}
+                    />)
                     : <Typography
                       variant='body1'
                       gutterBottom
@@ -91,6 +94,7 @@ function RoundThemes(props) {
             onAdd={handleAddRound}
             inputLabel='Название темы'
             buttonLabel='Добавить тему'
+            className={styles.addTheme}
           />
         </div>
         : <NotFound404 />
