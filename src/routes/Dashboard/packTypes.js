@@ -13,6 +13,7 @@ import Slide from '@mui/material/Slide'
 import Alert from '@mui/material/Alert'
 import { connect } from 'react-redux'
 import store from '../../reducers'
+import { formatDate } from '../../utils'
 
 export function Create() {
   return (
@@ -104,14 +105,7 @@ export function Loading(props) {
 
 Pack.propTypes = { pack: PropTypes.shape(componentsPropTypes.pack) }
 export function Pack(props) {
-  const creationTime = new Intl.DateTimeFormat('ru-RU', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    seconds: 'numeric'
-  }).format(new Date(props.pack.creationTime))
+  const creationTime = formatDate(new Date(props.pack.creationTime))
 
   return (
     <div className={[styles.packBase, styles.pack].join(' ')}>
