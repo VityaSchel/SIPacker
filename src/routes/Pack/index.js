@@ -12,6 +12,7 @@ import {
   useRouteMatch
 } from 'react-router-dom'
 import RoundThemes from './RoundThemes'
+import NotFound404 from 'components/NotFound404'
 
 PackPageContainer.propTypes = {
   children: PropTypes.node,
@@ -23,24 +24,27 @@ function PackPageContainer(props) {
   const { path } = useRouteMatch()
 
   return (
-    props.pack &&
-    <div className={styles.container}>
-      <div className={styles.toolbar}>
-        <PackBreadcrumbs />
-        <PackToolbar />
-      </div>
-      <Switch>
-        <Route exact path={path}>
-          <Rounds />
-        </Route>
-        <Route path={`${path}/settings`}>
-          <Settings />
-        </Route>
-        <Route path={`${path}/rounds/:roundIndex`}>
-          <RoundThemes />
-        </Route>
-      </Switch>
-    </div>
+    props.pack
+    && (props.pack === 'notFound'
+      ? <NotFound404 />
+      : <div className={styles.container}>
+        <div className={styles.toolbar}>
+          <PackBreadcrumbs />
+          <PackToolbar />
+        </div>
+        <Switch>
+          <Route exact path={path}>
+            <Rounds />
+          </Route>
+          <Route path={`${path}/settings`}>
+            <Settings />
+          </Route>
+          <Route path={`${path}/rounds/:roundIndex`}>
+            <RoundThemes />
+          </Route>
+          <Route path='*'><NotFound404 /></Route>
+        </Switch>
+      </div>)
   )
 }
 

@@ -13,6 +13,7 @@ import { Provider } from 'react-redux'
 import Container from './components/Container'
 import 'dayjs/locale/ru'
 import { history } from './utils'
+import NotFound404 from 'components/NotFound404'
 
 export const darkTheme = createTheme({
   palette: {
@@ -40,6 +41,7 @@ export default function App() {
               <Route path={['/pack/:packUUID', '/pack/:packUUID/*']}>
                 <Pack />
               </Route>
+              <Route path='*'><NotFound404 /></Route>
             </Switch>
           </Container>
         </Router>

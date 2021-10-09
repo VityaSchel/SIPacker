@@ -20,7 +20,7 @@ function Container(props) {
     if(pathParts[0] === 'pack') {
       const packUUID = pathParts[1]
       const pack = await loadLocalPack(packUUID)
-      props.dispatch({ type: 'pack/load', pack })
+      props.dispatch({ type: 'pack/load', pack: pack ?? 'notFound' })
     }
   }
 
