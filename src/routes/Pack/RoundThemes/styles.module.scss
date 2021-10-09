@@ -38,3 +38,16 @@ div.table {
     }
   }
 }
+
+.heading {
+  display: flex;
+  align-items: center;
+
+  h2 {
+    flex: 1;
+  }
+}
+
+.noItemsYet {
+  color: #777;
+}

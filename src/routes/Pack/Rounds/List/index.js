@@ -78,9 +78,9 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
                 ? rounds.map((round, i) =>
                   <Round
                     key={i.toString()}
+                    index={i}
                     round={round}
                     pack={pack}
-                    index={i}
                     draggableId={i.toString()}
                     editing={editing}
                     handleRemoveRound={handleRemoveRound}

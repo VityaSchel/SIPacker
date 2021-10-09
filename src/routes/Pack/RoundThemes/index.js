@@ -3,15 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { useLocation } from 'react-router'
 import { uuidRegex } from '../../../consts'
-import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { saveLocalPack } from 'localStorage/localPacks'
-import Typography from '@mui/material/Typography'
-import listStyles from '../dragNDrop.module.scss'
-import AddItem from 'components/ItemsList/AddItem'
 import clone from 'just-clone'
 import NotFound404 from 'components/NotFound404'
-import Theme from './Theme'
+import RoundTable from './RoundTable'
+import ThemesEditing from './ThemesEditing'
 import styles from './styles.module.scss'
+import IconButton from '@mui/material/IconButton'
+import { MdEdit, MdDone } from 'react-icons/md'
 
 RoundThemes.propTypes = {
   pack: PropTypes.object,
@@ -24,6 +23,7 @@ function RoundThemes(props) {
   const route = useLocation()
   const roundIndex = route.pathname.split(new RegExp(`/pack/${uuidRegex}/rounds/`), 2)[1]
   const [expand, setExpand] = React.useState()
+  const [editing, setEditing] = React.useState(false)
 
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list)
@@ -38,7 +38,7 @@ function RoundThemes(props) {
     else setFound(false)
   }, [])
 
-  const handleAddRound = async name => {
+  const handleAddTheme = async name => {
     let roundThemes = [...themes]
     roundThemes.push({ name, id: Date.now(), questions: [] })
     updateThemes(roundThemes)
@@ -58,6 +58,12 @@ function RoundThemes(props) {
     props.dispatch({ type: 'pack/load', pack: newPack })
   }
 
+  const handleRemoveTheme = index => {
+    let roundThemes = [...themes]
+    roundThemes.splice(index, 1)
+    updateThemes(roundThemes)
+  }
+
   React.useEffect(() => {
     round && setThemes(round.themes)
   }, [])
@@ -66,39 +72,25 @@ function RoundThemes(props) {
     found !== undefined && (
       found
         ? <div>
-          <h2>Вопросы раунда {round.name}</h2>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId='themes'>
-              {provided => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  {themes.length
-                    ? themes.map((theme, i) => <Theme
-                      key={theme.id}
-                      i={i}
-                      theme={theme}
-                      expand={expand === theme.id}
-                      setExpand={setExpand}
-                    />)
-                    : <Typography
-                      variant='body1'
-                      gutterBottom
-                      className={listStyles.noItems}
-                    >Еще нет созданных тем</Typography>
-                  }
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <AddItem
-            onAdd={handleAddRound}
-            inputLabel='Название темы'
-            buttonLabel='Добавить тему'
-            className={styles.addTheme}
-          />
+          <div className={styles.heading}>
+            <h2>Вопросы раунда {round.name}</h2>
+            <IconButton onClick={() => setEditing(!editing)}>
+              { editing ? <MdDone /> : <MdEdit /> }
+            </IconButton>
+          </div>
+          {editing
+            ? <ThemesEditing
+              themes={themes}
+              onDragEnd={onDragEnd}
+              expand={expand}
+              setExpand={setExpand}
+              handleAddTheme={handleAddTheme}
+              handleRemoveTheme={handleRemoveTheme}
+            />
+            : <RoundTable
+              themes={themes}
+            />
+          }
         </div>
         : <NotFound404 />
     )
