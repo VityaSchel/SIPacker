@@ -105,11 +105,20 @@
       flex-direction: column;
       align-items: stretch;
 
-      .thumbnail {
+      .pictureContainer {
         flex: 1;
-        background-color: $unfocusedColor;
-        transition: background-color $focusDuration;
+        position: relative;
+
+        .thumbnail {
+          position: absolute;
+          background-color: $unfocusedColor;
+          transition: background-color $focusDuration;
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+        }
       }
+
 
       .info {
         padding: 20px;

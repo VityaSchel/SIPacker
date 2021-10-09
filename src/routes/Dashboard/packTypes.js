@@ -14,6 +14,7 @@ import Alert from '@mui/material/Alert'
 import { connect } from 'react-redux'
 import store from '../../reducers'
 import { formatDate } from '../../utils'
+import { getFile } from 'localStorage/fileStorage'
 
 export function Create() {
   return (
@@ -109,7 +110,7 @@ export function Pack(props) {
 
   return (
     <div className={[styles.packBase, styles.pack].join(' ')}>
-      <PackImage src={props.pack.thumbnail} />
+      <PackImage src={props.pack.logo} />
       <div className={styles.info}>
         <span className={styles.name}>{props.pack.name}</span>
         <span className={styles.time}>Создано: {creationTime}</span>
@@ -119,8 +120,23 @@ export function Pack(props) {
 }
 
 PackImage.propTypes = { src: componentsPropTypes.pack.thumbnail }
-function PackImage() {
+function PackImage(props) {
+  const [src, setSrc] = React.useState()
+
+  React.useEffect(() => {
+    let cleanup = () => {}
+    (async () => {
+      const file = await getFile(props.src)
+      const src = URL.createObjectURL(file.blob)
+      cleanup = () => URL.revokeObjectURL(src)
+      setSrc(src)
+    })()
+    return () => cleanup(src)
+  }, [props.src])
+
   return (
-    <img src='' className={styles.thumbnail} />
+    <div className={styles.pictureContainer}>
+      <img src={src} className={styles.thumbnail} />
+    </div>
   )
 }
