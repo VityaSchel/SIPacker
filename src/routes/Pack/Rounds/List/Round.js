@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
 import Typography from '@mui/material/Typography'
@@ -9,6 +10,7 @@ import { MdDragHandle, MdDelete } from 'react-icons/md'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Item from 'components/ItemsList/Item'
+import DeleteConfirmationDialog from '../../PackToolbar/DeleteConfirmationDialog'
 
 Round.propTypes = ItemContent.propTypes = {
   draggableId: PropTypes.string,
@@ -23,6 +25,13 @@ Round.propTypes = ItemContent.propTypes = {
 }
 
 export default function Round(props) {
+  const confirmationDialogRef = React.useRef()
+
+  const handleRemoveRound = async () => {
+    if(!await confirmationDialogRef.current.confirmRoundDeletion()) return
+    props.handleRemoveRound(props.index)
+  }
+
   return (
     <Item {...props} className={styles.cardOfRound}>
       {(provided) => !props.editing
@@ -34,7 +43,8 @@ export default function Round(props) {
         : <div className={styles.item}>
           <Handle provided={provided} />
           <ItemContent {...props} />
-          <Toolbar handleRemoveRound={() => props.handleRemoveRound(props.index)} />
+          <Toolbar handleRemoveRound={handleRemoveRound} />
+          <DeleteConfirmationDialog ref={confirmationDialogRef} />
         </div>
       }
     </Item>
