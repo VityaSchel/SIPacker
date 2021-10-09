@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { componentsPropTypes } from '../../../consts'
 import IconButton from '@mui/material/IconButton'
 import { MdSettings, MdDelete, MdFileDownload } from 'react-icons/md'
-import { deleteLocalPack } from 'localStorage/localPacks'
+import { saveLocalPack, deleteLocalPack } from 'localStorage/localPacks'
 import DeleteConfirmationDialog from './DeleteConfirmationDialog'
 import SavingDialog from './SavingDialog'
 
@@ -18,17 +18,25 @@ function PackToolbar(props) {
   const confirmationDialogRef = React.useRef()
   const savingDialogRef = React.useRef()
   const history = useHistory()
+  const { pathname } = useLocation()
 
   const handleSave = () => savingDialogRef.current.save(props.pack)
   const handleDeletePack = async () => {
-    const { confirmed, deleteFiles } = await confirmationDialogRef.current.open()
+    const { confirmed, deleteFiles } = await confirmationDialogRef.current.confirmPackDeletion()
     if(confirmed) {
       await deleteLocalPack(props.pack.uuid)
       history.push('/')
     }
   }
 
-  const handleDeleteRound = () => alert(1)
+  const handleDeleteRound = async () => {
+    if(!await confirmationDialogRef.current.confirmRoundDeletion()) return
+    const pack = { ...props.pack }
+    const roundIndex = parseInt(pathname.split(`/pack/${props.pack.uuid}/rounds/`, 2)[1])
+    pack.rounds.splice(roundIndex - 1, 1)
+    await saveLocalPack(pack)
+    history.push(`/pack/${pack.uuid}`)
+  }
 
   const buttons = props.pack && {
     '^/?$': [
@@ -41,8 +49,7 @@ function PackToolbar(props) {
     ]
   }
 
-  const { pathname } = useLocation()
-  const path = pathname.split(`/${props.pack.uuid}`, 2)[1]
+  const path = pathname.split(`/pack/${props.pack.uuid}`, 2)[1]
   const pageToolbar = Object.entries(buttons).find(([regex, toolbar]) => new RegExp(regex).test(path) && toolbar)
 
   return (

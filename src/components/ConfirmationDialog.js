@@ -10,6 +10,9 @@ import MuiDialog from '@mui/material/Dialog'
 let okCallback
 const ConfirmationDialog = React.forwardRef((props, ref) => {
   const [open, setOpen] = React.useState(false)
+  const [text, setText] = React.useState()
+  const [children, setChildren] = React.useState(<></>)
+  const [confirmText, setConfirmText] = React.useState('')
 
   const handleAction = result => {
     setOpen(false)
@@ -17,10 +20,13 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
   }
 
   React.useImperativeHandle(ref, () => ({
-    open() {
+    open(text, confirmText, children) {
       return new Promise(resolve => {
         okCallback = resolve
         setOpen(true)
+        setText(text)
+        setConfirmText(confirmText)
+        setChildren(children)
       })
     }
   }))
@@ -34,7 +40,9 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
       <DialogTitle>{props.title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
+          {text && <p>{text}</p>}
           {props.children}
+          {children}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -42,7 +50,7 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
           Отмена
         </Button>
         <Button onClick={() => handleAction(true)} color="primary">
-          Продолжить
+          {confirmText ?? 'Продолжить'}
         </Button>
       </DialogActions>
     </MuiDialog>

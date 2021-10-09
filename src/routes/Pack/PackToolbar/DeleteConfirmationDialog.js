@@ -10,23 +10,34 @@ const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
   const confirmationDialogRef = React.useRef()
 
   React.useImperativeHandle(ref, () => ({
-    open() {
+    confirmPackDeletion() {
       return new Promise(resolve => {
         callback = resolve
-        confirmationDialogRef.current.open().then(confirmed => {
-          callback({ confirmed, deleteFiles: value })
-        })
+        confirmationDialogRef.current
+          .open('Вы уверены, что хотите удалить пак? Он будет удален безвозвратно.',
+            'Удалить',
+            <FormControlLabel control={
+              <Checkbox defaultChecked value={value} onChange={e => setValue(e.target.value)} />
+            } label='Удалить все связанные медиафайлы' />
+          )
+          .then(confirmed => {
+            callback({ confirmed, deleteFiles: value })
+          })
+      })
+    },
+
+    confirmRoundDeletion() {
+      return new Promise(resolve => {
+        callback = resolve
+        confirmationDialogRef.current
+          .open('Вы уверены, что хотите удалить раунд? Все вопросы также будут удалены.', 'Удалить')
+          .then(callback)
       })
     }
   }))
 
   return (
-    <ConfirmationDialog ref={confirmationDialogRef}>
-      <p>Вы уверены, что хотите удалить пак? Он будет удален безвозвратно.</p>
-      <FormControlLabel control={
-        <Checkbox defaultChecked value={value} onChange={e => setValue(e.target.value)} />
-      } label='Удалить все связанные медиафайлы' />
-    </ConfirmationDialog>
+    <ConfirmationDialog ref={confirmationDialogRef}></ConfirmationDialog>
   )
 })
 

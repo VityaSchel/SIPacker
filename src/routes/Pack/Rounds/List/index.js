@@ -1,14 +1,12 @@
 import React from 'react'
 import styles from './styles.module.scss'
-import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import { useParams } from 'react-router-dom'
 import Round from './Round'
 import AddItem from 'components/ItemsList/AddItem'
 import { MdEdit, MdDone } from 'react-icons/md'
-import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
 import { saveLocalPack } from 'localStorage/localPacks'
+import ItemsList from 'components/ItemsList'
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list)
@@ -20,16 +18,16 @@ const reorder = (list, startIndex, endIndex) => {
 export default connect(state => ({ pack: state.pack }))(function RoundsList(props) {
   const [rounds, setRounds] = React.useState(props.pack.rounds)
   const [editing, setEditing] = React.useState(false)
-  const pack = useParams()
+  const pack = props.pack
 
   const handleAddRound = async name => {
-    let packRounds = [...props.pack.rounds]
+    let packRounds = [...pack.rounds]
     packRounds.push({ name, themes: [] })
     updateRounds(packRounds)
   }
 
   const handleRemoveRound = index => {
-    let packRounds = [...props.pack.rounds]
+    let packRounds = [...pack.rounds]
     packRounds.splice(index, 1)
     updateRounds(packRounds)
   }
@@ -43,21 +41,21 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
   const handleSwitchEditing = () => {
     setEditing(!editing)
   }
-
-  const updateRounds = async items => {
-    setRounds(items)
-    let newPack = { ...props.pack, rounds: items }
-    await saveLocalPack(newPack)
-    props.dispatch({ type: 'pack/load', pack: newPack })
-  }
-
-  const names = rounds.map(pack => pack.name)
-
+  
   const handleRoundNameChange = (e, index) => {
     const namesList = [...rounds]
     namesList[index].name = e.target.value
     updateRounds(namesList)
   }
+
+  const updateRounds = async items => {
+    setRounds(items)
+    let newPack = { ...pack, rounds: items }
+    await saveLocalPack(newPack)
+    props.dispatch({ type: 'pack/load', pack: newPack })
+  }
+
+  const names = rounds.map(pack => pack.name)
 
   return (
     <div className={styles.rounds}>
@@ -65,38 +63,20 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
         <h2 className={styles.text}>Раунды пака</h2>
         {Boolean(rounds.length) && <IconButton onClick={handleSwitchEditing}>{ editing ? <MdDone /> : <MdEdit /> }</IconButton>}
       </div>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId='rounds'>
-          {provided => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className={styles.droppable}
-            >
-              {rounds.length
-                ? rounds.map((round, i) =>
-                  <Round
-                    key={i.toString()}
-                    index={i}
-                    round={round}
-                    pack={pack}
-                    draggableId={i.toString()}
-                    editing={editing}
-                    handleRemoveRound={handleRemoveRound}
-                    handleRoundNameChange={handleRoundNameChange}
-                    roundNameTextInput={names[i]}
-                  />)
-                : <Typography
-                  variant='body1'
-                  gutterBottom
-                  // className={listStyles.noItems}
-                >Еще нет раундов</Typography>
-              }
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <ItemsList
+        onDragEnd={onDragEnd}
+        droppableId='rounds'
+        droppableClassName={styles.droppable}
+        itemComponent={Round}
+        draggableProps={{
+          pack, editing,
+          handleRemoveRound: handleRemoveRound,
+          handleRoundNameChange: handleRoundNameChange,
+          roundNamesTextInput: names
+        }}
+        list={rounds}
+        noItemsLabel='Еще нет раундов'
+      />
       <AddItem
         onAdd={handleAddRound}
         inputLabel='Название раунда'

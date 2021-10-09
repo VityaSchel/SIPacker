@@ -9,7 +9,9 @@ ThemesEditing.propTypes = {
   themes: PropTypes.array,
   expand: PropTypes.bool,
   setExpand: PropTypes.func,
-  handleAddRound: PropTypes.func
+  setEditing: PropTypes.func,
+  handleAddTheme: PropTypes.func,
+  handleRemoveTheme: PropTypes.func
 }
 export default function ThemesEditing(props) {
   return (
@@ -19,6 +21,7 @@ export default function ThemesEditing(props) {
         list={props.themes}
         draggableProps={{
           setExpand: props.setExpand,
+          handleRemoveTheme: props.handleRemoveTheme,
           expandId: props.expand
         }}
         noItemsLabel='Еще нет созданных тем'
@@ -26,7 +29,7 @@ export default function ThemesEditing(props) {
         useIdAsKey={true}
       />
       <AddItem
-        onAdd={props.handleAddRound}
+        onAdd={props.handleAddTheme}
         inputLabel='Название темы'
         buttonLabel='Добавить тему'
         className={styles.addTheme}

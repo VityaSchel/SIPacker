@@ -23,7 +23,7 @@ function RoundThemes(props) {
   const route = useLocation()
   const roundIndex = route.pathname.split(new RegExp(`/pack/${uuidRegex}/rounds/`), 2)[1]
   const [expand, setExpand] = React.useState()
-  const [editing, setEditing] = React.useState(false)
+  let [editing, setEditing] = React.useState(false)
 
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list)
@@ -74,21 +74,24 @@ function RoundThemes(props) {
         ? <div>
           <div className={styles.heading}>
             <h2>Вопросы раунда {round.name}</h2>
-            <IconButton onClick={() => setEditing(!editing)}>
-              { editing ? <MdDone /> : <MdEdit /> }
-            </IconButton>
+            { Boolean(themes.length) &&
+              <IconButton onClick={() => setEditing(!editing)}>
+                { editing ? <MdDone /> : <MdEdit /> }
+              </IconButton>
+            }
           </div>
-          {editing
-            ? <ThemesEditing
+          {themes.length && !editing
+            ? <RoundTable
+              themes={themes}
+            />
+            : <ThemesEditing
               themes={themes}
               onDragEnd={onDragEnd}
               expand={expand}
               setExpand={setExpand}
+              setEditing={setEditing}
               handleAddTheme={handleAddTheme}
               handleRemoveTheme={handleRemoveTheme}
-            />
-            : <RoundTable
-              themes={themes}
             />
           }
         </div>

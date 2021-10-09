@@ -13,14 +13,16 @@ Theme.propTypes = {
   item: PropTypes.object,
   pack: PropTypes.object,
   index: PropTypes.number,
+  expandId: PropTypes.number,
   setExpand: PropTypes.func,
   draggableId: PropTypes.string,
+  handleRemoveTheme: PropTypes.func,
 }
 
 function Theme(props) {
   const handleDelete = e => {
     e.stopPropagation()
-    // props.
+    props.handleRemoveTheme(props.index)
   }
 
   const theme = props.item
@@ -32,7 +34,7 @@ function Theme(props) {
       draggableId={theme.id.toString()}
     >
       {(provided) => <Accordion
-        expanded={props.expand}
+        expanded={expand}
         onChange={(_, isExpand) => props.setExpand(isExpand ? theme.id : undefined)}
       >
         <AccordionSummary

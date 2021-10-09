@@ -22,15 +22,17 @@ export default function ItemsList(props) {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
+            className={props.droppableClassName}
           >
             {props.list.length
-              ? props.list.map((item, i) => <props.itemComponent
-                key={props.useIdAsKey ? item.id : i}
-                index={i}
-                draggableId={props.useIdAsKey ? item.id : i}
-                item={item}
-                {...props.draggableProps}
-              />)
+              ? props.list.map((item, i) =>
+                <props.itemComponent
+                  key={props.useIdAsKey ? item.id : i}
+                  index={i}
+                  draggableId={props.useIdAsKey ? item.id : i}
+                  item={item}
+                  {...props.draggableProps}
+                />)
               : <Typography
                 variant='body1'
                 gutterBottom
