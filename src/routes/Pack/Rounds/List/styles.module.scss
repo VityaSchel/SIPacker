@@ -1,3 +1,5 @@
+@import '../../../../consts.scss';
+
 .rounds {
   max-width: 700px;
   flex: 2;
@@ -21,6 +23,10 @@
       align-items: center;
       padding: 0 8px;
       width: 100%;
+
+      .delete {
+        color: $errorMain;
+      }
     }
 
     .link {

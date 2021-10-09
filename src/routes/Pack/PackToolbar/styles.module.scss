@@ -1,4 +1,10 @@
+@import '../../../consts.scss';
+
 .buttons {
   display: flex;
   gap: 5px;
+}
+
+button.delete {
+  color: $errorMain;
 }

@@ -8,6 +8,14 @@ import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import styles from './styles.module.scss'
+import TableContainer from '@mui/material/TableContainer'
+import Table from '@mui/material/Table'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
+import TableBody from '@mui/material/TableBody'
+import Paper from '@mui/material/Paper'
+
+import ButtonBase from '@mui/material/ButtonBase'
 
 Theme.propTypes = {
   theme: PropTypes.object,
@@ -43,7 +51,7 @@ function Theme(props) {
               onClick={handleDelete}
               className={styles.delete}
             >
-              <MdDelete />
+              <MdDelete className={styles.delete} />
             </IconButton>
           </div>
         </AccordionSummary>
@@ -71,23 +79,43 @@ ItemContent.propTypes = {
   theme: PropTypes.object
 }
 function ItemContent(props) {
+  const rows = [
+    { name: 'Название темы', questions: [
+      { cost: 100 }, { cost: 200 }, { cost: 300 }, { cost: 400 }
+    ] },
+    { name: 'Тема 2', questions: [
+      { cost: 200 }, { cost: 400 }, { cost: 600 }, { cost: 800 }
+    ] },
+    { name: 'Тема 3', questions: [
+      { cost: 300 }, { cost: 600 }, { cost: 900 }, { cost: 1200 }
+    ] }
+  ]
+
   return (
-    <Typography>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-      malesuada lacus ex, sit amet blandit leo lobortis eget.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-      malesuada lacus ex, sit amet blandit leo lobortis eget.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-      malesuada lacus ex, sit amet blandit leo lobortis eget.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-      malesuada lacus ex, sit amet blandit leo lobortis eget.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-      malesuada lacus ex, sit amet blandit leo lobortis eget.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-      malesuada lacus ex, sit amet blandit leo lobortis eget.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-      malesuada lacus ex, sit amet blandit leo lobortis eget.
-    </Typography>
+    <TableContainer
+      component={Paper}
+      className={styles.table}
+    >
+      <Table>
+        <TableBody>
+          {rows.map((row, i) => (
+            <TableRow
+              key={i}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component='th' scope='row'>{row.name}</TableCell>
+              {row.questions.map((question, j) =>
+                <TableCell key={j} className={styles.tableCell}>
+                  <ButtonBase className={styles.buttonBase}>
+                    {question.cost}
+                  </ButtonBase>
+                </TableCell>
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
 

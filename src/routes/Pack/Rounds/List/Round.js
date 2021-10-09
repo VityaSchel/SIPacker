@@ -76,7 +76,7 @@ function ItemContent(props) {
 Toolbar.propTypes = { handleRemoveRound: PropTypes.func }
 function Toolbar(props) {
   return (
-    <IconButton onClick={props.handleRemoveRound}>
+    <IconButton onClick={props.handleRemoveRound} className={styles.delete}>
       <MdDelete />
     </IconButton>
   )

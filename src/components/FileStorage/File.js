@@ -38,6 +38,10 @@ export default function File(props) {
     setInfoDialogueOpen(false)
   }
 
+  const handleDeleteFile = () => {
+    
+  }
+
   return (
     <>
       <Grid
@@ -68,7 +72,11 @@ export default function File(props) {
         <DialogContent>
           <p>Размер файла: <b>{filesize(props.file.blob.size, { symbols })}</b></p>
           <p>Дата добавления: <b>{formatDate(new Date(props.file.addedAt))}</b></p>
-          <Button variant='contained' className={styles.delete}>Удалить файл</Button>
+          <Button
+            variant='contained'
+            className={styles.delete}
+            onClick={handleDeleteFile}
+          >Удалить файл</Button>
         </DialogContent>
       </Dialog>
     </>

@@ -34,10 +34,10 @@ function PackToolbar(props) {
     '^/?$': [
       [handleSave, <MdFileDownload key='download' />],
       [`/pack/${props.pack.uuid}/settings`, <MdSettings key='settings' />],
-      [handleDeletePack, <MdDelete key='delete' />]
+      [handleDeletePack, <MdDelete key='delete' />, styles.delete]
     ],
     '^/rounds/\\d/?$': [
-      [handleDeleteRound, <MdDelete key='delete' />]
+      [handleDeleteRound, <MdDelete key='delete' />, styles.delete]
     ]
   }
 
@@ -48,15 +48,15 @@ function PackToolbar(props) {
   return (
     <>
       <div className={styles.buttons}>
-        {pageToolbar && pageToolbar[1].map(([action, icon], i) => <>
+        {pageToolbar && pageToolbar[1].map(([action, icon, styles], i) => <>
           {
             typeof action === 'string'
-              ? <Link to={action} key={i}>
+              ? <Link to={action} className={styles} key={i}>
                 <IconButton>
                   {icon}
                 </IconButton>
               </Link>
-              : <IconButton onClick={action}>
+              : <IconButton className={styles} onClick={action}>
                 {icon}
               </IconButton>
           }

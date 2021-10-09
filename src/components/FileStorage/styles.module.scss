@@ -124,6 +124,18 @@
             }
           }
         }
+
+        .noFilesYet {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          .hint {
+            color: #777;
+          }
+        }
       }
     }
   }

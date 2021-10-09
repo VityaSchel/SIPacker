@@ -4,6 +4,7 @@ import styles from './styles.module.scss'
 import Grid from '@mui/material/Grid'
 import { getRecent } from 'localStorage/fileStorage'
 import File from './File'
+import Typography from '@mui/material/Typography'
 
 List.propTypes = {
   packs: PropTypes.array,
@@ -38,19 +39,24 @@ export default function List(props) {
     <div className={styles.list}>
       <div className={styles.content}>
         {
-          files.map((packGroup, i) => <div key={i}>
-            <div className={styles.packDivider}>Пак <b>{packGroup.packName}</b></div>
-            <Grid container spacing={2} className={styles.grid}>
-              {packGroup.files.map((file, j) =>
-                <File
-                  file={file}
-                  key={`${i}_${j}`}
-                  handleSelect={props.handleSelect}
-                />
-              )}
-            </Grid>
-          </div>
-          )
+          files.length
+            ? files.map((packGroup, i) => <div key={i}>
+              <div className={styles.packDivider}>Пак <b>{packGroup.packName}</b></div>
+              <Grid container spacing={2} className={styles.grid}>
+                {packGroup.files.map((file, j) =>
+                  <File
+                    file={file}
+                    key={`${i}_${j}`}
+                    handleSelect={props.handleSelect}
+                  />
+                )}
+              </Grid>
+            </div>)
+            : <div className={styles.noFilesYet}>
+              <Typography className={styles.hint}>Файлы не найдены</Typography>
+              <Typography className={styles.hint}>Попробуйте изменить фильтры</Typography>
+              <Typography className={styles.hint}>Загрузите файлы во вкладке Загрузка</Typography>
+            </div>
         }
       </div>
     </div>
