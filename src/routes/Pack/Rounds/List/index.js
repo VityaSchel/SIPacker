@@ -9,7 +9,6 @@ import { MdEdit, MdDone } from 'react-icons/md'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
 import { saveLocalPack } from 'localStorage/localPacks'
-import listStyles from '../../dragNDrop.module.scss'
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list)
@@ -90,7 +89,7 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
                 : <Typography
                   variant='body1'
                   gutterBottom
-                  className={listStyles.noItems}
+                  // className={listStyles.noItems}
                 >Еще нет раундов</Typography>
               }
               {provided.placeholder}

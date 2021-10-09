@@ -10,10 +10,9 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import styles from './styles.module.scss'
 
 Theme.propTypes = {
-  theme: PropTypes.object,
+  item: PropTypes.object,
   pack: PropTypes.object,
   index: PropTypes.number,
-  expand: PropTypes.bool,
   setExpand: PropTypes.func,
   draggableId: PropTypes.string,
 }
@@ -24,14 +23,17 @@ function Theme(props) {
     // props.
   }
 
+  const theme = props.item
+  const expand = props.draggableId === props.expandId
+
   return (
     <Item
       index={props.index}
-      draggableId={props.theme.id.toString()}
+      draggableId={theme.id.toString()}
     >
       {(provided) => <Accordion
         expanded={props.expand}
-        onChange={(_, isExpand) => props.setExpand(isExpand ? props.theme.id : undefined)}
+        onChange={(_, isExpand) => props.setExpand(isExpand ? theme.id : undefined)}
       >
         <AccordionSummary
           expandIcon={<MdExpandMore />}
@@ -39,7 +41,7 @@ function Theme(props) {
           <div className={styles.toolbar}>
             <Handle provided={provided} />
             <Typography className={styles.name} variant='body2' color='text.secondary'>
-              {props.theme.name}
+              {theme.name}
             </Typography>
             <IconButton
               onClick={handleDelete}
