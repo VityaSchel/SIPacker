@@ -9,19 +9,28 @@ export const symbols = { B: 'Б', kB: 'кБ', MB: 'МБ', GB: 'ГБ', TB: 'ТБ'
 import FileStorage from 'components/FileStorage'
 import { connect } from 'react-redux'
 import CircularProgress from '@mui/material/CircularProgress'
+import { MdErrorOutline } from 'react-icons/md'
+import store from 'reducers/index'
 
 ImageField.propTypes = {
   label: PropTypes.string,
   formik: PropTypes.object,
   name: PropTypes.string,
-  pack: PropTypes.object
+  pack: PropTypes.object,
+  dispatch: PropTypes.func
 }
 
 function ImageField(props) {
   const [src, setSrc] = React.useState({})
   const [srcUrl, setSrcUrl] = React.useState(null)
+  const [noFile, setNoFile] = React.useState(false)
   const { formik, name } = props
   const fileStorage = React.useRef()
+
+  React.useEffect(() => {
+    if(!src.fileURI) return
+    props.dispatch({ type: 'fileRendering/setFileUnlinkCallback', fileURI: src.fileURI, callback: () => setNoFile(true) })
+  }, [setNoFile])
 
   React.useEffect(() => {
     const fileURI = formik.values[name]
@@ -30,7 +39,9 @@ function ImageField(props) {
     if(fileURI) {
       (async () => {
         const file = await getFile(fileURI)
-        if(!file) return
+        if(!file) return setNoFile(true)
+
+        setNoFile(false)
 
         const blob = file.miniature
         const name = file.fileName
@@ -39,7 +50,12 @@ function ImageField(props) {
 
         const url = URL.createObjectURL(blob)
         setSrcUrl(url)
-        cleanup = () => URL.revokeObjectURL(url)
+        props.dispatch({ type: 'fileRendering/fileRenderingStarted', fileURI: file.fileURI, callback: () => setNoFile(true) })
+
+        cleanup = () => {
+          URL.revokeObjectURL(url)
+          store.dispatch({ type: 'fileRendering/fileRenderingStopped', fileURI: file.fileURI })
+        }
       })()
     } else {
       setSrc({})
@@ -60,6 +76,7 @@ function ImageField(props) {
   }
 
   const handleClear = () => {
+    setNoFile(false)
     formik.setFieldValue(name, undefined)
   }
 
@@ -73,29 +90,24 @@ function ImageField(props) {
       >{props.label}:</Typography>
       <div className={styles.preview}>
         { srcUrl === null
-          ? <>
-            <div className={styles.placeholder} onClick={handleClick}>
-              <span>Нажмите, чтобы выбрать</span>
-            </div>
-          </>
-          : srcUrl === undefined
-            ? <div className={styles.loading}>
-              <CircularProgress />
-            </div>
-            : <img
-              src={srcUrl}
-              alt={srcUrl ? `Изображение для поля ${props.label} с именем «${src.name}»` : ''}
-              onClick={handleClick}
-              className={styles.image}
-            />
+          ? <Placeholder onClick={handleClick} />
+          : noFile
+            ? <FileMissingIcon onClick={handleClick} />
+            : srcUrl !== undefined
+              ? <Image src={src} srcUrl={srcUrl} label={props.label} onClick={handleClick} />
+              : <Loading />
         }
         <div className={styles.info}>
-          <span>Название файла: {src.name ?? '-'}</span>
-          <span>Размер файла: {src.size ? filesize(src.size, { symbols }) : '-'}</span>
+          { noFile
+            ? <FileMissing />
+            : src.size
+              ? <FileInfo src={src} />
+              : <FileNotSelected />
+          }
           <Button
             variant='contained'
             onClick={handleClear}
-            disabled={!srcUrl}
+            disabled={!srcUrl && !noFile}
           >Очистить поле</Button>
         </div>
       </div>
@@ -104,4 +116,73 @@ function ImageField(props) {
   )
 }
 
-export default connect(state => ({ pack: state.pack }))(ImageField)
+Placeholder.propTypes = FileMissingIcon.propTypes = { onClick: PropTypes.func }
+function Placeholder({ onClick }) {
+  return (
+    <div className={styles.placeholder} onClick={onClick}>
+      <span>Нажмите, чтобы выбрать</span>
+    </div>
+  )
+}
+
+function FileMissingIcon({ onClick }) {
+  return (
+    <div className={styles.fileMissing} onClick={onClick}>
+      <MdErrorOutline className={styles.icon} />
+    </div>
+  )
+}
+
+function FileMissing() {
+  return (
+    <span>
+      Файл не найден. Вероятно, вы выбрали его, но затем удалили из хранилища файлов.
+    </span>
+  )
+}
+
+FileInfo.propTypes = { src: PropTypes.object }
+function FileInfo({ src }) {
+  return (
+    <>
+      <span>Название файла: {src.name}</span>
+      <span>Размер файла: {filesize(src.size, { symbols })}</span>
+    </>
+  )
+}
+
+function FileNotSelected() {
+  return (
+    <>
+      <span>Файл не выбран</span>
+      <span>Выберете файл, нажав на кнопку левее.</span>
+    </>
+  )
+}
+
+function Loading() {
+  return (
+    <div className={styles.loading}>
+      <CircularProgress />
+    </div>
+  )
+}
+
+Image.propTypes = {
+  src: PropTypes.object,
+  srcUrl: PropTypes.string,
+  onClick: PropTypes.func,
+  label: PropTypes.string
+}
+function Image({ src, srcUrl, onClick, label }) {
+  return (
+    <img
+      src={srcUrl}
+      alt={srcUrl ? `Изображение для поля ${label} с именем «${src.name}»` : ''}
+      onClick={onClick}
+      className={styles.image}
+    />
+  )
+}
+
+export default connect(state => ({ pack: state.pack, fileRendering: state.fileRendering }))(ImageField)

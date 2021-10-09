@@ -12,6 +12,7 @@ import filesize from 'filesize'
 import { symbols } from 'components/FormikField/ImageField'
 import { formatDate } from '../../utils'
 import { deleteFile } from 'localStorage/fileStorage'
+import store from 'reducers/index'
 
 File.propTypes = {
   file: PropTypes.object,
@@ -44,10 +45,13 @@ export default function File(props) {
   }
 
   const handleDeleteFile = async () => {
+    const fileURI = props.file.fileURI
     setRemoving(true)
-    await deleteFile(props.file.fileURI)
+    await deleteFile(fileURI)
+    store.dispatch({ type: 'fileRendering/fileUnlinked', fileURI })
     setRemoving(false)
     props.onRemove()
+    setInfoDialogueOpen(false)
   }
 
   return (

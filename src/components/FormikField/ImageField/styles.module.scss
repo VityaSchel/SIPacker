@@ -1,3 +1,5 @@
+@import '../../../consts.scss';
+
 .container {
   display: flex;
   flex-direction: column;
@@ -16,10 +18,12 @@
 
     .image,
     .placeholder,
-    .loading {
+    .loading,
+    .fileMissing {
       background-color: #212121;
       $defaultSize: 100px;
       width: $defaultSize;
+      min-width: $defaultSize;
       height: $defaultSize;
       max-height: $defaultSize*2;
       cursor: pointer;
@@ -44,11 +48,28 @@
       }
     }
 
-    .loading {
+    .loading,
+    .fileMissing {
       border-radius: 10px;
+    }
+
+    .loading {
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    .fileMissing {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $errorMain;
+
+      .icon {
+        $size: 40px;
+        width: $size;
+        height: $size;
+      }
     }
   }
 

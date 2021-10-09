@@ -39,6 +39,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'no-duplicate-imports': [
       'error'
-    ]
+    ],
+    'no-case-declarations': 'off'
   }
 }
