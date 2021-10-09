@@ -71,6 +71,11 @@ async function generateMiniature(blob) {
   return miniature
 }
 
+export async function deleteFile(fileURI) {
+  const db = init()
+  await db.files.where('fileURI').equals(fileURI).delete()
+}
+
 function hashFile(file) {
   return new Promise((resolve, reject) => {
     // from https://github.com/satazor/js-spark-md5#hash-a-file-incrementally

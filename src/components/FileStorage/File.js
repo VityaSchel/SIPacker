@@ -11,14 +11,18 @@ import Button from '@mui/material/Button'
 import filesize from 'filesize'
 import { symbols } from 'components/FormikField/ImageField'
 import { formatDate } from '../../utils'
+import { deleteFile } from 'localStorage/fileStorage'
 
 File.propTypes = {
   file: PropTypes.object,
-  handleSelect: PropTypes.func
+  handleSelect: PropTypes.func,
+  onRemove: PropTypes.func
 }
+
 export default function File(props) {
   const [fileSrc, setFileSrc] = React.useState()
   const [infoDialogueOpen, setInfoDialogueOpen] = React.useState(false)
+  const [removing, setRemoving] = React.useState(false)
 
   React.useEffect(() => {
     const src = URL.createObjectURL(props.file.miniature)
@@ -34,12 +38,16 @@ export default function File(props) {
   }
 
   const handleCloseInfo = e => {
+    if(removing) return false
     e.stopPropagation()
     setInfoDialogueOpen(false)
   }
 
-  const handleDeleteFile = () => {
-    
+  const handleDeleteFile = async () => {
+    setRemoving(true)
+    await deleteFile(props.file.fileURI)
+    setRemoving(false)
+    props.onRemove()
   }
 
   return (
@@ -76,6 +84,7 @@ export default function File(props) {
             variant='contained'
             className={styles.delete}
             onClick={handleDeleteFile}
+            disabled={removing}
           >Удалить файл</Button>
         </DialogContent>
       </Dialog>

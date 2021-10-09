@@ -14,11 +14,10 @@ List.propTypes = {
 export default function List(props) {
   const [files, setFiles] = React.useState([])
 
-  React.useEffect(() => {
-    getRecent(props.packs.map(pack => pack.uuid)).then(mapFiles)
-  }, [props.packs])
+  React.useEffect(() => { mapFiles() }, [props.packs])
 
-  const mapFiles = files => {
+  const mapFiles = async () => {
+    const files = await getRecent(props.packs.map(pack => pack.uuid))
     const mappedFiles = []
     let packSwitchUUID
     for (let file of files) {
@@ -48,6 +47,7 @@ export default function List(props) {
                     file={file}
                     key={`${i}_${j}`}
                     handleSelect={props.handleSelect}
+                    onRemove={mapFiles}
                   />
                 )}
               </Grid>
