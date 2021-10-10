@@ -43,14 +43,6 @@ const SavingDialog = React.forwardRef((props, ref) => {
     setOpen(false)
   }
 
-  const handleRestart = () => {
-    setOpen(false)
-    setTimeout(() => {
-      setOpen(true)
-      startProcessing()
-    }, 100)
-  }
-
   return (
     <MuiDialog
       maxWidth="xs"

@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
-import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import CardActionArea from '@mui/material/CardActionArea'
 import { darkTheme } from '../../../../App'
@@ -11,6 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Item from 'components/ItemsList/Item'
 import DeleteConfirmationDialog from '../../PackToolbar/DeleteConfirmationDialog'
+import Typography from '@mui/material/Typography'
 
 Round.propTypes = ItemContent.propTypes = {
   draggableId: PropTypes.string,
@@ -20,7 +20,7 @@ Round.propTypes = ItemContent.propTypes = {
   editing: PropTypes.bool,
   setEditing: PropTypes.func,
   handleRemoveRound: PropTypes.func,
-  roundNamesTextInput: PropTypes.string,
+  roundNamesTextInput: PropTypes.arrayOf(PropTypes.string),
   handleRoundNameChange: PropTypes.func
 }
 
@@ -68,20 +68,20 @@ function ItemContent(props) {
 
   return (
     <CardContent style={{ paddingBottom: darkTheme.spacing(2) }} className={styles.flex1}>
-      <Typography variant='body2' color='text.secondary' className={styles.flex2}>
-        <span>Раунд {props.index+1}.</span> {
-          props.editing
-            ? <TextField
-              value={props.roundNamesTextInput[props.index]}
-              label='Название раунда'
-              variant='outlined'
-              onChange={e => props.handleRoundNameChange(e, props.index)}
-              size='small'
-              className={styles.inputField}
-            />
-            : round.name
-        }
-      </Typography>
+      {
+        props.editing
+          ? <TextField
+            value={props.roundNamesTextInput[props.index]}
+            label='Название раунда'
+            variant='outlined'
+            onChange={e => props.handleRoundNameChange(e, props.index)}
+            size='small'
+            className={styles.inputField}
+          />
+          : <Typography variant='body2' color='text.secondary' className={styles.flex2}>
+            Раунд {props.index+1}. {round.name}
+          </Typography>
+      }
     </CardContent>
   )
 }

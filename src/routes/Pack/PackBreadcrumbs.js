@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Typography from '@mui/material/Typography'
@@ -9,7 +8,7 @@ import { connect } from 'react-redux'
 import { componentsPropTypes, uuidRegex } from '../../consts'
 
 PackBreadcrumbs.propTypes = {
-  pack: PropTypes.shape(componentsPropTypes.pack)
+  pack: componentsPropTypes.pack
 }
 
 function PackBreadcrumbs(props) {

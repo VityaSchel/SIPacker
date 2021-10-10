@@ -36,7 +36,7 @@ export default function Filters(props) {
             />
           }
           className={styles.checkbox}
-          label={pack.name}
+          label={pack === null ? 'Удаленные паки' : pack.name}
           key={i}
         />
       )}

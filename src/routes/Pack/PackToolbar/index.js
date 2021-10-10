@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 import styles from './styles.module.scss'
 import { connect } from 'react-redux'
@@ -11,7 +10,7 @@ import DeleteConfirmationDialog from './DeleteConfirmationDialog'
 import SavingDialog from './SavingDialog'
 
 PackToolbar.propTypes = {
-  pack: PropTypes.shape(componentsPropTypes.pack)
+  pack: componentsPropTypes.pack
 }
 
 function PackToolbar(props) {
@@ -63,7 +62,7 @@ function PackToolbar(props) {
                   {icon}
                 </IconButton>
               </Link>
-              : <IconButton className={styles} onClick={action}>
+              : <IconButton className={styles} onClick={action} key={i}>
                 {icon}
               </IconButton>
           }

@@ -1,11 +1,24 @@
 import SparkMD5 from 'spark-md5'
 import { nanoid } from 'nanoid'
 import { init } from './indexeddb'
+import { loadLocalPacks } from 'localStorage/localPacks'
 
 export async function getFile(fileURI) {
   const db = init()
   let file = await db.files.get(fileURI)
   return file ?? null
+}
+
+export async function getPacksIDs() {
+  const db = init()
+  const packIDs = await db.files.toArray()
+  return packIDs.map(({ packUUID }) => packUUID)
+}
+
+async function getDeletedPacks() {
+  const existingPacks = await loadLocalPacks()
+  const allPacks = await getPacksIDs()
+  return allPacks.filter(pack => !existingPacks.includes(pack))
 }
 
 const mimeTypes = {
@@ -114,6 +127,11 @@ function hashFile(file) {
 const size = 20
 export async function getRecent(filters) {
   const db = init()
+  if(filters.includes('null')){
+    filters.splice(filters.indexOf('null'), 1)
+    const deletedPacks = await getDeletedPacks()
+    filters.push(...deletedPacks)
+  }
   const files = await db.files.where('packUUID').anyOf(filters).limit(size).offset(0).toArray()
   return files
 }

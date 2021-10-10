@@ -23,19 +23,19 @@ Item.propTypes = {
   index: PropTypes.number,
   draggableId: PropTypes.string,
   className: PropTypes.string,
-  children: PropTypes.node,
+  children: PropTypes.func,
   tag: PropTypes.string,
 }
 
 export default function Item(props) {
   return (
     <Draggable
-      draggableId={props.draggableId}
+      draggableId={String(props.draggableId)}
       index={props.index}
     >
       {provided =>
         <Card
-          className={[props.className, styles.item]}
+          className={[props.className, styles.item].join(' ')}
           ref={provided.innerRef}
           {...provided.draggableProps}
           style={getStyle(provided.draggableProps.style)}

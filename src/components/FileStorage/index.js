@@ -8,6 +8,7 @@ import { MdClose } from 'react-icons/md'
 import { emptyFunc } from '../../utils'
 import Filters from './Filters'
 import { loadLocalPacks } from 'localStorage/localPacks'
+import { getPacksIDs } from 'localStorage/fileStorage'
 import List from './List'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
@@ -20,6 +21,7 @@ const FileStorage = React.forwardRef((props, ref) => {
   const [packs, setPacks] = React.useState([])
   const [packUUID, setPackUUID] = React.useState([])
   const [checkboxes, setCheckboxes] = React.useState([])
+  const [deletedPacks, setDeletedPacks] = React.useState([])
 
   const handleClose = () => {
     setOpen(false)
@@ -35,15 +37,30 @@ const FileStorage = React.forwardRef((props, ref) => {
     async open(packUUID, callback) {
       setCallback(() => callback)
       const packs = await loadLocalPacks()
+      const deletedPacks = await getPacksIDs()
+      if(deletedPacks.length > packs.length) packs.push(null)
+      setDeletedPacks(deletedPacks.filter(uuid => !packs.includes(uuid)))
       setPacks(packs)
       setOpen(true)
       setPackUUID(packUUID)
-      setCheckboxes(packs.map(({ uuid }) => ({ uuid, checked: true })))
+      setCheckboxes(
+        packs.map(
+          pack => (
+            pack === null ? { uuid: null, checked: false } : { uuid: pack.uuid, checked: true }
+          )
+        )
+      )
     }
   }))
 
-  const filteredPacks = checkboxes.filter(cb => cb.checked).map(
-    ({ uuid }) => packs.find(pack => pack.uuid === uuid)
+  const filteredPacks = Object.fromEntries(checkboxes
+    .filter(cb => cb.checked)
+    .map(checkedPack => ([checkedPack.uuid,
+      checkedPack.uuid === null
+        ? 'Удаленные паки'
+        : packs.find(pack => pack.uuid === checkedPack.uuid).name
+    ])
+    )
   )
 
   return (

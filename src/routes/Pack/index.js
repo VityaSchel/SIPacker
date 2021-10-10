@@ -16,7 +16,7 @@ import NotFound404 from 'components/NotFound404'
 
 PackPageContainer.propTypes = {
   children: PropTypes.node,
-  pack: PropTypes.shape(componentsPropTypes.pack),
+  pack: componentsPropTypes.pack,
   toolbar: PropTypes.string
 }
 

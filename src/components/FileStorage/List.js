@@ -17,14 +17,14 @@ export default function List(props) {
   React.useEffect(() => { mapFiles() }, [props.packs])
 
   const mapFiles = async () => {
-    const files = await getRecent(props.packs.map(pack => pack.uuid))
+    const files = await getRecent(Object.keys(props.packs))
     const mappedFiles = []
     let packSwitchUUID
     for (let file of files) {
       if(packSwitchUUID !== file.packUUID){
         packSwitchUUID = file.packUUID
         mappedFiles.push({
-          packName: props.packs.find(pack => pack.uuid === packSwitchUUID).name,
+          packName: props.packs[packSwitchUUID],
           files: [file]
         })
       } else {
@@ -40,7 +40,12 @@ export default function List(props) {
         {
           files.length
             ? files.map((packGroup, i) => <div key={i}>
-              <div className={styles.packDivider}>Пак <b>{packGroup.packName}</b></div>
+              <div className={styles.packDivider}>
+                {packGroup.packName
+                  ? <>Пак <b>{packGroup.packName}</b></>
+                  : <>Удаленные паки</>
+                }
+              </div>
               <Grid container spacing={2} className={styles.grid}>
                 {packGroup.files.map((file, j) =>
                   <File
