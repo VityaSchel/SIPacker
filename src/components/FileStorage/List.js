@@ -43,7 +43,7 @@ export default function List(props) {
               <div className={styles.packDivider}>
                 {packGroup.packName
                   ? <>Пак <b>{packGroup.packName}</b></>
-                  : <>Удаленные паки</>
+                  : <>Удаленный пак</>
                 }
               </div>
               <Grid container spacing={2} className={styles.grid}>

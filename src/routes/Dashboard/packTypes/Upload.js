@@ -1,32 +1,19 @@
 import React from 'react'
-import styles from './styles.module.scss'
 import PropTypes from 'prop-types'
-import { BsPlus } from 'react-icons/bs'
-import { MdFileUpload } from 'react-icons/md'
-import Skeleton from '@mui/material/Skeleton'
-import Dropzone from 'react-dropzone'
-import { parse as parsePackGenerator } from 'localStorage/packGenerator'
-import { componentsPropTypes } from '../../consts.js'
+import styles from '../styles.module.scss'
 import cx from 'classnames'
 import Snackbar from '@mui/material/Snackbar'
 import Slide from '@mui/material/Slide'
 import Alert from '@mui/material/Alert'
 import { connect } from 'react-redux'
-import store from '../../reducers'
-import { formatDate } from '../../utils'
-import { getFile } from 'localStorage/fileStorage'
-
-export function Create() {
-  return (
-    <div className={[styles.packBase, styles.newPack].join(' ')}>
-      <span><BsPlus /> Создать новый пак</span>
-    </div>
-  )
-}
+import store from '../../../reducers'
+import { MdFileUpload } from 'react-icons/md'
+import Dropzone from 'react-dropzone'
+import { parse as parsePackGenerator } from 'localStorage/packGenerator'
 
 const SlideTransition = props => <Slide {...props} direction="right" />
 
-export const Upload = connect(state => ({ dashboard: state.dashboard }))(props => {
+function Upload(props) {
   const [entered, setEntered] = React.useState(false)
   const [content, setContent] = React.useState([])
 
@@ -92,51 +79,12 @@ export const Upload = connect(state => ({ dashboard: state.dashboard }))(props =
       </Snackbar>
     </>
   )
-})
-
-Loading.propTypes = { name: PropTypes.string }
-export function Loading(props) {
-  return (
-    <div className={[styles.packBase, styles.loading].join(' ')}>
-      <Skeleton variant='rectangular' width='100%' height='100%' className={styles.skeleton} />
-      { props.name && <span>Загрузка «{props.name}»</span> }
-    </div>
-  )
 }
 
-Pack.propTypes = { pack: PropTypes.shape(componentsPropTypes.pack) }
-export function Pack(props) {
-  const creationTime = formatDate(new Date(props.pack.creationTime))
-
-  return (
-    <div className={[styles.packBase, styles.pack].join(' ')}>
-      <PackImage src={props.pack.logo} />
-      <div className={styles.info}>
-        <span className={styles.name}>{props.pack.name}</span>
-        <span className={styles.time}>Создано: {creationTime}</span>
-      </div>
-    </div>
-  )
+Upload.propTypes = {
+  dashboard: PropTypes.object,
+  dispatch: PropTypes.func,
+  reloadPacks: PropTypes.func
 }
 
-PackImage.propTypes = { src: componentsPropTypes.pack.thumbnail }
-function PackImage(props) {
-  const [src, setSrc] = React.useState()
-
-  React.useEffect(() => {
-    let cleanup = () => {}
-    (async () => {
-      const file = await getFile(props.src)
-      const src = URL.createObjectURL(file.blob)
-      cleanup = () => URL.revokeObjectURL(src)
-      setSrc(src)
-    })()
-    return () => cleanup(src)
-  }, [props.src])
-
-  return (
-    <div className={styles.pictureContainer}>
-      <img src={src} className={styles.thumbnail} />
-    </div>
-  )
-}
+export default connect(state => ({ dashboard: state.dashboard }))(Upload)
