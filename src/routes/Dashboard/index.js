@@ -13,6 +13,7 @@ export default function Dashboard() {
   )
 }
 
+export const DashboardContext = React.createContext({})
 export const LocalPacks = connect(state => ({ dashboard: state.dashboard }))(props => {
   const [savedLocalPacks, setSavedLocalPacks] = React.useState()
 
@@ -25,17 +26,23 @@ export const LocalPacks = connect(state => ({ dashboard: state.dashboard }))(pro
 
   React.useEffect(() => loadPacks(), [])
 
+  const contextActions = {
+    reloadPacks: () => loadPacks()
+  }
+
   return (
     <div>
-      <div className={styles.packsList}>
-        <PackBase type='create' />
-        <PackBase type='upload' reloadPacks={loadPacks} />
-        { props.dashboard?.uploading?.reverse().map(({ name }, i) => <PackBase type='loading' name={name} key={i} />) }
-        { savedLocalPacks
-          ? savedLocalPacks.map(pack => <PackBase type='pack' key={pack.uuid} pack={pack} />)
-          : new Array(5).fill().map((_, i) => <PackBase type='loading' key={i} />)
-        }
-      </div>
+      <DashboardContext.Provider value={contextActions}>
+        <div className={styles.packsList}>
+          <PackBase type='create' />
+          <PackBase type='upload' reloadPacks={loadPacks} />
+          { props.dashboard?.uploading?.reverse().map(({ name }, i) => <PackBase type='loading' name={name} key={i} />) }
+          { savedLocalPacks
+            ? savedLocalPacks.map(pack => <PackBase type='pack' key={pack.uuid} pack={pack} />)
+            : new Array(5).fill().map((_, i) => <PackBase type='loading' key={i} />)
+          }
+        </div>
+      </DashboardContext.Provider>
     </div>
   )
 })

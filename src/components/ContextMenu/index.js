@@ -7,23 +7,22 @@ import MenuItem from '@mui/material/MenuItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 
-const ContextMenu = React.forwardRef((props, ref) => {
-  console.log(props)
+export const ContextMenuActions = React.createContext({})
+function ContextMenu(props) {
+  const [items, setItems] = React.useState()
 
-  React.useImperativeHandle(ref, () => ({
-    open(e) {
-      console.log(e)
+  const contextMenu = {
+    open(e, items) {
       if(props.menu?.position) return true
       else e.preventDefault()
-      console.log(e.clientX, e.clientY);
+      setItems(items)
       props.dispatch({ type: 'menu/setPosition', position: [e.clientX, e.clientY] })
       return false
     }
-  }))
+  }
 
   const close = e => {
     e?.preventDefault()
-    console.log('closing');
     props.dispatch({ type: 'menu/setPosition', position: null })
   }
 
@@ -35,15 +34,18 @@ const ContextMenu = React.forwardRef((props, ref) => {
 
   return (
     <>
+      <ContextMenuActions.Provider value={contextMenu}>
+        {props.children}
+      </ContextMenuActions.Provider>
       {
-        props.menu?.position && ReactDOM.createPortal(
+        ReactDOM.createPortal(
           <Menu
             open={props.menu?.position}
             anchorReference="anchorPosition"
-            anchorPosition={{ top: props.menu?.position[1], left: props.menu?.position[0] }}
+            anchorPosition={props.menu?.position && { top: props.menu.position[1], left: props.menu.position[0] }}
             onClose={close}
           >
-            {props.children.map((item, i) =>
+            {items?.map((item, i) =>
               <MenuItem onClick={handleSelect(item.action)} key={i}>
                 <ListItemIcon>
                   {item.icon}
@@ -57,13 +59,14 @@ const ContextMenu = React.forwardRef((props, ref) => {
       }
     </>
   )
-})
+}
 
 ContextMenu.displayName = 'ContextMenu'
 ContextMenu.propTypes = {
   dispatch: PropTypes.func,
   menu: PropTypes.array,
-  children: PropTypes.array
+  name: PropTypes.string,
+  children: PropTypes.func,
 }
 
-export default connect(state => ({ menu: state.menu }), null, null, { forwardRef: true })(ContextMenu)
+export default connect(state => ({ menu: state.menu }))(ContextMenu)

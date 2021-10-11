@@ -44,6 +44,7 @@ export default function NewPack() {
         className={styles.field}
         placeholder={examples[Math.floor(Math.random()*examples.length)]}
         onKeyUp={handleCheckSubmit}
+        autoFocus
       />
       <Button
         variant='contained'

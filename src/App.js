@@ -14,6 +14,7 @@ import Container from './components/Container'
 import 'dayjs/locale/ru'
 import { history } from './utils'
 import NotFound404 from 'components/NotFound404'
+import ContextMenuProvider from 'components/ContextMenu'
 
 export const darkTheme = createTheme({
   palette: {
@@ -29,21 +30,23 @@ export default function App() {
     <Provider store={sipackerStore}>
       <ThemeProvider theme={darkTheme}>
         <Router history={history}>
-          <Container>
-            <Navigation />
-            <Switch>
-              <Route exact path='/'>
-                <Dashboard />
-              </Route>
-              <Route path='/create'>
-                <NewPack />
-              </Route>
-              <Route path={['/pack/:packUUID', '/pack/:packUUID/*']}>
-                <Pack />
-              </Route>
-              <Route path='*'><NotFound404 /></Route>
-            </Switch>
-          </Container>
+          <ContextMenuProvider>
+            <Container>
+              <Navigation />
+              <Switch>
+                <Route exact path='/'>
+                  <Dashboard />
+                </Route>
+                <Route path='/create'>
+                  <NewPack />
+                </Route>
+                <Route path={['/pack/:packUUID', '/pack/:packUUID/*']}>
+                  <Pack />
+                </Route>
+                <Route path='*'><NotFound404 /></Route>
+              </Switch>
+            </Container>
+          </ContextMenuProvider>
         </Router>
       </ThemeProvider>
     </Provider>

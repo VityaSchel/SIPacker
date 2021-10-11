@@ -9,7 +9,7 @@ import { MdDragHandle, MdDelete } from 'react-icons/md'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Item from 'components/ItemsList/Item'
-import DeleteConfirmationDialog from '../../PackToolbar/DeleteConfirmationDialog'
+import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
 import Typography from '@mui/material/Typography'
 
 Round.propTypes = ItemContent.propTypes = {

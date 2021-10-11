@@ -5,9 +5,8 @@ import { connect } from 'react-redux'
 import { componentsPropTypes } from '../../../consts'
 import IconButton from '@mui/material/IconButton'
 import { MdSettings, MdDelete, MdFileDownload } from 'react-icons/md'
-import { saveLocalPack, deleteLocalPack } from 'localStorage/localPacks'
-import { deleteFilesOfPack } from 'localStorage/fileStorage'
-import DeleteConfirmationDialog from './DeleteConfirmationDialog'
+import { saveLocalPack } from 'localStorage/localPacks'
+import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
 import SavingDialog from './SavingDialog'
 
 PackToolbar.propTypes = {
@@ -21,13 +20,8 @@ function PackToolbar(props) {
   const { pathname } = useLocation()
 
   const handleSave = () => savingDialogRef.current.save(props.pack)
-  const handleDeletePack = async () => {
-    const { confirmed, deleteFiles } = await confirmationDialogRef.current.confirmPackDeletion()
-    if(confirmed) {
-      deleteFiles && await deleteFilesOfPack(props.pack.uuid)
-      await deleteLocalPack(props.pack.uuid)
-      history.push('/')
-    }
+  const handleDeletePack = () => {
+    confirmationDialogRef.current.confirmPackDeletion(props.pack.uuid)
   }
 
   const handleDeleteRound = async () => {
