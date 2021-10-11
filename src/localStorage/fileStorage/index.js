@@ -15,7 +15,8 @@ export async function getPacksIDs() {
 }
 
 async function getDeletedPacks() {
-  const existingPacks = await loadLocalPacks()
+  let existingPacks = await loadLocalPacks()
+  existingPacks = existingPacks.map(({ uuid }) => uuid)
   const allPacks = await getPacksIDs()
   return allPacks.filter(pack => !existingPacks.includes(pack))
 }
@@ -33,7 +34,11 @@ export async function getRecent(filters) {
     const deletedPacks = await getDeletedPacks()
     filters.push(...deletedPacks)
   }
-  const files = await db.files.where('packUUID').anyOf(filters).limit(size).offset(0).toArray()
+  const files = await db.files.where('packUUID').anyOf(filters)
+    .limit(size)
+    .offset(0)
+    .reverse()
+    .sortBy('addedAt')
   return files
 }
 

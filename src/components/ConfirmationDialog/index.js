@@ -6,27 +6,30 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import MuiDialog from '@mui/material/Dialog'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
 
 let okCallback
 const ConfirmationDialog = React.forwardRef((props, ref) => {
   const [open, setOpen] = React.useState(false)
   const [text, setText] = React.useState()
-  const [children, setChildren] = React.useState(<></>)
   const [confirmText, setConfirmText] = React.useState('')
+  const [checkboxText, setCheckboxText] = React.useState('')
+  const [checkboxValue, setCheckboxValue] = React.useState(true)
 
   const handleAction = result => {
     setOpen(false)
-    okCallback(result)
+    okCallback({ confirmed: result, checked: checkboxValue })
   }
 
   React.useImperativeHandle(ref, () => ({
-    open(text, confirmText, children) {
+    open(text, confirmText, checkboxText) {
       return new Promise(resolve => {
         okCallback = resolve
         setOpen(true)
         setText(text)
         setConfirmText(confirmText)
-        setChildren(children)
+        setCheckboxText(checkboxText)
       })
     }
   }))
@@ -42,7 +45,13 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
         <DialogContentText>
           {text && <p>{text}</p>}
           {props.children}
-          {children}
+          {checkboxText && <FormControlLabel control={
+            <Checkbox
+              defaultChecked
+              value={checkboxValue}
+              onChange={e => setCheckboxValue(e.target.value)}
+            />
+          } label={checkboxText} />}
         </DialogContentText>
       </DialogContent>
       <DialogActions>

@@ -38,13 +38,6 @@ const FileStorage = React.forwardRef((props, ref) => {
       await loadPacks()
       setOpen(true)
       setPackUUID(packUUID)
-      setCheckboxes(
-        packs.map(
-          pack => (
-            pack === null ? { uuid: null, checked: false } : { uuid: pack.uuid, checked: true }
-          )
-        )
-      )
     }
   }))
 
@@ -53,17 +46,26 @@ const FileStorage = React.forwardRef((props, ref) => {
     const deletedPacks = await getPacksIDs()
     if(deletedPacks.length > packs.length) packs.push(null)
     setPacks(packs)
+    setCheckboxes(
+      packs.map(
+        pack => (
+          pack === null ? { uuid: null, checked: false } : { uuid: pack.uuid, checked: true }
+        )
+      )
+    )
   }
 
+  console.log(checkboxes);
   const filteredPacks = Object.fromEntries(checkboxes
     .filter(cb => cb.checked)
     .map(checkedPack => ([checkedPack.uuid,
       checkedPack.uuid === null
         ? 'Удаленные паки'
-        : packs.find(pack => pack.uuid === checkedPack.uuid).name
+        : packs.find(pack => pack.uuid === checkedPack.uuid)?.name
     ])
     )
   )
+  console.log(filteredPacks);
 
   return (
     <Dialog
