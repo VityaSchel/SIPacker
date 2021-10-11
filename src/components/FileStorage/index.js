@@ -21,7 +21,6 @@ const FileStorage = React.forwardRef((props, ref) => {
   const [packs, setPacks] = React.useState([])
   const [packUUID, setPackUUID] = React.useState([])
   const [checkboxes, setCheckboxes] = React.useState([])
-  const [deletedPacks, setDeletedPacks] = React.useState([])
 
   const handleClose = () => {
     setOpen(false)
@@ -39,7 +38,6 @@ const FileStorage = React.forwardRef((props, ref) => {
       const packs = await loadLocalPacks()
       const deletedPacks = await getPacksIDs()
       if(deletedPacks.length > packs.length) packs.push(null)
-      setDeletedPacks(deletedPacks.filter(uuid => !packs.includes(uuid)))
       setPacks(packs)
       setOpen(true)
       setPackUUID(packUUID)

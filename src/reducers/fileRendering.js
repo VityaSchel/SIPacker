@@ -5,7 +5,8 @@ export default function fileRenderingReducer(state = {}, action) {
     case 'fileRendering/fileRenderingStopped':
       return removeFileURI(state, action.fileURI)
     case 'fileRendering/fileUnlinked':
-      state[action.fileURI]()
+      const callback = state[action.fileURI]
+      callback && callback()
       return removeFileURI(state, action.fileURI)
     case 'fileRendering/setFileUnlinkCallback':
       return changeProperty(state, action.fileURI, action.callback)

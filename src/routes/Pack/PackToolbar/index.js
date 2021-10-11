@@ -6,6 +6,7 @@ import { componentsPropTypes } from '../../../consts'
 import IconButton from '@mui/material/IconButton'
 import { MdSettings, MdDelete, MdFileDownload } from 'react-icons/md'
 import { saveLocalPack, deleteLocalPack } from 'localStorage/localPacks'
+import { deleteFilesOfPack } from 'localStorage/fileStorage'
 import DeleteConfirmationDialog from './DeleteConfirmationDialog'
 import SavingDialog from './SavingDialog'
 
@@ -23,6 +24,7 @@ function PackToolbar(props) {
   const handleDeletePack = async () => {
     const { confirmed, deleteFiles } = await confirmationDialogRef.current.confirmPackDeletion()
     if(confirmed) {
+      deleteFiles && await deleteFilesOfPack(props.pack.uuid)
       await deleteLocalPack(props.pack.uuid)
       history.push('/')
     }
