@@ -35,10 +35,7 @@ const FileStorage = React.forwardRef((props, ref) => {
   React.useImperativeHandle(ref, () => ({
     async open(packUUID, callback) {
       setCallback(() => callback)
-      const packs = await loadLocalPacks()
-      const deletedPacks = await getPacksIDs()
-      if(deletedPacks.length > packs.length) packs.push(null)
-      setPacks(packs)
+      await loadPacks()
       setOpen(true)
       setPackUUID(packUUID)
       setCheckboxes(
@@ -50,6 +47,13 @@ const FileStorage = React.forwardRef((props, ref) => {
       )
     }
   }))
+
+  const loadPacks = async () => {
+    const packs = await loadLocalPacks()
+    const deletedPacks = await getPacksIDs()
+    if(deletedPacks.length > packs.length) packs.push(null)
+    setPacks(packs)
+  }
 
   const filteredPacks = Object.fromEntries(checkboxes
     .filter(cb => cb.checked)
@@ -93,6 +97,7 @@ const FileStorage = React.forwardRef((props, ref) => {
               packs={packs}
               checkboxes={checkboxes}
               onChange={setCheckboxes}
+              reloadPacks={loadPacks}
             />
             <List
               packs={filteredPacks}

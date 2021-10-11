@@ -39,6 +39,6 @@ export async function getRecent(filters) {
 
 export async function deleteFilesOfPack(packUUID) {
   const db = init()
-  const files = await db.files.where({ packUUID }).keys()
+  const files = await db.files.where({ packUUID }).primaryKeys()
   await db.files.bulkDelete(files)
 }
