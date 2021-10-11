@@ -9,17 +9,20 @@ import { componentsPropTypes } from '../../../consts'
 import PackImage from './index'
 import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
 import { DashboardContext } from '../index'
+import RenameDialog from 'components/RenameDialog'
+import { loadLocalPack, saveLocalPack } from 'localStorage/localPacks'
 
 Pack.propTypes = { pack: PropTypes.shape(componentsPropTypes.pack) }
 export default function Pack(props) {
   const confDialogRef = React.useRef()
+  const renameDialog = React.useRef()
   const dashboardActions = React.useContext(DashboardContext)
   const creationTime = formatDate(new Date(props.pack.creationTime))
   const contextMenuActions = React.useContext(ContextMenuActions)
 
   const handleOpenMenu = e => {
     contextMenuActions.open(e, [
-      { name: 'Переимновать', icon: <BiRename />, action: () => {} },
+      { name: 'Переимновать', icon: <BiRename />, action: () => handleRenamePack() },
       { name: 'Удалить', icon: <MdDelete />, action: () => handleDeletePack() }
     ])
   }
@@ -27,6 +30,18 @@ export default function Pack(props) {
   const handleDeletePack = async () => {
     if(await confDialogRef.current.confirmPackDeletion(props.pack.uuid))
       dashboardActions.reloadPacks()
+  }
+
+  const handleRenamePack = async () => {
+    const newName = await new Promise(resolve =>
+      renameDialog.current.askToRename(resolve, 'пак', props.pack.name)
+    )
+    if(newName !== undefined){
+      let pack = await loadLocalPack(props.pack.uuid)
+      pack = { ...pack, name: newName }
+      saveLocalPack(pack)
+      dashboardActions.reloadPacks()
+    }
   }
 
   return (
@@ -43,6 +58,7 @@ export default function Pack(props) {
       </div>
       <div onClick={e => e.stopPropagation()}>
         <DeleteConfirmationDialog ref={confDialogRef} />
+        <RenameDialog ref={renameDialog} />
       </div>
     </>
   )
