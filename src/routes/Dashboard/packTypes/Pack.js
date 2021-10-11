@@ -22,7 +22,7 @@ export default function Pack(props) {
 
   const handleOpenMenu = e => {
     contextMenuActions.open(e, [
-      { name: 'Переимновать', icon: <BiRename />, action: () => handleRenamePack() },
+      { name: 'Переименовать', icon: <BiRename />, action: () => handleRenamePack() },
       { name: 'Удалить', icon: <MdDelete />, action: () => handleDeletePack() }
     ])
   }

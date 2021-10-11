@@ -1,7 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Button from '@mui/material/Button'
-import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'

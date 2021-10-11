@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import { MdInfoOutline } from 'react-icons/md'
+import { MdInfoOutline, MdDelete } from 'react-icons/md'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -13,6 +13,7 @@ import { symbols } from 'components/FormikField/ImageField'
 import { formatDate } from '../../utils'
 import { deleteFile } from 'localStorage/fileStorage'
 import store from 'reducers/index'
+import { ContextMenuActions } from 'components/ContextMenu'
 
 File.propTypes = {
   file: PropTypes.object,
@@ -24,6 +25,7 @@ export default function File(props) {
   const [fileSrc, setFileSrc] = React.useState()
   const [infoDialogueOpen, setInfoDialogueOpen] = React.useState(false)
   const [removing, setRemoving] = React.useState(false)
+  const contextMenuActions = React.useContext(ContextMenuActions)
 
   React.useEffect(() => {
     const src = URL.createObjectURL(props.file.miniature)
@@ -54,12 +56,19 @@ export default function File(props) {
     setInfoDialogueOpen(false)
   }
 
+  const handleOpenMenu = e => {
+    contextMenuActions.open(e, [
+      { name: 'Удалить', icon: <MdDelete />, action: () => handleDeleteFile() }
+    ])
+  }
+
   return (
     <>
       <Grid
         item xs={4} md={6} sm={12}
         className={styles.item}
         onClick={handleSelect}
+        onContextMenu={handleOpenMenu}
       >
         <div className={styles.itemInner}>
           <IconButton
