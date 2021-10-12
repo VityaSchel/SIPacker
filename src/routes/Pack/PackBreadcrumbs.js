@@ -50,4 +50,4 @@ function PackBreadcrumbs(props) {
   )
 }
 
-export default connect(state => ({ pack: state.pack }))(PackBreadcrumbs)
+export default connect(mapPackState)(PackBreadcrumbs)

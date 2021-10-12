@@ -8,9 +8,7 @@ import clone from 'just-clone'
 import NotFound404 from 'components/NotFound404'
 import RoundTable from './RoundTable'
 import ThemesEditing from './ThemesEditing'
-import styles from './styles.module.scss'
-import IconButton from '@mui/material/IconButton'
-import { MdEdit, MdDone } from 'react-icons/md'
+import EditingToolbar from 'components/EditingToolbar'
 
 RoundThemes.propTypes = {
   pack: PropTypes.object,
@@ -78,14 +76,12 @@ function RoundThemes(props) {
     found !== undefined && (
       found
         ? <div>
-          <div className={styles.heading}>
-            <h2>Вопросы раунда {round.name}</h2>
-            { Boolean(themes.length) &&
-              <IconButton onClick={() => setEditing(!editing)}>
-                { editing ? <MdDone /> : <MdEdit /> }
-              </IconButton>
-            }
-          </div>
+          <EditingToolbar
+            showButton={true}
+            onSwitch={() => setEditing(!editing)}
+            editing={editing}
+            heading={`Темы и вопросы раунда ${round.name}`}
+          />
           {themes.length && !editing
             ? <RoundTable
               themes={themes}
@@ -107,4 +103,4 @@ function RoundThemes(props) {
   )
 }
 
-export default connect(state => ({ pack: state.pack }))(RoundThemes)
+export default connect(mapPackState)(RoundThemes)

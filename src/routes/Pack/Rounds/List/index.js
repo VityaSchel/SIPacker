@@ -1,12 +1,11 @@
 import React from 'react'
 import styles from './styles.module.scss'
-import IconButton from '@mui/material/IconButton'
 import Round from './Round'
 import AddItem from 'components/ItemsList/AddItem'
-import { MdEdit, MdDone } from 'react-icons/md'
 import { connect } from 'react-redux'
 import { saveLocalPack } from 'localStorage/localPacks'
 import ItemsList from 'components/ItemsList'
+import EditingToolbar from 'components/EditingToolbar'
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list)
@@ -15,7 +14,7 @@ const reorder = (list, startIndex, endIndex) => {
   return result
 }
 
-export default connect(state => ({ pack: state.pack }))(function RoundsList(props) {
+export default connect(mapPackState)(function RoundsList(props) {
   const [rounds, setRounds] = React.useState(props.pack.rounds)
   const [editing, setEditing] = React.useState(false)
   const pack = props.pack
@@ -41,7 +40,7 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
   const handleSwitchEditing = () => {
     setEditing(!editing)
   }
-  
+
   const handleRoundNameChange = (e, index) => {
     const namesList = [...rounds]
     namesList[index].name = e.target.value
@@ -59,10 +58,12 @@ export default connect(state => ({ pack: state.pack }))(function RoundsList(prop
 
   return (
     <div className={styles.rounds}>
-      <div className={styles.heading}>
-        <h2 className={styles.text}>Раунды пака</h2>
-        {Boolean(rounds.length) && <IconButton onClick={handleSwitchEditing}>{ editing ? <MdDone /> : <MdEdit /> }</IconButton>}
-      </div>
+      <EditingToolbar
+        showButton={Boolean(rounds.length)}
+        onSwitch={handleSwitchEditing}
+        editing={editing}
+        heading='Раунды пака'
+      />
       <ItemsList
         onDragEnd={onDragEnd}
         droppableId='rounds'

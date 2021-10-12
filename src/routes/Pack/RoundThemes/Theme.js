@@ -91,4 +91,4 @@ function Handle(props) {
   )
 }
 
-export default connect(state => ({ pack: state.pack }))(Theme)
+export default connect(mapPackState)(Theme)

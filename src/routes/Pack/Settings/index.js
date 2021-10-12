@@ -163,4 +163,4 @@ function Settings(props) {
   )
 }
 
-export default connect(state => ({ pack: state.pack }))(Settings)
+export default connect(mapPackState)(Settings)

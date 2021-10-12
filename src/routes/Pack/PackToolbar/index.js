@@ -70,4 +70,4 @@ function PackToolbar(props) {
   )
 }
 
-export default connect(state => ({ pack: state.pack }))(PackToolbar)
+export default connect(mapPackState)(PackToolbar)

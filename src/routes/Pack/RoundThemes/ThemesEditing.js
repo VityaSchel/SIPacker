@@ -11,7 +11,8 @@ ThemesEditing.propTypes = {
   setExpand: PropTypes.func,
   setEditing: PropTypes.func,
   handleAddTheme: PropTypes.func,
-  handleRemoveTheme: PropTypes.func
+  handleRemoveTheme: PropTypes.func,
+  handleChangeThemeName: PropTypes.func
 }
 export default function ThemesEditing(props) {
   return (

@@ -48,4 +48,4 @@ function PackPageContainer(props) {
   )
 }
 
-export default connect(state => ({ pack: state.pack }))(PackPageContainer)
+export default connect(mapPackState)(PackPageContainer)

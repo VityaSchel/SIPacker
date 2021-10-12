@@ -143,4 +143,4 @@ function Marker(props) {
   )
 }
 
-export default connect(state => ({ pack: state.pack }))(CheckList)
+export default connect(mapPackState)(CheckList)
