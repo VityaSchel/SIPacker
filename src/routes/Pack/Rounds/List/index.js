@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { saveLocalPack } from 'localStorage/localPacks'
 import ItemsList from 'components/ItemsList'
 import EditingToolbar from 'components/EditingToolbar'
+import { mapPackState } from '../../../../utils'
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list)

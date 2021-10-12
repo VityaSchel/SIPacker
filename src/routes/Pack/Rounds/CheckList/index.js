@@ -7,6 +7,7 @@ import { useLocation } from 'react-router'
 import { Link } from 'react-router-dom'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 import cx from 'classnames'
+import { mapPackState } from '../../../../utils'
 
 CheckList.propTypes = { pack: PropTypes.object }
 function CheckList(props) {

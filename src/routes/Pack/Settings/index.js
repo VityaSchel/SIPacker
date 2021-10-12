@@ -17,6 +17,7 @@ import styles from './styles.module.scss'
 import { useBeforeunload } from 'react-beforeunload'
 import { useHistory, Prompt } from 'react-router-dom'
 import { saveLocalPack } from 'localStorage/localPacks'
+import { mapPackState } from '../../../utils'
 
 const schema = {
   logo: yup

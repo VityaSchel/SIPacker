@@ -11,6 +11,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import TextField from '@mui/material/TextField'
 import ClickIsolator from 'components/ClickIsolator'
+import { mapPackState } from '../../../utils'
 
 Theme.propTypes = {
   item: PropTypes.object,
@@ -72,7 +73,7 @@ function Theme(props) {
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <ItemContent theme={props.item} />
+          <ItemContent theme={theme} themeIndex={props.index} />
         </AccordionDetails>
       </Accordion>}
     </Item>

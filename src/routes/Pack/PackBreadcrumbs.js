@@ -6,6 +6,7 @@ import { useLocation } from 'react-router'
 import styles from './styles.module.scss'
 import { connect } from 'react-redux'
 import { componentsPropTypes, uuidRegex } from '../../consts'
+import { mapPackState } from '../../utils'
 
 PackBreadcrumbs.propTypes = {
   pack: componentsPropTypes.pack

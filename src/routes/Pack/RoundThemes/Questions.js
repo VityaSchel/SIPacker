@@ -7,31 +7,23 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import { MdImage, MdDone, MdMusicNote, MdVideocam, MdAdd } from 'react-icons/md'
-import { useHistory } from 'react-router'
+import { useHistory, useRouteMatch } from 'react-router'
 import Button from '@mui/material/Button'
+import { connect } from 'react-redux'
+import { mapPackState } from '../../../utils'
+
 
 ItemContent.propTypes = {
-  theme: PropTypes.object
+  themeIndex: PropTypes.number,
+  theme: PropTypes.object,
+  pack: PropTypes.object
 }
 
-function ItemContent() {
+function ItemContent(props) {
   const history = useHistory()
+  const route = useRouteMatch()
 
-  const sortedQuestions = [
-    {
-      price: 100,
-      text: 'Сколько у вити чела игр в сторах?',
-      answer: '3',
-      type: 'simple'
-    },
-    {
-      price: 200,
-      image: 'ihskdab,jsakjd',
-      answer: 'Stigfinnare',
-      type: 'auction'
-    },
-  ].sort((a,b) => a.price - b.price)
-  //props.theme.questions
+  const sortedQuestions = props.theme.questions.sort((a,b) => a.price - b.price)
 
   const questionType = type => {
     return {
@@ -44,7 +36,7 @@ function ItemContent() {
   }
 
   const handleOpenQuestion = price => () => {
-    history.push(`/pack/${props.pack.uuid}`)
+    history.push(`${route.url}/themes/${props.themeIndex+1}/questions/${price}`)
   }
 
   return (
@@ -98,4 +90,4 @@ function Cell(props) {
   )
 }
 
-export default connect(mapPackState)
+export default connect(mapPackState)(ItemContent)

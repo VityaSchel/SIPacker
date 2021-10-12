@@ -15,4 +15,4 @@ export const formatDate = dateTime => new Intl.DateTimeFormat('ru-RU', {
   seconds: 'numeric'
 }).format(dateTime)
 
-export const mapPackState = mapPackState
+export const mapPackState = state => ({ pack: state.pack })

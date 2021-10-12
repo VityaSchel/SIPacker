@@ -9,6 +9,7 @@ import NotFound404 from 'components/NotFound404'
 import RoundTable from './RoundTable'
 import ThemesEditing from './ThemesEditing'
 import EditingToolbar from 'components/EditingToolbar'
+import { mapPackState } from '../../../utils'
 
 RoundThemes.propTypes = {
   pack: PropTypes.object,
@@ -38,7 +39,18 @@ function RoundThemes(props) {
 
   const handleAddTheme = async name => {
     let roundThemes = [...themes]
-    roundThemes.push({ name, id: Date.now(), questions: [] })
+    roundThemes.push({ name, id: Date.now(), questions: [{
+      price: 100,
+      text: 'Сколько у вити чела игр в сторах?',
+      answer: '3',
+      type: 'simple'
+    },
+    {
+      price: 200,
+      image: 'ihskdab,jsakjd',
+      answer: 'Stigfinnare',
+      type: 'auction'
+    }] })
     updateThemes(roundThemes)
   }
 
