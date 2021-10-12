@@ -22,6 +22,7 @@ export default function ThemesEditing(props) {
         draggableProps={{
           setExpand: props.setExpand,
           handleRemoveTheme: props.handleRemoveTheme,
+          handleChangeThemeName: props.handleChangeThemeName,
           expandId: props.expand
         }}
         noItemsLabel='Еще нет созданных тем'

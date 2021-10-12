@@ -1,13 +1,16 @@
+import React from 'react'
 import PropTypes from 'prop-types'
+import styles from './styles.module.scss'
+import ItemContent from './Questions'
 import Item from 'components/ItemsList/Item'
 import { connect } from 'react-redux'
-import Typography from '@mui/material/Typography'
 import { MdDragHandle, MdDelete, MdExpandMore } from 'react-icons/md'
 import IconButton from '@mui/material/IconButton'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
-import styles from './styles.module.scss'
+import TextField from '@mui/material/TextField'
+import ClickIsolator from 'components/ClickIsolator'
 
 Theme.propTypes = {
   item: PropTypes.object,
@@ -17,16 +20,24 @@ Theme.propTypes = {
   setExpand: PropTypes.func,
   draggableId: PropTypes.string,
   handleRemoveTheme: PropTypes.func,
+  handleChangeThemeName: PropTypes.string,
 }
 
 function Theme(props) {
+  const theme = props.item
+  const expand = props.draggableId === props.expandId
+  const [themeName, setThemeName] = React.useState(theme.name)
+
   const handleDelete = e => {
     e.stopPropagation()
     props.handleRemoveTheme(props.index)
   }
 
-  const theme = props.item
-  const expand = props.draggableId === props.expandId
+  const handleChangeThemeName = e => {
+    const newThemeName = e.target.value
+    setThemeName(newThemeName)
+    props.handleChangeThemeName(props.index, newThemeName)
+  }
 
   return (
     <Item
@@ -42,9 +53,16 @@ function Theme(props) {
         >
           <div className={styles.toolbar}>
             <Handle provided={provided} />
-            <Typography className={styles.name} variant='body2' color='text.secondary'>
-              {theme.name}
-            </Typography>
+            <ClickIsolator className={styles.name}>
+              <TextField
+                value={themeName}
+                label='Название раунда'
+                variant='outlined'
+                onChange={handleChangeThemeName}
+                size='small'
+                fullWidth
+              />
+            </ClickIsolator>
             <IconButton
               onClick={handleDelete}
               className={styles.delete}
@@ -54,7 +72,7 @@ function Theme(props) {
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <ItemContent {...props} />
+          <ItemContent theme={props.item} />
         </AccordionDetails>
       </Accordion>}
     </Item>
@@ -72,15 +90,5 @@ function Handle(props) {
     </div>
   )
 }
-
-ItemContent.propTypes = {
-  theme: PropTypes.object
-}
-function ItemContent(props) {
-  return (
-    <span>1</span>
-  )
-}
-
 
 export default connect(state => ({ pack: state.pack }))(Theme)

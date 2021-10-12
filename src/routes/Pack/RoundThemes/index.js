@@ -64,6 +64,12 @@ function RoundThemes(props) {
     updateThemes(roundThemes)
   }
 
+  const handleChangeThemeName = (index, newName) => {
+    let roundThemes = [...themes]
+    roundThemes[index].name = newName
+    updateThemes(roundThemes)
+  }
+
   React.useEffect(() => {
     round && setThemes(round.themes)
   }, [])
@@ -92,6 +98,7 @@ function RoundThemes(props) {
               setEditing={setEditing}
               handleAddTheme={handleAddTheme}
               handleRemoveTheme={handleRemoveTheme}
+              handleChangeThemeName={handleChangeThemeName}
             />
           }
         </div>
