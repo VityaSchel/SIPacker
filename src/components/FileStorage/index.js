@@ -8,7 +8,7 @@ import { MdClose } from 'react-icons/md'
 import { emptyFunc } from '../../utils'
 import Filters from './Filters'
 import { loadLocalPacks } from 'localStorage/localPacks'
-import { getPacksIDs } from 'localStorage/fileStorage'
+import { getDeletedPacks } from 'localStorage/fileStorage'
 import List from './List'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
@@ -43,19 +43,28 @@ const FileStorage = React.forwardRef((props, ref) => {
 
   const loadPacks = async () => {
     const packs = await loadLocalPacks()
-    const deletedPacks = await getPacksIDs()
-    if(deletedPacks.length > packs.length) packs.push(null)
+    const deletedPacks = await getDeletedPacks()
+    if(deletedPacks.length) packs.push(null)
     setPacks(packs)
     setCheckboxes(
       packs.map(
-        pack => (
-          pack === null ? { uuid: null, checked: false } : { uuid: pack.uuid, checked: true }
-        )
+        pack => {
+          const deletedPack = pack === null
+          const packUUID = deletedPack ? null : pack.uuid
+          const checked = checkboxes.find(({ uuid }) => uuid === packUUID)?.checked
+          return (
+            {
+              uuid: packUUID,
+              checked: checked !== undefined
+                ? Boolean(checked)
+                : !deletedPack
+            }
+          )
+        }
       )
     )
   }
 
-  console.log(checkboxes);
   const filteredPacks = Object.fromEntries(checkboxes
     .filter(cb => cb.checked)
     .map(checkedPack => ([checkedPack.uuid,
@@ -65,7 +74,6 @@ const FileStorage = React.forwardRef((props, ref) => {
     ])
     )
   )
-  console.log(filteredPacks);
 
   return (
     <Dialog

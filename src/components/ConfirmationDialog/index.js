@@ -19,6 +19,7 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
 
   const handleAction = result => {
     setOpen(false)
+    console.log(result, checkboxValue)
     okCallback({ confirmed: result, checked: checkboxValue })
   }
 
@@ -49,7 +50,7 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
             <Checkbox
               defaultChecked
               value={checkboxValue}
-              onChange={e => setCheckboxValue(e.target.value)}
+              onChange={e => setCheckboxValue(e.target.checked)}
             />
           } label={checkboxText} />}
         </DialogContentText>

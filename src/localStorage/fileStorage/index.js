@@ -14,7 +14,7 @@ export async function getPacksIDs() {
   return packIDs.map(({ packUUID }) => packUUID)
 }
 
-async function getDeletedPacks() {
+export async function getDeletedPacks() {
   let existingPacks = await loadLocalPacks()
   existingPacks = existingPacks.map(({ uuid }) => uuid)
   const allPacks = await getPacksIDs()
