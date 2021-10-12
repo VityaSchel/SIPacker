@@ -9,6 +9,7 @@ import { saveLocalPack } from 'localStorage/localPacks'
 import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
 import SavingDialog from './SavingDialog'
 import { mapPackState } from '../../../utils'
+import { root, rounds, question } from '../pathRegexps.json'
 
 PackToolbar.propTypes = {
   pack: componentsPropTypes.pack
@@ -34,19 +35,28 @@ function PackToolbar(props) {
     history.push(`/pack/${pack.uuid}`)
   }
 
+  const handleDeleteQuestion = async () => {
+
+  }
+
   const buttons = props.pack && {
-    '^/?$': [
+    [root]: [
       [handleSave, <MdFileDownload key='download' />],
       [`/pack/${props.pack.uuid}/settings`, <MdSettings key='settings' />],
       [handleDeletePack, <MdDelete key='delete' />, styles.delete]
     ],
-    '^/rounds/\\d/?$': [
+    [rounds]: [
       [handleDeleteRound, <MdDelete key='delete' />, styles.delete]
+    ],
+    [question]: [
+      [handleDeleteQuestion, <MdDelete key='delete' />, styles.delete]
     ]
   }
 
   const path = pathname.split(`/pack/${props.pack.uuid}`, 2)[1]
-  const pageToolbar = Object.entries(buttons).find(([regex, toolbar]) => new RegExp(regex).test(path) && toolbar)
+  const pageToolbar = Object.entries(buttons).find(
+    ([regex, toolbar]) => new RegExp(`^${regex}/?$`).test(path) && toolbar
+  )
 
   return (
     <>

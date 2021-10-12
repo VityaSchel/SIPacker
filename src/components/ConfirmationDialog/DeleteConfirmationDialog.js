@@ -5,7 +5,6 @@ import { deleteFilesOfPack } from 'localStorage/fileStorage'
 import { deleteLocalPack } from 'localStorage/localPacks'
 import { useHistory } from 'react-router-dom'
 
-let callback
 const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
   const confirmationDialogRef = React.useRef()
   const history = useHistory()
@@ -26,13 +25,10 @@ const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
       return confirmed
     },
 
-    confirmRoundDeletion() {
-      return new Promise(resolve => {
-        callback = resolve
-        confirmationDialogRef.current
-          .open('Вы уверены, что хотите удалить раунд? Все вопросы также будут удалены.', 'Удалить')
-          .then(callback)
-      })
+    async confirmRoundDeletion() {
+      const { confirmed } = await confirmationDialogRef.current
+        .open('Вы уверены, что хотите удалить раунд? Все вопросы также будут удалены.', 'Удалить')
+      return confirmed
     }
   }))
 

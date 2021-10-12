@@ -19,7 +19,6 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
 
   const handleAction = result => {
     setOpen(false)
-    console.log(result, checkboxValue)
     okCallback({ confirmed: result, checked: checkboxValue })
   }
 
