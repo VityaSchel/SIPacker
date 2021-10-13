@@ -8,7 +8,7 @@
 
     .formGroups {
       display: flex;
-      gap: 20px;
+      gap: 50px;
 
       & > * {
         display: flex;
@@ -44,13 +44,20 @@
         }
 
         .item {
+          width: 100%;
           display: flex;
           align-items: center;
-          gap: 5px;
-          padding: 16px;
+          gap: 10px;
 
           .itemType {
             flex: 1;
+            display: flex;
+            align-items: center;
+
+            .spacing {
+              width: 10px;
+              display: block;
+            }
           }
         }
       }

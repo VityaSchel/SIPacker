@@ -6,8 +6,9 @@ import {
   FormikCheckbox
 } from 'components/FormikField'
 import { questionTypes } from '../../../../utils'
-import { questionTypesHint, realPriceHint, bagcatRealPriceTypeHint } from './hints'
+import { questionPriceHint, questionTypesHint, realPriceHint, bagcatRealPriceTypeHint } from './hints'
 import WithHint from './WithHint'
+import Typography from '@mui/material/Typography'
 
 FormFields.propTypes = {
   formik: PropTypes.object,
@@ -26,7 +27,10 @@ export default function FormFields({ formik, submitting }) {
 
   return (
     <div className={styles.formFields}>
-      <FormikTextField name='price' label='Стоимость' {...fieldProps} />
+      <Typography variant='h6'>Информация о вопросе</Typography>
+      <WithHint hint={questionPriceHint}>
+        <FormikTextField name='price' label='Стоимость' {...fieldProps} />
+      </WithHint>
       <WithHint hint={questionTypesHint}>
         <FormikSelect name='type' label='Тип вопроса' options={questionTypes} {...fieldProps} />
       </WithHint>

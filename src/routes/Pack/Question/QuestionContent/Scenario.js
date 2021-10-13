@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
 import Typography from '@mui/material/Typography'
 import ItemsList from 'components/ItemsList'
@@ -8,9 +7,10 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import IconButton from '@mui/material/IconButton'
-import { MdDelete, MdAdd } from 'react-icons/md'
-import Item from 'components/ItemsList/Item'
-import Handle from 'components/ItemsList/Handle'
+import ScenarioEvent from './ScenarioEvent'
+import { MdAdd } from 'react-icons/md'
+import { scenarioHint } from './hints'
+import WithHint from './WithHint'
 
 export default function Scenario({ formik }) {
   const [scenario, setScenario] = React.useState([])
@@ -31,7 +31,7 @@ export default function Scenario({ formik }) {
 
   const handleAddEvent = () => {
     setNewEventValue()
-    setScenario([...scenario, { type: newEventValue }])
+    setScenario([...scenario, { type: newEventValue, duration: 3 }])
   }
 
   const handleDelete = index => {
@@ -40,11 +40,11 @@ export default function Scenario({ formik }) {
     setScenario(newScenario)
   }
 
-  console.log(newEventValue);
-
   return (
     <div className={styles.scenario}>
-      <Typography variant='h6'>Сценарий</Typography>
+      <WithHint hint={scenarioHint}>
+        <Typography variant='h6'>Сценарий</Typography>
+      </WithHint>
       <ItemsList
         droppableId='scenario'
         onDragEnd={onDragEnd}
@@ -52,7 +52,7 @@ export default function Scenario({ formik }) {
         draggableProps={{
           onDelete: handleDelete
         }}
-        noItemsLabel='Еще нет созданных тем'
+        noItemsLabel='Сценарий пуст'
         itemComponent={ScenarioEvent}
       />
       <div className={styles.addEvent}>
@@ -72,46 +72,10 @@ export default function Scenario({ formik }) {
             <MenuItem value='video'>Видео</MenuItem>
           </Select>
         </FormControl>
-        <IconButton onClick={handleAddEvent} disabled={newEventValue === 'none'}>
+        <IconButton onClick={handleAddEvent} disabled={!newEventValue}>
           <MdAdd />
         </IconButton>
       </div>
     </div>
-  )
-}
-
-
-/*
-<AddItem
-  onAdd={() => console.log(1)}
-  inputLabel='Тип события'
-  inputProps={{  }}
-  buttonLabel='Добавить событие'
-  className={styles.addTheme}
-/>
-*/
-
-ScenarioEvent.propTypes = {
-  index: PropTypes.number,
-  item: PropTypes.object,
-  onDelete: PropTypes.func
-}
-function ScenarioEvent(props) {
-  return (
-    <Item
-      index={props.index}
-      draggableId={props.index.toString()}
-    >
-      {(provided) => <div className={styles.item}>
-        <Handle provided={provided} />
-        <Typography variant='body1' className={styles.itemType}>{JSON.stringify(props.item)}</Typography>
-        <IconButton
-          onClick={() => props.onDelete(props.index)}
-          className={styles.delete}
-        >
-          <MdDelete className={styles.delete} />
-        </IconButton>
-      </div>}
-    </Item>
   )
 }

@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import Typography from '@mui/material/Typography'
@@ -15,6 +16,8 @@ ItemsList.propTypes = {
 }
 
 export default function ItemsList(props) {
+  const [itemsMap, setItemsMap] = React.useState({ map: new WeakMap(), length: 0 })
+
   return (
     <DragDropContext onDragEnd={props.onDragEnd}>
       <Droppable droppableId={props.droppableId}>
@@ -24,21 +27,32 @@ export default function ItemsList(props) {
             {...provided.droppableProps}
             className={props.droppableClassName}
           >
-            {props.list.length
-              ? props.list.map((item, i) =>
-                <props.itemComponent
-                  key={props.useIdAsKey ? item.id : i}
-                  index={i}
-                  draggableId={props.useIdAsKey ? item.id : i}
-                  item={item}
-                  {...props.draggableProps}
-                />)
-              : <Typography
-                variant='body1'
-                gutterBottom
-                className={listStyles.noItems}
-              >{props.noItemsLabel}</Typography>
-            }
+            {(() => {
+              const children = props.list.length
+                ? props.list.map((item, i) => {
+                  const oid = object => {
+                    if(!itemsMap.map.has(object)) itemsMap.map.set(object, ++itemsMap.length)
+                    return itemsMap.map.get(object)
+                  }
+
+                  return (
+                    <props.itemComponent
+                      key={props.useIdAsKey ? item.id : oid(item)}
+                      index={i}
+                      draggableId={props.useIdAsKey ? item.id : oid(item)}
+                      item={item}
+                      {...props.draggableProps}
+                    />
+                  )
+                })
+                : <Typography
+                  variant='body1'
+                  gutterBottom
+                  className={listStyles.noItems}
+                >{props.noItemsLabel}</Typography>
+              setItemsMap(itemsMap)
+              return children
+            })()}
             {provided.placeholder}
           </div>
         )}
