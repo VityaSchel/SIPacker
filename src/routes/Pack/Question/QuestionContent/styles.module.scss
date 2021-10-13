@@ -1,0 +1,65 @@
+.container {
+  width: 100%;
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .formGroups {
+      display: flex;
+      gap: 20px;
+
+      & > * {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+        max-width: 400px;
+
+        .hint {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          & > *:nth-child(1) {
+            flex: 1;
+          }
+
+          svg path {
+            stroke: #fff;
+          }
+        }
+
+        .grouped {
+          display: flex;
+          gap: 10px;
+        }
+
+        .addEvent {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .item {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          padding: 16px;
+
+          .itemType {
+            flex: 1;
+          }
+        }
+      }
+    }
+
+    .submit {
+      align-self: flex-start;
+      width: 400px;
+      max-width: 100%;
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { mapPackState } from '../../../utils'
 import NotFound404 from 'components/NotFound404'
+import QuestionContent from './QuestionContent'
 
 Question.propTypes = {
   pack: PropTypes.object,
@@ -30,7 +31,7 @@ function Question(props) {
     notFound !== undefined &&
     notFound
       ? <NotFound404 />
-      : <div>{JSON.stringify(question)}</div>
+      : <QuestionContent data={question} />
   )
 }
 

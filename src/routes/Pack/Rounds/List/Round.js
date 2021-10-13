@@ -5,12 +5,13 @@ import CardContent from '@mui/material/CardContent'
 import CardActionArea from '@mui/material/CardActionArea'
 import { darkTheme } from '../../../../App'
 import { Link } from 'react-router-dom'
-import { MdDragHandle, MdDelete } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Item from 'components/ItemsList/Item'
 import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
 import Typography from '@mui/material/Typography'
+import Handle from 'components/ItemsList/Handle'
 
 Round.propTypes = ItemContent.propTypes = {
   draggableId: PropTypes.string,
@@ -48,18 +49,6 @@ export default function Round(props) {
         </div>
       }
     </Item>
-  )
-}
-
-Handle.propTypes = { provided: PropTypes.object }
-function Handle(props) {
-  return (
-    <div
-      className={styles.handle}
-      {...props.provided.dragHandleProps}
-    >
-      <MdDragHandle />
-    </div>
   )
 }
 

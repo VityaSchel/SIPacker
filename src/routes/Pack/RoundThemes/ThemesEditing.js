@@ -18,6 +18,7 @@ export default function ThemesEditing(props) {
   return (
     <>
       <ItemsList
+        droppableId='themes'
         onDragEnd={props.onDragEnd}
         list={props.themes}
         draggableProps={{

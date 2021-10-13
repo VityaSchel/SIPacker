@@ -16,3 +16,11 @@ export const formatDate = dateTime => new Intl.DateTimeFormat('ru-RU', {
 }).format(dateTime)
 
 export const mapPackState = state => ({ pack: state.pack })
+
+export const questionTypes = {
+  'simple': 'Обычный',
+  'auction': 'Аукцион',
+  'cat': 'С секретом',
+  'bagcat': 'Кот в мешке',
+  'sponsored': 'Без риска'
+}

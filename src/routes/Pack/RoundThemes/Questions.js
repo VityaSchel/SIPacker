@@ -10,7 +10,7 @@ import { MdImage, MdDone, MdMusicNote, MdVideocam, MdAdd } from 'react-icons/md'
 import { useHistory, useRouteMatch } from 'react-router'
 import Button from '@mui/material/Button'
 import { connect } from 'react-redux'
-import { mapPackState } from '../../../utils'
+import { mapPackState, questionTypes } from '../../../utils'
 
 
 ItemContent.propTypes = {
@@ -25,15 +25,7 @@ function ItemContent(props) {
 
   const sortedQuestions = props.theme.questions.sort((a,b) => a.price - b.price)
 
-  const questionType = type => {
-    return {
-      'simple': 'Обычный',
-      'auction': 'Аукцион',
-      'cat': 'С секретом',
-      'bagcat': 'Кот в мешке',
-      'sponsored': 'Без риска'
-    }[type] || type
-  }
+  const questionType = type => questionTypes[type] || type
 
   const handleOpenQuestion = price => () => {
     history.push(`${route.url}/themes/${props.themeIndex+1}/questions/${price}`)

@@ -17,7 +17,7 @@ ItemsList.propTypes = {
 export default function ItemsList(props) {
   return (
     <DragDropContext onDragEnd={props.onDragEnd}>
-      <Droppable droppableId='themes'>
+      <Droppable droppableId={props.droppableId}>
         {provided => (
           <div
             ref={provided.innerRef}

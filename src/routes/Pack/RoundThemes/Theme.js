@@ -4,7 +4,7 @@ import styles from './styles.module.scss'
 import ItemContent from './Questions'
 import Item from 'components/ItemsList/Item'
 import { connect } from 'react-redux'
-import { MdDragHandle, MdDelete, MdExpandMore } from 'react-icons/md'
+import { MdDelete, MdExpandMore } from 'react-icons/md'
 import IconButton from '@mui/material/IconButton'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -12,6 +12,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import TextField from '@mui/material/TextField'
 import ClickIsolator from 'components/ClickIsolator'
 import { mapPackState } from '../../../utils'
+import Handle from 'components/ItemsList/Handle'
 
 Theme.propTypes = {
   item: PropTypes.object,
@@ -77,18 +78,6 @@ function Theme(props) {
         </AccordionDetails>
       </Accordion>}
     </Item>
-  )
-}
-
-Handle.propTypes = { provided: PropTypes.object }
-function Handle(props) {
-  return (
-    <div
-      className={styles.handle}
-      {...props.provided.dragHandleProps}
-    >
-      <MdDragHandle />
-    </div>
   )
 }
 

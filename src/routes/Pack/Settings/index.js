@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styles from './styles.module.scss'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { componentsPropTypes, format } from '../../../consts'
@@ -13,7 +14,6 @@ import {
 } from 'components/FormikField'
 import { connect } from 'react-redux'
 import Button from '@mui/material/Button'
-import styles from './styles.module.scss'
 import { useBeforeunload } from 'react-beforeunload'
 import { useHistory, Prompt } from 'react-router-dom'
 import { saveLocalPack } from 'localStorage/localPacks'
@@ -149,7 +149,7 @@ function Settings(props) {
       </form>
       <Prompt
         when={Object.keys(formik.touched).length && !submitting}
-        message="Вы хотите покинуть страницу, не сохраняя изменений?"
+        message='Вы хотите покинуть страницу, не сохраняя изменений?'
       />
       <div className={styles.info}>
         <ul>
