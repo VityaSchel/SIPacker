@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
@@ -8,6 +9,9 @@ import InputLabel from '@mui/material/InputLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
+import Slider from '@mui/material/Slider'
+import styles from './styles.module.scss'
+import ImageField from 'components/ImageField'
 
 const formikMuiErrors = (formik, name) => ({
   error: formik.touched[name] && Boolean(formik.errors[name]),
@@ -17,6 +21,7 @@ const formikMuiErrors = (formik, name) => ({
 FormikTextField.propTypes =
 FormikAutocomplete.propTypes =
 FormikCheckbox.propTypes =
+FormikImageField.propTypes =
 {
   name: PropTypes.string,
   formik: PropTypes.object
@@ -25,11 +30,16 @@ FormikCheckbox.propTypes =
 export function FormikTextField(props) {
   const { name, formik, ...fieldProps } = props
 
+  const handleChange = e => {
+    formik.handleChange(e)
+    formik.setTouched({ ...formik.touched, [name]: true })
+  }
+
   return (
     <TextField
       name={name}
       value={formik.values[name]}
-      onChange={formik.handleChange}
+      onChange={handleChange}
       {...formikMuiErrors(formik, name)}
       {...fieldProps}
     />
@@ -39,24 +49,37 @@ export function FormikTextField(props) {
 
 export function FormikAutocomplete(props) {
   const { formik, name, ...field } = props
-  const handleChange = (_, value) => formik.setFieldValue(name, value.join(','))
+
+  const handleChange = (_, value) => {
+    formik.setFieldValue(name, value.map(v => v.replaceAll(',', '') || '.').join(','))
+    formik.setTouched({ ...formik.touched, [name]: true })
+  }
+
+  let value = formik.values[name].split(',')
+  if(value.length === 1 && value[0] === '') value = []
+
+  const handleKeyDown = e => {
+    if(e.key === 'Enter') {
+      e.preventDefault()
+    }
+  }
 
   return (
     <Autocomplete
-      {...props}
       {...field}
       multiple
       options={[]}
-      getOptionLabel={(option) => option.replaceAll(',', '') || '.'}
+      value={value}
+      getOptionLabel={(option) => option}
       freeSolo clearOnBlur={true}
       onChange={handleChange}
-      onBlur={() => formik.setTouched({ [name]: true })}
       renderInput={props => (
         <TextField
           {...field}
           {...props}
           {...formikMuiErrors(formik, name)}
           placeholder='Нажмите Enter, чтобы добавить'
+          onKeyDown={handleKeyDown}
         />
       )}
     />
@@ -68,6 +91,11 @@ export function FormikSelect(props) {
   const { formik, name, options, ...field } = props
   const error = { error: formik.touched[name] && Boolean(formik.errors[name]) }
 
+  const handleChange = e => {
+    formik.handleChange(e)
+    formik.setTouched({ ...formik.touched, [name]: true })
+  }
+
   return (
     <FormControl fullWidth>
       <InputLabel {...error}>{props.label}</InputLabel>
@@ -75,7 +103,7 @@ export function FormikSelect(props) {
         {...field}
         name={name}
         value={formik.values[name]}
-        onChange={formik.handleChange}
+        onChange={handleChange}
         {...error}
       >
         {Object.entries(options).map(([id, label]) => <MenuItem value={id} key={id}>{label}</MenuItem>)}
@@ -88,16 +116,76 @@ export function FormikSelect(props) {
 export function FormikCheckbox(props) {
   const { formik, name, ...field } = props
 
+  const handleChange = e => {
+    formik.handleChange(e)
+    formik.setTouched({ ...formik.touched, [name]: true })
+  }
+
   return (
     <FormControlLabel
       control={
         <Checkbox
           name={name}
-          value={formik.values[name]}
-          onChange={formik.handleChange}
+          checked={formik.values[name]}
+          onChange={handleChange}
         />
       }
       {...field}
+    />
+  )
+}
+
+FormikSlider.propTypes = {
+  ...FormikTextField.propTypes,
+  defaultValue: PropTypes.number,
+}
+export function FormikSlider(props) {
+  const { formik, name, ...field } = props
+  const [value, setValue] = React.useState(formik.values[name])
+
+  const handleChange = e => {
+    setValue(e.target.value)
+    formik.setTouched({ ...formik.touched, [name]: true })
+  }
+
+  React.useEffect(() => formik.setFieldValue(name, value), [value])
+
+  return (
+    <div className={styles.slider}>
+      <span>{field.label}</span>
+      <Slider
+        name={name}
+        value={value}
+        onChange={handleChange}
+        valueLabelDisplay='auto'
+        marks
+        {...field}
+      />
+    </div>
+  )
+}
+
+export function FormikImageField(props) {
+  const { formik, name, ...field } = props
+
+  const handleChange = fileURI => {
+    formik.setFieldValue(name, fileURI)
+    let touched
+    if(fileURI !== undefined) {
+      touched = { ...formik.touched, [name]: true }
+    } else {
+      const formikTouched = { ...formik.touched }
+      delete formikTouched[name]
+      touched = formikTouched
+    }
+    formik.setTouched(touched)
+  }
+
+  return (
+    <ImageField
+      {...field}
+      value={formik.values[name]}
+      onChange={handleChange}
     />
   )
 }

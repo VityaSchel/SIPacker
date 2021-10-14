@@ -18,7 +18,7 @@ export default function Navigation() {
   const [infoShown, setInfoShown] = React.useState(false)
 
   return (
-    <AppBar position='static'>
+    <AppBar position='static' style={{ zIndex: 4 }}>
       <Toolbar color='primary'>
         <div className={styles.logoContainer}>
           <Link to='/' className={styles.logo}>
@@ -59,6 +59,16 @@ export default function Navigation() {
               <p>
                 Большая благодарность Владимиру Хилю за то, что не игнорил мои вопросы во время разработки этого сайта
                 (привет разработчикам мафии онлайн и мафии го)
+              </p>
+              <p>
+                Также хочу пожелать удачи и легкой
+                службы <a
+                  href='https://vk.com/id245297843'
+                  target='_blank'
+                  rel="noreferrer"
+                  className='onHover'
+                >Роме Кучину</a>, который своим комментарием натолкнул меня на идею создания этого сайта, но не может
+                работать со мной по причине Я в армии.
               </p>
             </DialogContentText>
           </DialogContent>

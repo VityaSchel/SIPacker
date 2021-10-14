@@ -1,0 +1,6 @@
+{
+  "root": "",
+  "rounds": "/rounds/\\d+",
+  "settings": "/settings",
+  "question": "/rounds/\\d+/themes/\\d+/questions/\\d+"
+}

@@ -1,85 +1,52 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
 import PackBreadcrumbs from './PackBreadcrumbs'
-import Main from './Main'
-import Settings from './Settings/'
 import { connect } from 'react-redux'
 import { componentsPropTypes } from '../../consts'
-import { Link, useHistory } from 'react-router-dom'
-import IconButton from '@mui/material/IconButton'
-import { MdSettings, MdDelete, MdFileDownload } from 'react-icons/md'
-import { deleteLocalPack } from 'localStorage/localPacks'
-import ConfirmationDialog from 'components/ConfirmationDialog'
-import SavingDialog from './SavingDialog'
+import PackToolbar from './PackToolbar/'
+import Rounds from './Rounds'
+import Settings from './Settings/'
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import RoundThemes from './RoundThemes'
+import NotFound404 from 'components/NotFound404'
+import Question from './Question'
+import { mapPackState } from '../../utils'
 
-_PackPageContainer.propTypes = {
+PackPageContainer.propTypes = {
   children: PropTypes.node,
-  pack: PropTypes.shape(componentsPropTypes.pack),
+  pack: componentsPropTypes.pack,
   toolbar: PropTypes.string
 }
 
-function _PackPageContainer(props) {
-  const [confirmationDialogProps, setConfirmationDialogProps] = React.useState({})
-  const confirmationDialogRef = React.useRef()
-  const savingDialogRef = React.useRef()
-  const history = useHistory()
-
-  const handleSave = () => savingDialogRef.current.save(props.pack)
-  const handleDelete = async () => {
-    setConfirmationDialogProps({
-      title: '',
-      description: 'Вы уверены, что хотите удалить пак? Он будет удален безвозвратно'
-    })
-    const isConfirmed = await confirmationDialogRef.current.open()
-    if(isConfirmed) {
-      deleteLocalPack(props.pack.uuid)
-      history.push('/')
-    }
-  }
-
-  const buttons = props.pack && {
-    main: [
-      [handleSave, <MdFileDownload key='download' />],
-      [`${props.pack.uuid}/settings`, <MdSettings key='settings' />],
-      [handleDelete, <MdDelete key='delete' />]
-    ]
-  }
+function PackPageContainer(props) {
+  const { path } = useRouteMatch()
 
   return (
-    props.pack &&
-    <div className={styles.container}>
-      <div className={styles.toolbar}>
-        <PackBreadcrumbs />
-        <div className={styles.buttons}>
-          {buttons[props.toolbar] && buttons[props.toolbar].map(([action, icon], i) => <>
-            {
-              typeof action === 'string'
-                ? <Link to={action} key={i}>
-                  <IconButton>
-                    {icon}
-                  </IconButton>
-                </Link>
-                : <IconButton onClick={action}>
-                  {icon}
-                </IconButton>
-            }
-          </>)}
+    props.pack
+    && (props.pack === 'notFound'
+      ? <NotFound404 />
+      : <div className={styles.container}>
+        <div className={styles.toolbar}>
+          <PackBreadcrumbs />
+          <PackToolbar />
         </div>
-      </div>
-      <ConfirmationDialog ref={confirmationDialogRef} {...confirmationDialogProps} />
-      <SavingDialog ref={savingDialogRef} />
-      {props.children}
-    </div>
+        <Switch>
+          <Route exact path={path}>
+            <Rounds />
+          </Route>
+          <Route path={`${path}/settings`}>
+            <Settings />
+          </Route>
+          <Route path={`${path}/rounds/:roundIndex/themes/:themeIndex/questions/:questionPrice`}>
+            <Question />
+          </Route>
+          <Route path={`${path}/rounds/:roundIndex`}>
+            <RoundThemes />
+          </Route>
+          <Route path='*'><NotFound404 /></Route>
+        </Switch>
+      </div>)
   )
 }
 
-export const PackPageContainer = connect(state => ({ pack: state.pack }))(_PackPageContainer)
-
-export function PackPageMain() {
-  return (<PackPageContainer toolbar='main'><Main /></PackPageContainer>)
-}
-
-export function PackPageSettings() {
-  return (<PackPageContainer><Settings /></PackPageContainer>)
-}
+export default connect(mapPackState)(PackPageContainer)

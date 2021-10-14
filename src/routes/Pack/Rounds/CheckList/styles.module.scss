@@ -1,0 +1,106 @@
+@import '../../../../consts.scss';
+
+.container {
+  max-width: 300px;
+  flex: 1;
+
+  .list {
+    line-height: 2;
+    padding-inline-start: 0;
+    list-style-type: none;
+    position: relative;
+
+    li {
+      $liColor: #9e9e9e;
+      color: $liColor;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      &.done {
+        color: scale-color($liColor, $lightness: -50%);
+        text-decoration: line-through;
+        $size: '0.8';
+        list-style-image: url("data:image/svg+xml,%3Csvg fill='%231a863a' viewBox='0 0 24 24' height='#{$size}em' width='#{$size}em' \
+xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z'%3E%3C/path%3E%3C/sv\
+g%3E");
+      }
+
+      .marker {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-self: stretch;
+        $bulletSize: 7px;
+        width: $bulletSize;
+
+        .lineBefore,
+        .lineAfter {
+          display: block;
+          background-color: $liColor;
+          width: 1px;
+          height: 15px;
+          flex: 1;
+
+          &.hidden {
+            background-color: transparent;
+          }
+        }
+
+        .bullet {
+          margin: 4px 0;
+          border: 1px solid $liColor;
+          display: block;
+          border-radius: 50%;
+          width: $bulletSize;
+          height: $bulletSize;
+        }
+      }
+
+      .link {
+        color: inherit;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 100ms;
+
+        &:hover {
+          color: $materialColor;
+        }
+      }
+    }
+
+    .caption {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      $color: #777;
+      margin: 10px 0;
+
+      span.line {
+        min-width: 25px;
+        flex: 1;
+        height: 1px;
+        background-color: $color;
+      }
+
+      .text {
+        margin: 0 10px;
+        color: scale-color($color, $lightness: 10%);
+      }
+    }
+  }
+
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+
+    .progressBar {
+      flex: 1;
+      border-radius: 999px;
+    }
+  }
+}

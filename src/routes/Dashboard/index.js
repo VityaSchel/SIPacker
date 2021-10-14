@@ -2,12 +2,10 @@ import React from 'react'
 import styles from './styles.module.scss'
 import PropTypes from 'prop-types'
 import { componentsPropTypes } from '../../consts.js'
-import cx from 'classnames'
-import { BsPlus } from 'react-icons/bs'
-import { MdFileUpload } from 'react-icons/md'
-import Skeleton from '@mui/material/Skeleton'
+import { Create, Upload, Loading, Pack } from './packTypes'
 import { Link } from 'react-router-dom'
-import { loadLocalPacks, loadLocalPack } from '../../localStorage/localPacks'
+import { loadLocalPacks } from '../../localStorage/localPacks'
+import { connect } from 'react-redux'
 
 export default function Dashboard() {
   return (
@@ -15,88 +13,62 @@ export default function Dashboard() {
   )
 }
 
-function LocalPacks() {
+export const DashboardContext = React.createContext({})
+export const LocalPacks = connect(state => ({ dashboard: state.dashboard }))(props => {
   const [savedLocalPacks, setSavedLocalPacks] = React.useState()
 
-  React.useEffect(() => {
-    const packsUUID = loadLocalPacks()
+  const loadPacks = async () => {
+    const packsUUID = await loadLocalPacks()
     const packs = packsUUID
-      .map(uuid => loadLocalPack(uuid))
       .sort((a,b) => a.creationTime - b.creationTime)
     setSavedLocalPacks(packs)
-  }, [])
+  }
+
+  React.useEffect(() => loadPacks(), [])
+
+  const contextActions = {
+    reloadPacks: () => loadPacks()
+  }
 
   return (
-    <div className={styles.packsList}>
-      <PackBase type='create' />
-      <PackBase type='upload' />
-      { savedLocalPacks
-        ? savedLocalPacks.map(pack => <PackBase type='pack' key={pack.uuid} pack={pack} />)
-        : <><PackBase type='loading' /><PackBase type='loading' /><PackBase type='loading' /></>
-      }
+    <div>
+      <DashboardContext.Provider value={contextActions}>
+        <div className={styles.packsList}>
+          <PackBase type='create' />
+          <PackBase type='upload' reloadPacks={loadPacks} />
+          { props.dashboard?.uploading?.reverse().map(({ name }, i) => <PackBase type='loading' name={name} key={i} />) }
+          { savedLocalPacks
+            ? savedLocalPacks.map(pack => <PackBase type='pack' key={pack.uuid} pack={pack} />)
+            : new Array(5).fill().map((_, i) => <PackBase type='loading' key={i} />)
+          }
+        </div>
+      </DashboardContext.Provider>
     </div>
   )
-}
+})
 
-PackBase.propTypes = PackContainer.propTypes = {
+PackBase.propTypes = PackSwitch.propTypes = {
   type: PropTypes.oneOf(['create', 'upload', 'pack', 'loading']),
-  pack: PropTypes.shape(componentsPropTypes.pack)
+  pack: PropTypes.shape(componentsPropTypes.pack),
+  name: PropTypes.string,
+  reloadPacks: PropTypes.func
 }
 
 function PackBase(props) {
   return (
-    props.type === 'loading'
-      ? <PackContainer {...props} />
-      : <Link to={props.type === 'pack' ? `/pack/${props.pack.uuid}` : `${props.type}`}><PackContainer {...props} /></Link>
+    ['loading', 'upload'].includes(props.type)
+      ? <PackSwitch {...props} />
+      : <Link to={props.type === 'pack' ? `/pack/${props.pack.uuid}` : `${props.type}`}><PackSwitch {...props} /></Link>
   )
 }
 
-function PackContainer(props) {
+function PackSwitch(props) {
   return (
-    <div className={cx(
-      styles.packBase,
-      {
-        [styles.newPack]: ['create', 'upload'].includes(props.type),
-        [styles.loading]: props.type === 'loading'
-      }
-    )}>
-      {
-        {
-          'create': <span><BsPlus /> Создать новый пак</span>,
-          'upload': <span><MdFileUpload /> Загрузить файл пака</span>,
-          'loading': <Skeleton variant='rectangular' width='100%' height='100%' />,
-          'pack': <Pack pack={props.pack} />
-        }[props.type]
-      }
-    </div>
-  )
-}
-
-Pack.propTypes = { pack: PropTypes.shape(componentsPropTypes.pack) }
-function Pack(props) {
-  const creationTime = new Intl.DateTimeFormat('ru-RU', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    seconds: 'numeric'
-  }).format(new Date(props.pack.creationTime))
-
-  return (
-    <div className={styles.pack}>
-      <PackImage src={props.pack.thumbnail} />
-      <div className={styles.info}>
-        <span className={styles.name}>{props.pack.name}</span>
-        <span className={styles.time}>Создано: {creationTime}</span>
-      </div>
-    </div>
-  )
-}
-
-PackImage.propTypes = { src: componentsPropTypes.pack.thumbnail }
-function PackImage() {
-  return (
-    <img src='' className={styles.thumbnail} />
+    {
+      'create': <Create />,
+      'upload': <Upload reloadPacks={props.reloadPacks} />,
+      'loading': <Loading name={props.name} />,
+      'pack': <Pack pack={props.pack} />
+    }[props.type]
   )
 }

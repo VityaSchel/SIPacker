@@ -1,5 +1,5 @@
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Switch,
   Route
 } from 'react-router-dom'
@@ -7,13 +7,16 @@ import Dashboard from './routes/Dashboard'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import Navigation from './components/Navigation/index.js'
 import NewPack from './routes/NewPack'
-import { PackPageMain, PackPageSettings } from './routes/Pack'
+import Pack from './routes/Pack'
 import sipackerStore from './reducers'
 import { Provider } from 'react-redux'
 import Container from './components/Container'
 import 'dayjs/locale/ru'
+import { history } from './utils'
+import NotFound404 from 'components/NotFound404'
+import ContextMenuProvider from 'components/ContextMenu'
 
-const darkTheme = createTheme({
+export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
@@ -26,25 +29,25 @@ export default function App() {
   return (
     <Provider store={sipackerStore}>
       <ThemeProvider theme={darkTheme}>
-        <Router>
-          <Container>
-            <Navigation />
-            <Switch>
-              <Route path='/create'>
-                <NewPack />
-              </Route>
-              <Route path='/pack/:packUUID/settings'>
-                <PackPageSettings />
-              </Route>
-              <Route path='/pack/:packUUID/'>
-                <PackPageMain />
-              </Route>
-              <Route path='/'>
-                <Dashboard />
-              </Route>
-            </Switch>
-          </Container>
-        </Router>
+        <BrowserRouter history={history} basename={process.env.REACT_APP_PREFIX}>
+          <ContextMenuProvider>
+            <Container>
+              <Navigation />
+              <Switch>
+                <Route exact path='/'>
+                  <Dashboard />
+                </Route>
+                <Route path='/create'>
+                  <NewPack />
+                </Route>
+                <Route path={['/pack/:packUUID', '/pack/:packUUID/*']}>
+                  <Pack />
+                </Route>
+                <Route path='*'><NotFound404 /></Route>
+              </Switch>
+            </Container>
+          </ContextMenuProvider>
+        </BrowserRouter>
       </ThemeProvider>
     </Provider>
   )
