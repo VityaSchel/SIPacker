@@ -17,9 +17,9 @@ import Button from '@mui/material/Button'
 import { useBeforeunload } from 'react-beforeunload'
 import { useHistory, Prompt } from 'react-router-dom'
 import { saveLocalPack } from 'localStorage/localPacks'
-import { mapPackState } from '../../../utils'
+import { initValues, mapPackState } from '../../../utils'
 
-const schema = {
+const validationSchema = yup.object({
   logo: yup
     .string('Добавьте логотип пака'),
   name: yup
@@ -46,8 +46,7 @@ const schema = {
     .required('Заполните поле язык'),
   over18: yup
     .bool('Введите ограничения пака')
-}
-const validationSchema = yup.object(schema)
+})
 
 Settings.propTypes = {
   pack: PropTypes.shape(componentsPropTypes),
@@ -55,14 +54,15 @@ Settings.propTypes = {
 }
 
 function Settings(props) {
-  const initialValues = {}
-  Object.keys(schema).forEach(key => initialValues[key] = props.pack[key] || '')
   const [submitting, setSubmitting] = React.useState(false)
   const history = useHistory()
+  const initialValues = initValues(validationSchema, props.pack)
 
   const formik = useFormik({
     initialValues,
-    validationSchema: validationSchema,
+    validationSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: async (values) => {
       setSubmitting(true)
       let pack = { ...props.pack, ...values }

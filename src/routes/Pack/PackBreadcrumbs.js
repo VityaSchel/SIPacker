@@ -28,7 +28,10 @@ function PackBreadcrumbs(props) {
       settings: { to: `/pack/${props.pack.uuid}/settings`, name: 'Настройки' },
       rounds: { to: `/pack/${props.pack.uuid}/rounds/${parts[2]}`, name: `Раунд ${parts[2]}` },
       theme: { name: `Тема ${parts[4]}` },
-      questions: { to: `/pack/${props.pack.uuid}/rounds/${parts[2]}/themes/${parts[4]}/questions/${parts[6]}`, name: `Вопрос за ${parts[6]}` }
+      questions: {
+        to: `/pack/${props.pack.uuid}/rounds/${parts[2]}/themes/${parts[4]}/questions/${parts[6]}`,
+        name: parts[6] === 'add' ? 'Новый вопрос' : `Вопрос за ${parts[6]}`
+      }
     }
 
     const paths = {

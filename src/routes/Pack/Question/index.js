@@ -21,17 +21,19 @@ function Question(props) {
     if(!round) return setNotFound(true)
     const theme = round.themes[params.themeIndex-1]
     if(!theme) return setNotFound(true)
-    const question = theme.questions.find(({ price }) => price === Number(params.questionPrice))
-    if(!question) return setNotFound(true)
-    setQuestion(question)
+    if(params.questionPrice !== 'add') {
+      const question = theme.questions.find(({ price }) => price === Number(params.questionPrice))
+      if(!question) return setNotFound(true)
+      setQuestion(question)
+    }
     setNotFound(false)
   }, [params])
 
   return (
-    notFound !== undefined &&
-    notFound
-      ? <NotFound404 />
-      : <QuestionContent data={question} />
+    notFound !== undefined && (
+      notFound
+        ? <NotFound404 />
+        : <QuestionContent data={question} />)
   )
 }
 

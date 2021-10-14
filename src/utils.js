@@ -24,3 +24,15 @@ export const questionTypes = {
   'bagcat': 'Кот в мешке',
   'sponsored': 'Без риска'
 }
+
+export const initValues = (schema, object) => {
+  const initialValues = object ?? {}
+  const fields = Object.keys(schema.fields)
+  const defaultValues = {
+    'number': 0,
+    'string': '',
+    'boolean': false
+  }
+  fields.forEach(key => initialValues[key] = object ? object[key] : defaultValues[schema.fields[key].type])
+  return initialValues
+}

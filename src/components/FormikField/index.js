@@ -14,8 +14,8 @@ import styles from './styles.module.scss'
 import ImageField from 'components/ImageField'
 
 const formikMuiErrors = (formik, name) => ({
-  error: formik.touched[name] && Boolean(formik.errors[name]),
-  helperText: formik.touched[name] && formik.errors[name]
+  error: Boolean(formik.errors[name]),
+  helperText: formik.errors[name]
 })
 
 FormikTextField.propTypes =
@@ -55,7 +55,7 @@ export function FormikAutocomplete(props) {
     formik.setTouched({ ...formik.touched, [name]: true })
   }
 
-  let value = formik.values[name].split(',')
+  let value = formik.values[name]?.split(',') ?? []
   if(value.length === 1 && value[0] === '') value = []
 
   const handleKeyDown = e => {
@@ -89,7 +89,7 @@ export function FormikAutocomplete(props) {
 FormikSelect.propTypes = { ...FormikTextField.propTypes, options: PropTypes.object }
 export function FormikSelect(props) {
   const { formik, name, options, ...field } = props
-  const error = { error: formik.touched[name] && Boolean(formik.errors[name]) }
+  const error = { error: Boolean(formik.errors[name]) }
 
   const handleChange = e => {
     formik.handleChange(e)
@@ -108,7 +108,7 @@ export function FormikSelect(props) {
       >
         {Object.entries(options).map(([id, label]) => <MenuItem value={id} key={id}>{label}</MenuItem>)}
       </Select>
-      <FormHelperText error>{formik.touched[name] && formik.errors[name]}</FormHelperText>
+      <FormHelperText error>{formik.errors[name] && formik.errors[name]}</FormHelperText>
     </FormControl>
   )
 }

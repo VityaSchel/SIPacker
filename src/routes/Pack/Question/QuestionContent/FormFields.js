@@ -3,7 +3,8 @@ import styles from './styles.module.scss'
 import {
   FormikTextField,
   FormikSelect,
-  FormikCheckbox
+  FormikCheckbox,
+  FormikAutocomplete
 } from 'components/FormikField'
 import { questionTypes } from '../../../../utils'
 import { questionPriceHint, questionTypesHint, realPriceHint, bagcatRealPriceTypeHint } from './hints'
@@ -29,13 +30,13 @@ export default function FormFields({ formik, submitting }) {
     <>
       <Typography variant='h6'>Информация о вопросе</Typography>
       <WithHint hint={questionPriceHint}>
-        <FormikTextField name='price' label='Стоимость' {...fieldProps} />
+        <FormikTextField name='price' label='Стоимость' {...numberFieldProps} />
       </WithHint>
       <WithHint hint={questionTypesHint}>
         <FormikSelect name='type' label='Тип вопроса' options={questionTypes} {...fieldProps} />
       </WithHint>
       {formik.values.type === 'cat' && <WithHint hint={realPriceHint}>
-        <FormikTextField name='realprice' label='Натоящая стоимость вопроса' {...fieldProps} />
+        <FormikTextField name='realprice' label='Натоящая стоимость вопроса' {...numberFieldProps} />
       </WithHint>}
       {formik.values.type === 'bagcat' && <>
         <WithHint hint={bagcatRealPriceTypeHint}>
@@ -76,6 +77,19 @@ export default function FormFields({ formik, submitting }) {
           />
         </WithHint>
       </>}
+      <Typography variant='h6'>Ответы</Typography>
+      <FormikAutocomplete
+        name='correctAnswers'
+        formik={formik}
+        label='Правильные ответы'
+        disabled={submitting}
+      />
+      <FormikAutocomplete
+        name='incorrectAnswers'
+        formik={formik}
+        label='Неправильные ответы (необязательно)'
+        disabled={submitting}
+      />
     </>
   )
 }

@@ -1,18 +1,23 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 import * as yup from 'yup'
 import styles from './styles.module.scss'
 import { useFormik } from 'formik'
-import { useHistory, Prompt } from 'react-router-dom'
+import { useParams, useHistory, Prompt } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { useBeforeunload } from 'react-beforeunload'
 import FormFields from './FormFields'
 import Scenario from './Scenario'
+import { mapPackState, initValues } from '../../../../utils'
+import { connect } from 'react-redux'
+import { saveLocalPack } from 'localStorage/localPacks'
+import { validate } from './validation'
 
 const priceSchema = yup
   .number()
   .integer()
   .min(1, 'Стоимость вопроса должна быть больше 0')
   .max(4294967295) // max of uint32
+
 const validationSchema = yup.object({
   price: priceSchema.required('Выберете стоимость вопроса'),
   realprice: priceSchema,
@@ -24,33 +29,41 @@ const validationSchema = yup.object({
   realpriceFrom: yup.number(),
   realpriceTo: yup.number(),
   realpriceStep: yup.number(),
-  scenario: yup
-    .array()
-    .of(yup.object().shape({ type: yup.string() }))
-    .min(1)
-    .max(100)
+  correctAnswers: yup
+    .string()
+    .required('Добавьте как минимум один правильный ответ'),
+  incorrectAnswers: yup.string()
 })
 
-export default function QuestionContent() {
+QuestionContent.propTypes = {
+  data: PropTypes.object,
+  pack: PropTypes.object,
+  dispatch: PropTypes.func
+}
+
+function QuestionContent(props) {
   const history = useHistory()
-  const [submitting, setSubmitting] = React.useState(false)
+  const params = useParams()
+  const round = params.roundIndex
 
-  const initialValues = {}
-
+  const initialValues = initValues(validationSchema, props.data)
   const formik = useFormik({
     initialValues,
-    validationSchema: validationSchema,
+    validate: values => validate(values, props, params), validationSchema,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      setSubmitting(true)
-      console.log(values)
-      // let pack = { ...props.pack, ...values }
-      // await saveLocalPack(pack)
-      // props.dispatch({ type: 'pack/load', pack })
-      // history.push(`/pack/${pack.uuid}`)
+      const pack = { ...props.pack }
+      const question = { ...props.data, ...values }
+      const questions = pack.rounds[round-1].themes[params.themeIndex-1].questions
+      questions[questions.findIndex(({ price }) => price === Number(params.questionPrice))] = question
+      await saveLocalPack(pack)
+      props.dispatch({ type: 'pack/load', pack })
+      history.push(`/pack/${pack.uuid}/rounds/${round}`)
     },
   })
+
+  const submitting = formik.isSubmitting
 
   useBeforeunload((event) => {
     if(Object.keys(formik.touched).length) event.preventDefault()
@@ -70,7 +83,7 @@ export default function QuestionContent() {
           Сохранить
         </Button>
       </form>
-      <Scenario formik={formik} submitting={submitting} />
+      <Scenario formik={formik} submitting={formik.isValidating || submitting} />
       <Prompt
         when={Object.keys(formik.touched).length && !submitting}
         message='Вы хотите покинуть страницу, не сохраняя изменений?'
@@ -78,3 +91,5 @@ export default function QuestionContent() {
     </div>
   )
 }
+
+export default connect(mapPackState)(QuestionContent)
