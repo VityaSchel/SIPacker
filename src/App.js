@@ -29,7 +29,7 @@ export default function App() {
   return (
     <Provider store={sipackerStore}>
       <ThemeProvider theme={darkTheme}>
-        <BrowserRouter history={history} basename={process.env.PREFIX}>
+        <BrowserRouter history={history} basename={process.env.REACT_APP_PREFIX}>
           <ContextMenuProvider>
             <Container>
               <Navigation />
