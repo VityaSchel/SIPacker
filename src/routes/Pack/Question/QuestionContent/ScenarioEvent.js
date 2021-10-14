@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
 import { MdDelete, MdExpandMore, MdImage, MdMusicNote, MdVideocam, MdShortText, MdRecordVoiceOver } from 'react-icons/md'
@@ -19,6 +20,7 @@ ScenarioEvent.propTypes = {
   draggableId: PropTypes.number,
 }
 export default function ScenarioEvent(props) {
+  const [duration, setDuration] = React.useState(3)
   const formatTime = time => `${time.toFixed(1)} cек.`
 
   const handleDelete = e => {
@@ -34,6 +36,18 @@ export default function ScenarioEvent(props) {
   const step1 = new Array((30-10)/1).fill().map((_, i) => 10+1+i)
   const step5 = new Array((60-30)/5).fill().map((_, i) => 30+(i+1)*5)
   const durationMarks = [...step0_1, ...step0_5, ...step1, ...step5].map((value, i) => ({ _label: value, value: i }))
+
+  const closestToMarks = (duration, marks) => {
+    marks = marks.map(({ _label }) => _label)
+    for(let i = 0; i < marks.length; i++) {
+      if(marks[i] <= duration && marks[i+1] > duration) {
+        return i
+      }
+    }
+    return duration
+  }
+
+  const hasLabel = (marks, value) => marks.map(({ _label }) => _label).includes(value)
 
   return (
     <Item
@@ -73,33 +87,39 @@ export default function ScenarioEvent(props) {
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <div className={styles.duration}>
-            <Slider
-              defaultValue={durationMarks.find(({ _label }) => _label === 3).value}
-              step={null}
-              marks={durationMarks}
-              min={durationMarks[0].value}
-              max={durationMarks[durationMarks.length - 1].value}
-              valueLabelDisplay='on'
-              valueLabelFormat={i => durationMarks[i]._label}
-            />
-            <TextField
-              label='Время'
-              variant='outlined'
-              size='small'
-              type='number'
-              InputProps={{ inputProps: { min: 0.1 } }}
-              className={styles.time}
-            />
+          <div className={styles.details}>
+            <div className={styles.duration}>
+              <Slider
+                defaultValue={durationMarks.find(({ _label }) => _label === 3).value}
+                step={null}
+                marks={durationMarks}
+                min={durationMarks[0].value}
+                max={durationMarks[durationMarks.length - 1].value}
+                valueLabelDisplay={hasLabel(durationMarks, duration) ? 'on' : 'off'}
+                valueLabelFormat={i => durationMarks[i]._label}
+                value={closestToMarks(duration, durationMarks)}
+                onChange={e => setDuration(durationMarks[e.target.value]._label)}
+              />
+              <TextField
+                label='Время'
+                variant='outlined'
+                size='small'
+                type='number'
+                InputProps={{ inputProps: { min: 0.1, step: 0.1 } }}
+                className={styles.time}
+                value={duration}
+                onChange={e => setDuration(Number(e.target.value))}
+              />
+            </div>
+            {{
+              'text': <TextField
+                label='Введите текст'
+                multiline
+                rows={4}
+                fullWidth
+              />
+            }[props.item.type]}
           </div>
-          {{
-            'text': <TextField
-              label='Введите текст'
-              multiline
-              rows={4}
-              fullWidth
-            />
-          }[props.item.type]}
         </AccordionDetails>
       </Accordion>}
     </Item>
