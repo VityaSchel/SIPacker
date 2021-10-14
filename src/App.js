@@ -1,5 +1,5 @@
 import {
-  Router,
+  BrowserRouter,
   Switch,
   Route
 } from 'react-router-dom'
@@ -29,7 +29,7 @@ export default function App() {
   return (
     <Provider store={sipackerStore}>
       <ThemeProvider theme={darkTheme}>
-        <Router history={history}>
+        <BrowserRouter history={history} basename={process.env.PREFIX}>
           <ContextMenuProvider>
             <Container>
               <Navigation />
@@ -47,7 +47,7 @@ export default function App() {
               </Switch>
             </Container>
           </ContextMenuProvider>
-        </Router>
+        </BrowserRouter>
       </ThemeProvider>
     </Provider>
   )
