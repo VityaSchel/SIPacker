@@ -1,33 +1,7 @@
-# SIPacker
+# SIPacker (развернутая версия на Github Pages)
 
-Онлайн-редактор паков для Своей Игры (SiGame Владимиря Хиля)
+Эта ветка используется для билдов приложения для последующей развертки на gh-pages
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/59040542/137257961-73f0aceb-19c9-4e1f-a3fe-80204f145f2d.png" />
-</p>
+Разработка ведется на ветке dev, стабильные версии мерджатся в master
 
-## Развернутая версия
-
-[https://vityaschel.github.io/SIPacker](https://vityaschel.github.io/SIPacker) (ветка gh-pages)
-
-## Запуск локально
-
-Скачайте репозиторий и откройте файл index.html в папке build. Судя по спецификации w3c, протокол file:// находится в SecureContext, а значит все технологии PWA должны работать.
-
-## Локальный билд
-
-```
-$ npm run build
-```
-
-Выводится в папку build
-
-## Contributing
-
-Не надо
-
-## Спонсирование
-
-Пожалуйста задонатьте мне пожалуйста [https://donationalerts.com/r/vityaschel](https://donationalerts.com/r/vityaschel).
-
-Как только получу статус самозанятого так сразу перейду куда-то еще, а пока будьте добры донатить не меньше 250 руб чтобы я мог их вывести :)
+Научите меня пользоваться ci/cd кто-нибудь
