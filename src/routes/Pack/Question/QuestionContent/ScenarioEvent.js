@@ -12,15 +12,19 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Decimal from 'decimal.js'
+import ImageField from 'components/ImageField'
 
 ScenarioEvent.propTypes = {
   index: PropTypes.number,
   item: PropTypes.object,
   onDelete: PropTypes.func,
   draggableId: PropTypes.number,
+  formik: PropTypes.object,
 }
+
 export default function ScenarioEvent(props) {
   const [duration, setDuration] = React.useState(3)
+  const [imageFieldValue, setImageFieldValue] = React.useState()
   const formatTime = time => `${time.toFixed(1)} cек.`
 
   const handleDelete = e => {
@@ -65,7 +69,7 @@ export default function ScenarioEvent(props) {
                 'video': 'Видео',
                 'text': 'Текст',
                 'say': 'Слово ведущего'
-              }[props.item.type]}
+              }[props.item.type] ?? `Событие «${props.item.type}»`}
               <span className={styles.spacing} />
               {{
                 'image': <MdImage />,
@@ -117,6 +121,11 @@ export default function ScenarioEvent(props) {
                 multiline
                 rows={4}
                 fullWidth
+              />,
+              'image': <ImageField
+                value={imageFieldValue}
+                onChange={setImageFieldValue}
+                label='Изображение'
               />
             }[props.item.type]}
           </div>

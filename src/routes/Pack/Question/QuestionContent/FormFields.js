@@ -26,7 +26,7 @@ export default function FormFields({ formik, submitting }) {
   }
 
   return (
-    <div className={styles.formFields}>
+    <>
       <Typography variant='h6'>Информация о вопросе</Typography>
       <WithHint hint={questionPriceHint}>
         <FormikTextField name='price' label='Стоимость' {...fieldProps} />
@@ -76,6 +76,6 @@ export default function FormFields({ formik, submitting }) {
           />
         </WithHint>
       </>}
-    </div>
+    </>
   )
 }

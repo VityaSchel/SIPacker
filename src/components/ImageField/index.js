@@ -14,17 +14,17 @@ import store from 'reducers/index'
 
 ImageField.propTypes = {
   label: PropTypes.string,
-  formik: PropTypes.object,
+  value: PropTypes.string,
   name: PropTypes.string,
   pack: PropTypes.object,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  onChange: PropTypes.func,
 }
 
 function ImageField(props) {
   const [src, setSrc] = React.useState({})
   const [srcUrl, setSrcUrl] = React.useState(null)
   const [noFile, setNoFile] = React.useState(false)
-  const { formik, name } = props
   const fileStorage = React.useRef()
 
   React.useEffect(() => {
@@ -33,7 +33,7 @@ function ImageField(props) {
   }, [setNoFile])
 
   React.useEffect(() => {
-    const fileURI = formik.values[name]
+    const fileURI = props.value
     let cleanup = () => {}
     setSrcUrl()
     if(fileURI) {
@@ -62,22 +62,17 @@ function ImageField(props) {
       setSrcUrl(null)
     }
     return () => cleanup()
-  }, [formik.values[name]])
+  }, [props.value])
 
   const handleClick = async () => {
     let result = await new Promise(resolve => fileStorage.current.open(props.pack.uuid, resolve))
     if(!result) { return }
-    handleChange(result)
-  }
-
-  const handleChange = fileURI => {
-    formik.setFieldValue(name, fileURI)
-    formik.setTouched({ ...formik.touched, [name]: true })
+    props.onChange(result)
   }
 
   const handleClear = () => {
     setNoFile(false)
-    formik.setFieldValue(name, undefined)
+    props.onChange(undefined)
   }
 
   return (

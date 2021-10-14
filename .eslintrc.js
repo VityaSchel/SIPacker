@@ -40,6 +40,10 @@ module.exports = {
     'no-duplicate-imports': [
       'error'
     ],
-    'no-case-declarations': 'off'
+    'no-case-declarations': 'off',
+    'no-unused-vars': [
+      'error',
+      { 'ignoreRestSiblings': true }
+    ]
   }
 }

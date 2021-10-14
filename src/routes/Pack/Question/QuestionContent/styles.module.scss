@@ -1,23 +1,16 @@
 .container {
   width: 100%;
+  display: flex;
+  gap: 50px;
 
-  .form {
+  & > * {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    flex: 1;
+    max-width: 400px;
 
-    .formGroups {
-      display: flex;
-      gap: 50px;
-
-      & > * {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        flex: 1;
-        max-width: 400px;
-
-        .hint {
+    .hint {
           width: 100%;
           display: flex;
           align-items: center;
@@ -32,49 +25,47 @@
           }
         }
 
-        .grouped {
-          display: flex;
-          gap: 10px;
+    .grouped {
+      display: flex;
+      gap: 10px;
+    }
+
+    .addEvent {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .itemType {
+        flex: 1;
+        display: flex;
+        align-items: center;
+
+        .spacing {
+          width: 10px;
+          display: block;
         }
+      }
+    }
 
-        .addEvent {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
+    .details {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
 
-        .item {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          gap: 10px;
+      .duration {
+        display: flex;
+        align-items: center;
+        gap: 15px;
 
-          .itemType {
-            flex: 1;
-            display: flex;
-            align-items: center;
-
-            .spacing {
-              width: 10px;
-              display: block;
-            }
-          }
-        }
-
-        .details {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-
-          .duration {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-
-            .time {
-              width: 100px;
-            }
-          }
+        .time {
+          width: 100px;
         }
       }
     }

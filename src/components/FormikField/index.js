@@ -11,7 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import Slider from '@mui/material/Slider'
 import styles from './styles.module.scss'
-export { default as FormikImageField } from './ImageField'
+import ImageField from 'components/ImageField'
 
 const formikMuiErrors = (formik, name) => ({
   error: formik.touched[name] && Boolean(formik.errors[name]),
@@ -21,6 +21,7 @@ const formikMuiErrors = (formik, name) => ({
 FormikTextField.propTypes =
 FormikAutocomplete.propTypes =
 FormikCheckbox.propTypes =
+FormikImageField.propTypes =
 {
   name: PropTypes.string,
   formik: PropTypes.object
@@ -161,5 +162,30 @@ export function FormikSlider(props) {
         {...field}
       />
     </div>
+  )
+}
+
+export function FormikImageField(props) {
+  const { formik, name, ...field } = props
+
+  const handleChange = fileURI => {
+    formik.setFieldValue(name, fileURI)
+    let touched
+    if(fileURI !== undefined) {
+      touched = { ...formik.touched, [name]: true }
+    } else {
+      const formikTouched = { ...formik.touched }
+      delete formikTouched[name]
+      touched = formikTouched
+    }
+    formik.setTouched(touched)
+  }
+
+  return (
+    <ImageField
+      {...field}
+      value={formik.values[name]}
+      onChange={handleChange}
+    />
   )
 }

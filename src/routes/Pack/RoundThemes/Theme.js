@@ -58,7 +58,7 @@ function Theme(props) {
             <ClickIsolator className={styles.name}>
               <TextField
                 value={themeName}
-                label='Название раунда'
+                label='Название темы'
                 variant='outlined'
                 onChange={handleChangeThemeName}
                 size='small'

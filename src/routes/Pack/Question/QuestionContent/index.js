@@ -59,10 +59,7 @@ export default function QuestionContent() {
   return (
     <div className={styles.container}>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
-        <div className={styles.formGroups}>
-          <FormFields formik={formik} submitting={submitting} />
-          <Scenario formik={formik} submitting={submitting} />
-        </div>
+        <FormFields formik={formik} submitting={submitting} />
         <Button
           color='primary'
           variant='contained'
@@ -73,6 +70,7 @@ export default function QuestionContent() {
           Сохранить
         </Button>
       </form>
+      <Scenario formik={formik} submitting={submitting} />
       <Prompt
         when={Object.keys(formik.touched).length && !submitting}
         message='Вы хотите покинуть страницу, не сохраняя изменений?'
