@@ -4,6 +4,8 @@ import xmlJS from 'xml-js'
 import FileResolver from './fileResolver'
 export { default as parse } from './parser'
 
+const bom = '\uFEFF'
+
 const packErrors = {
   noAuthor: 'Добавьте как минимум одного автора в настройках пака',
   noLanguage: 'Установите язык вопросов в настройках пака'
@@ -18,11 +20,11 @@ export async function check(pack) {
 
 export async function generate(pack) {
   const zip = new JSZip()
-  zip.file('[Content_Types].xml', formatDefaults.contentTypes)
+  zip.file('[Content_Types].xml', bom+formatDefaults.contentTypes)
 
   const texts = zip.folder('Texts')
-  texts.file('authors.xml', '<?xml version="1.0" encoding="utf-8"?><Authors />')
-  texts.file('sources.xml', '<?xml version="1.0" encoding="utf-8"?><Sources />')
+  texts.file('authors.xml', bom+'<?xml version="1.0" encoding="utf-8"?><Authors />')
+  texts.file('sources.xml', bom+'<?xml version="1.0" encoding="utf-8"?><Sources />')
 
   // const files = new FileResolver(zip)
 
@@ -34,10 +36,10 @@ export async function generate(pack) {
       }
     },
     elements: [
-      {
-        type: 'comment',
-        comment: 'This package was generated using SIPacker — free open-source online tool for generating SIGame packs. Feel free to leave feedback on https://github.com/VityaSchel/SIPacker'
-      },
+      // {
+      //   type: 'comment',
+      //   comment: 'This package was generated using SIPacker — free open-source online tool for generating SIGame packs. Feel free to leave feedback on https://github.com/VityaSchel/SIPacker'
+      // },
       {
         type: 'element',
         name: 'package',
@@ -52,7 +54,7 @@ export async function generate(pack) {
           difficulty: pack.difficulty,
           // logo: await files.resolve(pack.logo),
           language: pack.language,
-          generator: 'sipacker'
+          // generator: 'sipacker'
         },
         elements: [
           ...pack.tags ? [
@@ -185,7 +187,7 @@ export async function generate(pack) {
     ]
   }
   const content = xmlJS.js2xml(packContent)
-  zip.file('content.xml', content)
-  const zipInBlob = await zip.generateAsync({ type: 'blob' })
+  zip.file('content.xml', bom+content)
+  const zipInBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' })
   return zipInBlob
 }
