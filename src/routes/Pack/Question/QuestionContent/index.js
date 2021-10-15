@@ -29,10 +29,8 @@ const validationSchema = yup.object({
   realpriceFrom: yup.number(),
   realpriceTo: yup.number(),
   realpriceStep: yup.number(),
-  correctAnswers: yup
-    .string()
-    .required('Добавьте как минимум один правильный ответ'),
-  incorrectAnswers: yup.string()
+  correctAnswers: yup.array().ensure().min(1, 'Добавьте как минимум один правильный ответ'),
+  incorrectAnswers: yup.array().ensure()
 })
 
 QuestionContent.propTypes = {
@@ -45,8 +43,30 @@ function QuestionContent(props) {
   const history = useHistory()
   const params = useParams()
   const round = params.roundIndex
+  const price = params.questionPrice
+  const questions = props.pack.rounds[params.roundIndex-1].themes[params.themeIndex-1].questions
+  const newQuestion = price === 'add'
 
-  const initialValues = initValues(validationSchema, props.data)
+  const getNextPrice = questions => {
+    const findRegularity = () => {
+      let delta
+      for(let i = 1; i < questions.length; i++) {
+        let newDelta = questions[i].price - questions[i-1].price
+        if(delta !== undefined && delta !== newDelta) return undefined
+        else delta = newDelta
+      }
+      return questions[questions.length - 1].price+delta
+    }
+
+    const add100 = () => {
+      return questions[questions.length - 1].price+100
+    }
+
+    return findRegularity() || add100()
+  }
+  const initialValues = initValues(validationSchema,
+    newQuestion ? { ...props.data, price: getNextPrice(questions) } : props.data
+  )
   const formik = useFormik({
     initialValues,
     validate: values => validate(values, props, params), validationSchema,
@@ -54,9 +74,13 @@ function QuestionContent(props) {
     validateOnBlur: false,
     onSubmit: async (values) => {
       const pack = { ...props.pack }
-      const question = { ...props.data, ...values }
+      const question = newQuestion ? values : { ...props.data, ...values }
       const questions = pack.rounds[round-1].themes[params.themeIndex-1].questions
-      questions[questions.findIndex(({ price }) => price === Number(params.questionPrice))] = question
+      if(newQuestion) {
+        questions.push(question)
+      } else {
+        questions[questions.findIndex(({ price }) => price === Number(price))] = question
+      }
       await saveLocalPack(pack)
       props.dispatch({ type: 'pack/load', pack })
       history.push(`/pack/${pack.uuid}/rounds/${round}`)
@@ -80,7 +104,7 @@ function QuestionContent(props) {
           disabled={submitting}
           className={styles.submit}
         >
-          Сохранить
+          {newQuestion ? 'Добавить вопрос' : 'Сохранить'}
         </Button>
       </form>
       <Scenario formik={formik} submitting={formik.isValidating || submitting} />

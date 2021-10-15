@@ -40,7 +40,7 @@ const validationSchema = yup.object({
   comment: yup
     .string('Введите комментарий'),
   tags: yup
-    .string('Введите теги'),
+    .array('Введите теги'),
   language: yup
     .string('Введите язык пака')
     .required('Заполните поле язык'),

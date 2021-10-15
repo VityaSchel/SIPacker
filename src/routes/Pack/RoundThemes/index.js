@@ -41,13 +41,13 @@ function RoundThemes(props) {
     let roundThemes = [...themes]
     roundThemes.push({ name, id: Date.now(), questions: [{
       price: 100,
-      correctAnswers: '3',
+      correctAnswers: ['3'],
       type: 'simple'
     },
     {
       price: 200,
-      correctAnswers: 'Stigfinnare',
-      incorrectAnswers: 'ss,sasd',
+      correctAnswers: ['Stigfinnare'],
+      incorrectAnswers: ['ss,sasd'],
       type: 'auction'
     }] })
     updateThemes(roundThemes)

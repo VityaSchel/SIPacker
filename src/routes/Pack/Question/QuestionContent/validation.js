@@ -1,8 +1,8 @@
 export const validate = (values, props, params) => {
-  const questions = props.pack.rounds[params.roundIndex-1].themes[params.themeIndex-1].questions
+  const questions = [...props.pack.rounds[params.roundIndex-1].themes[params.themeIndex-1].questions]
 
   const errors = {}
-  if(values.price !== props.data.price && questions.some(({ price }) => price === values.price)) {
+  if(values.price !== props.data?.price && questions.some(({ price }) => price === values.price)) {
     errors.price = 'Вопрос с такой стоимостью уже существует в этой теме'
   }
 
@@ -40,5 +40,6 @@ export const validate = (values, props, params) => {
       if(!values.detailsDisclosure) errors.detailsDisclosure = 'Выберете момент, когда узнается стоимость вопроса'
       break
   }
+
   return errors
 }

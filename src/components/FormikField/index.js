@@ -51,11 +51,11 @@ export function FormikAutocomplete(props) {
   const { formik, name, ...field } = props
 
   const handleChange = (_, value) => {
-    formik.setFieldValue(name, value.map(v => v.replaceAll(',', '') || '.').join(','))
+    formik.setFieldValue(name, value)
     formik.setTouched({ ...formik.touched, [name]: true })
   }
 
-  let value = formik.values[name]?.split(',') ?? []
+  let value = formik.values[name] ?? []
   if(value.length === 1 && value[0] === '') value = []
 
   const handleKeyDown = e => {

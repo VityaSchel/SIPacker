@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import { MdImage, MdDone, MdMusicNote, MdVideocam, MdAdd } from 'react-icons/md'
 import { useHistory, useRouteMatch } from 'react-router'
+import { Link } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { connect } from 'react-redux'
 import { mapPackState, questionTypes } from '../../../utils'
@@ -27,9 +28,8 @@ function ItemContent(props) {
 
   const questionType = type => questionTypes[type] || type
 
-  const handleOpenQuestion = price => () => {
-    history.push(`${route.url}/themes/${props.themeIndex+1}/questions/${price}`)
-  }
+  const questionURL = `${route.url}/themes/${props.themeIndex+1}/questions`
+  const handleOpenQuestion = price => () => history.push(`${questionURL}/${price}`)
 
   return (
     <>
@@ -39,7 +39,7 @@ function ItemContent(props) {
             <TableRow>
               <TableCell>Цена</TableCell>
               <Cell wp={10}>Текст</Cell>
-              <Cell wp={9}>Ответ</Cell>
+              <Cell wp={9}>Ответы</Cell>
               <Cell wp={4}>Вид вопроса</Cell>
               <Cell wp={1}><MdImage /></Cell>
               <Cell wp={1}><MdMusicNote /></Cell>
@@ -57,7 +57,15 @@ function ItemContent(props) {
               >
                 <TableCell component='th' scope='row'>{question.price}</TableCell>
                 <Cell wp={10}>{question.text}</Cell>
-                <Cell wp={10}>{question.answer}</Cell>
+                <Cell wp={10}>
+                  {question.correctAnswers?.map((answer, i, a) =>
+                    <span key={i}>{answer}{i !== a.length - 1 && ', '}</span>)}
+                  {question.incorrectAnswers?.length && ', '}
+                  {question.incorrectAnswers?.map((answer, i, a) => <>
+                    <span className={styles.strikethrough} key={i}>{answer}</span>
+                    {i !== a.length - 1 && ', '}
+                  </>)}
+                </Cell>
                 <Cell wp={3}>{questionType(question.type)}</Cell>
                 <Cell wp={1}>{question.image && <MdDone />}</Cell>
                 <Cell wp={1}>{question.audio && <MdDone />}</Cell>
@@ -67,10 +75,12 @@ function ItemContent(props) {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button
-        color='primary'
-        startIcon={<MdAdd />}
-      >Создать вопрос</Button>
+      <Link to={`${questionURL}/add`}>
+        <Button
+          color='primary'
+          startIcon={<MdAdd />}
+        >Создать вопрос</Button>
+      </Link>
     </>
   )
 }
