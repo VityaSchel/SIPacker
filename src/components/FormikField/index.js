@@ -143,8 +143,8 @@ export function FormikSlider(props) {
   const { formik, name, ...field } = props
   const [value, setValue] = React.useState(formik.values[name])
 
-  const handleChange = e => {
-    setValue(e.target.value)
+  const handleChange = value => {
+    setValue(value)
     formik.setTouched({ ...formik.touched, [name]: true })
   }
 
@@ -156,7 +156,7 @@ export function FormikSlider(props) {
       <Slider
         name={name}
         value={value}
-        onChange={handleChange}
+        onChange={e => requestAnimationFrame(() => handleChange(e.target.value))}
         valueLabelDisplay='auto'
         marks
         {...field}

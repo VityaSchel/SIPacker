@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper'
 import ButtonBase from '@mui/material/ButtonBase'
 import { useRouteMatch } from 'react-router'
 import { Link } from 'react-router-dom'
+import Typography from '@mui/material/Typography'
 
 RoundTable.propTypes = { themes: PropTypes.array }
 export default function RoundTable(props) {
@@ -38,7 +39,7 @@ export default function RoundTable(props) {
                       </Link>
                     </TableCell>)
                   : <TableCell align='right'>
-                    <span className={styles.noItemsYet}>Еще нет вопросов</span>
+                    <Typography color='text.secondary' variant='caption'>Еще нет вопросов</Typography>
                   </TableCell>
               }
             </TableRow>

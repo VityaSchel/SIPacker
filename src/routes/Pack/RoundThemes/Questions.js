@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { connect } from 'react-redux'
 import { mapPackState, questionTypes } from '../../../utils'
+import Typography from '@mui/material/Typography'
 
 
 ItemContent.propTypes = {
@@ -30,6 +31,8 @@ function ItemContent(props) {
 
   const questionURL = `${route.url}/themes/${props.themeIndex+1}/questions`
   const handleOpenQuestion = price => () => history.push(`${questionURL}/${price}`)
+  const row = { sx: { '&:last-child td, &:last-child th': { border: 0 } } }
+  const cell1 = { component: 'th', scope: 'row' }
 
   return (
     <>
@@ -47,31 +50,37 @@ function ItemContent(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedQuestions.map((question, i) => (
-              <TableRow
-                key={i}
-                className={styles.tableRow}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                hover
-                onClick={handleOpenQuestion(question.price)}
-              >
-                <TableCell component='th' scope='row'>{question.price}</TableCell>
-                <Cell wp={10}>{question.text}</Cell>
-                <Cell wp={10}>
-                  {question.correctAnswers?.map((answer, i, a) =>
-                    <span key={i}>{answer}{i !== a.length - 1 && ', '}</span>)}
-                  {question.incorrectAnswers?.length && ', '}
-                  {question.incorrectAnswers?.map((answer, i, a) => <>
-                    <span className={styles.strikethrough} key={i}>{answer}</span>
-                    {i !== a.length - 1 && ', '}
-                  </>)}
-                </Cell>
-                <Cell wp={3}>{questionType(question.type)}</Cell>
-                <Cell wp={1}>{question.image && <MdDone />}</Cell>
-                <Cell wp={1}>{question.audio && <MdDone />}</Cell>
-                <Cell wp={1}>{question.movie && <MdDone />}</Cell>
-              </TableRow>
-            ))}
+            {sortedQuestions.length
+              ? sortedQuestions.map((question, i) => (
+                <TableRow
+                  key={i}
+                  hover
+                  onClick={handleOpenQuestion(question.price)}
+                  className={styles.tableRow}
+                  {...row}
+                >
+                  <TableCell {...cell1}>{question.price}</TableCell>
+                  <Cell wp={10}>{question.text}</Cell>
+                  <Cell wp={10}>
+                    {question.correctAnswers?.map((answer, i, a) =>
+                      <span key={i}>{answer}{i !== a.length - 1 && ', '}</span>)}
+                    {question.incorrectAnswers?.length && ', '}
+                    {question.incorrectAnswers?.map((answer, i, a) => <>
+                      <span className={styles.strikethrough} key={i}>{answer}</span>
+                      {i !== a.length - 1 && ', '}
+                    </>)}
+                  </Cell>
+                  <Cell wp={3}>{questionType(question.type)}</Cell>
+                  <Cell wp={1}>{question.image && <MdDone />}</Cell>
+                  <Cell wp={1}>{question.audio && <MdDone />}</Cell>
+                  <Cell wp={1}>{question.movie && <MdDone />}</Cell>
+                </TableRow>
+              ))
+              : <TableRow {...row}>
+                <TableCell {...cell1} colSpan={7}>
+                  <Typography color='text.secondary' variant='caption'>Еще нет вопросов</Typography>
+                </TableCell>
+              </TableRow>}
           </TableBody>
         </Table>
       </TableContainer>

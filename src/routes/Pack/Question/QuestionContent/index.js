@@ -7,6 +7,7 @@ import Button from '@mui/material/Button'
 import { useBeforeunload } from 'react-beforeunload'
 import FormFields from './FormFields'
 import Scenario from './Scenario'
+import NoScenario from './NoScenario'
 import { mapPackState, initValues } from '../../../../utils'
 import { connect } from 'react-redux'
 import { saveLocalPack } from 'localStorage/localPacks'
@@ -43,9 +44,9 @@ function QuestionContent(props) {
   const history = useHistory()
   const params = useParams()
   const round = params.roundIndex
-  const price = params.questionPrice
-  const questions = props.pack.rounds[params.roundIndex-1].themes[params.themeIndex-1].questions
-  const newQuestion = price === 'add'
+  const questionPrice = params.questionPrice
+  const questions = props.pack.rounds[round-1].themes[params.themeIndex-1].questions
+  const newQuestion = questionPrice === 'add'
 
   const getNextPrice = questions => {
     const findRegularity = () => {
@@ -62,7 +63,7 @@ function QuestionContent(props) {
       return questions[questions.length - 1].price+100
     }
 
-    return findRegularity() || add100()
+    return questions.length === 0 ? 100 : findRegularity() || add100()
   }
   const initialValues = initValues(validationSchema,
     newQuestion ? { ...props.data, price: getNextPrice(questions) } : props.data
@@ -79,7 +80,7 @@ function QuestionContent(props) {
       if(newQuestion) {
         questions.push(question)
       } else {
-        questions[questions.findIndex(({ price }) => price === Number(price))] = question
+        questions[questions.findIndex(({ price }) => price === Number(questionPrice))] = question
       }
       await saveLocalPack(pack)
       props.dispatch({ type: 'pack/load', pack })
@@ -101,13 +102,16 @@ function QuestionContent(props) {
           color='primary'
           variant='contained'
           type='submit'
-          disabled={submitting}
+          disabled={(!newQuestion && !Object.keys(formik.touched).length) || submitting}
           className={styles.submit}
         >
           {newQuestion ? 'Добавить вопрос' : 'Сохранить'}
         </Button>
       </form>
-      <Scenario formik={formik} submitting={formik.isValidating || submitting} />
+      {newQuestion
+        ? <NoScenario />
+        : <Scenario formik={formik} submitting={formik.isValidating || submitting} />
+      }
       <Prompt
         when={Object.keys(formik.touched).length && !submitting}
         message='Вы хотите покинуть страницу, не сохраняя изменений?'

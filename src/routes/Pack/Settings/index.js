@@ -142,7 +142,7 @@ function Settings(props) {
           color='primary'
           variant='contained'
           type='submit'
-          disabled={submitting}
+          disabled={!Object.keys(formik.touched).length || submitting}
         >
           Сохранить
         </Button>
