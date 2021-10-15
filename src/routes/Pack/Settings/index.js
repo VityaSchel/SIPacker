@@ -26,8 +26,8 @@ const validationSchema = yup.object({
     .string('Введите название пака')
     .required('Заполните поле названия'),
   authors: yup
-    .string('Введите ваш никнейм')
-    .required('Заполните поле автора'),
+    .array()
+    .min(0, 'Заполните поле автора'),
   publisher: yup
     .string('Введите издателя'),
   difficulty: yup

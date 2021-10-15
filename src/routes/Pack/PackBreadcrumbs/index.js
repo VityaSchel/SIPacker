@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Typography from '@mui/material/Typography'
 import { useLocation } from 'react-router'
-import styles from './styles.module.scss'
+import styles from '../styles.module.scss'
 import { connect } from 'react-redux'
-import { componentsPropTypes, uuidRegex } from '../../consts'
-import { mapPackState } from '../../utils'
-import { settings, rounds, question } from './pathRegexps.json'
+import { componentsPropTypes, uuidRegex } from 'consts'
+import { mapPackState } from 'utils'
+import { settings, rounds, question } from '../pathRegexps.json'
 
 PackBreadcrumbs.propTypes = {
   pack: componentsPropTypes.pack

@@ -39,7 +39,7 @@ const SavingDialog = React.forwardRef((props, ref) => {
 
   const bundlePack = async () => {
     const zipInBlob = await generate(pack)
-    saveAs(zipInBlob, slugify(pack.name))
+    saveAs(zipInBlob, `${slugify(pack.name)}.siq`)
     setOpen(false)
   }
 
@@ -64,7 +64,7 @@ const SavingDialog = React.forwardRef((props, ref) => {
           </> }
         </DialogContentText>
       </DialogContent>
-      { errors.length &&
+      { Boolean(errors.length) &&
         <DialogActions>
           <Button autoFocus onClick={() => setOpen(false)}>
             Закрыть

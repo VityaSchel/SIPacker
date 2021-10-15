@@ -19,7 +19,7 @@ export const mapPackState = state => ({ pack: state.pack })
 
 export const questionTypes = {
   'simple': 'Обычный',
-  'auction': 'Аукцион',
+  'auction': 'Со ставкой (Аукцион)',
   'cat': 'С секретом',
   'bagcat': 'Кот в мешке',
   'sponsored': 'Без риска'
