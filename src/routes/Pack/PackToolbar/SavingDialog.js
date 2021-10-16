@@ -17,7 +17,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const SavingDialog = React.forwardRef((props, ref) => {
   const [open, setOpen] = React.useState(false)
+  const [generating, setGenerating] = React.useState(false)
   const [errors, setErrors] = React.useState([])
+  const [warnings, setWarnings] = React.useState([])
   const [pack, setPack] = React.useState()
 
   React.useImperativeHandle(ref, () => ({
@@ -30,22 +32,28 @@ const SavingDialog = React.forwardRef((props, ref) => {
   React.useEffect(() => pack?.uuid && startProcessing(), [pack])
 
   const startProcessing = async () => {
+    setGenerating(false)
     const errors = await check(pack)
     setErrors(errors)
     if(errors.length) return
 
+    setGenerating(true)
     setTimeout(bundlePack, 500)
   }
 
   const bundlePack = async () => {
-    let zipInBlob
+    let zip, warnings = []
     try {
-      zipInBlob = await generate(pack)
+      const result = await generate(pack)
+      zip = result.result
+      warnings = result.warnings
     } catch(e) {
-      return setErrors([e])
+      setErrors([e])
     }
-    saveAs(zipInBlob, `${slugify(pack.name)}.siq`, { autoBom: true })
-    setOpen(false)
+    setGenerating(false)
+    saveAs(zip, `${slugify(pack.name)}.siq`, { autoBom: true })
+    setWarnings(warnings)
+    setOpen(warnings.length)
   }
 
   return (
@@ -58,18 +66,24 @@ const SavingDialog = React.forwardRef((props, ref) => {
       <DialogTitle>Генерация архива</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          { !errors.length ? <>
+          { generating && (!errors.length ? <>
             <p>Производится генерация файла пака. Это может занять несколько секунд, в зависимости от количества медиа-файлов.</p>
             <LinearProgress color='primary' />
           </> : <>
             <p>Исправьте следующие ошибки и перезапустите процесс генерации пака:</p>
             <ul>
-              { errors.map(error => <li key={error}>{error}</li>) }
+              { errors.map((error, i) => <li key={i}>{error}</li>) }
+            </ul>
+          </>) }
+          { Boolean(warnings.length) && <>
+            <p>Во время генерации возникли возникли следующие предупреждения, их не требуется исправлять:</p>
+            <ul>
+              { warnings.map((warning, i) => <li key={i}>{warning}</li>) }
             </ul>
           </> }
         </DialogContentText>
       </DialogContent>
-      { Boolean(errors.length) &&
+      { !generating &&
         <DialogActions>
           <Button autoFocus onClick={() => setOpen(false)}>
             Закрыть

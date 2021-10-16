@@ -200,6 +200,8 @@ export async function generate(pack) {
   const content = xmlJS.js2xml(packContent)
   zip.file('content.xml', bom+content)
 
+  const warnings = files.warnings
+
   const zipInBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' })
-  return zipInBlob
+  return { result: zipInBlob, warnings }
 }
