@@ -38,7 +38,12 @@ const SavingDialog = React.forwardRef((props, ref) => {
   }
 
   const bundlePack = async () => {
-    const zipInBlob = await generate(pack)
+    let zipInBlob
+    try {
+      zipInBlob = await generate(pack)
+    } catch(e) {
+      return setErrors([e])
+    }
     saveAs(zipInBlob, `${slugify(pack.name)}.siq`, { autoBom: true })
     setOpen(false)
   }

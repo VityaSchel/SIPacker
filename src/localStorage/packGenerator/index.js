@@ -53,7 +53,7 @@ export async function generate(pack) {
           date: pack.date,
           publisher: pack.publisher,
           difficulty: pack.difficulty,
-          logo: await files.resolve(pack.logo),
+          logo: await files.resolve(pack.logo, 'логотип пака'),
           language: pack.language,
           generator: 'sipacker'
         },
@@ -103,7 +103,7 @@ export async function generate(pack) {
           {
             type: 'element',
             name: 'rounds',
-            elements: pack.rounds.map(round => (
+            elements: await pack.rounds.map(async round => (
               {
                 type: 'element',
                 name: 'round',
@@ -114,7 +114,7 @@ export async function generate(pack) {
                   {
                     type: 'element',
                     name: 'themes',
-                    elements: round.themes.map(theme => (
+                    elements: await round.themes.map(async theme => (
                       {
                         type: 'element',
                         name: 'theme',
@@ -125,7 +125,7 @@ export async function generate(pack) {
                           {
                             type: 'element',
                             name: 'questions',
-                            elements: theme.questions.map(question => (
+                            elements: await theme.questions.map(async question => (
                               {
                                 type: 'element',
                                 name: 'question',
@@ -136,7 +136,7 @@ export async function generate(pack) {
                                   {
                                     type: 'element',
                                     name: 'scenario',
-                                    elements: question.scenario.map(event => (
+                                    elements: await question.scenario.map(async event => (
                                       {
                                         type: 'element',
                                         name: 'atom',
@@ -149,7 +149,10 @@ export async function generate(pack) {
                                             type: 'text',
                                             text: {
                                               'text': event.data.text,
-                                              'image': event.data.imageField,
+                                              'image': await files.resolve(
+                                                event.data.imageField,
+                                                `сценарий вопроса за ${question.price} в теме «${theme.name}» в раунде «${round.name}»`
+                                              ),
                                             }[event.type]
                                           }
                                         ]

@@ -13,11 +13,12 @@ export default class FileResolver {
     return this.folders[folder]
   }
 
-  async resolve(fileURI) {
+  async resolve(fileURI, error) {
     if(!fileURI) return
     // this.getDir('Audio')
     // this.getDir('Video')
     const file = await getFile(fileURI)
+    if(!file) throw `Файл не найден: Проверьте поле ${error}`
     let id, extension
     switch(file.type) {
       case 'image':
