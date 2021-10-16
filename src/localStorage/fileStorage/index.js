@@ -8,6 +8,11 @@ export async function getFile(fileURI) {
   return file ?? null
 }
 
+export async function getAllURIsFromPack(packUUID) {
+  const db = init()
+  return await db.files.where({ packUUID }).primaryKeys()
+}
+
 export async function getPacksIDs() {
   const db = init()
   const packIDs = await db.files.toArray()

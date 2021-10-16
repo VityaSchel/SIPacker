@@ -27,7 +27,8 @@ const validationSchema = yup.object({
     .required('Заполните поле названия'),
   authors: yup
     .array()
-    .min(0, 'Заполните поле автора'),
+    .min(1, 'Заполните поле автора')
+    .required('Заполните поле автора'),
   publisher: yup
     .string('Введите издателя'),
   difficulty: yup
@@ -64,6 +65,7 @@ function Settings(props) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values) => {
+      console.log(values.authors)
       setSubmitting(true)
       let pack = { ...props.pack, ...values }
       await saveLocalPack(pack)

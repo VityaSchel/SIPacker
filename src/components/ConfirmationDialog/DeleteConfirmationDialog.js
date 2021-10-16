@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ConfirmationDialog from 'components/ConfirmationDialog'
-import { deleteFilesOfPack } from 'localStorage/fileStorage'
+import { deleteFilesOfPack, getAllURIsFromPack } from 'localStorage/fileStorage'
 import { deleteLocalPack } from 'localStorage/localPacks'
 import { useHistory } from 'react-router-dom'
+import store from 'reducers/index'
 
 const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
   const confirmationDialogRef = React.useRef()
@@ -18,7 +19,11 @@ const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
         )
       const deleteFiles = checked
       if(confirmed) {
-        deleteFiles && await deleteFilesOfPack(packUUID)
+        if(deleteFiles) {
+          const fileURIs = await getAllURIsFromPack(packUUID)
+          fileURIs.forEach(fileURI => store.dispatch({ type: 'fileRendering/fileUnlinked', fileURI }))
+          await deleteFilesOfPack(packUUID)
+        }
         await deleteLocalPack(packUUID)
         history.push('/')
       }
@@ -33,7 +38,7 @@ const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
   }))
 
   return (
-    <ConfirmationDialog ref={confirmationDialogRef}></ConfirmationDialog>
+    <ConfirmationDialog ref={confirmationDialogRef} />
   )
 })
 

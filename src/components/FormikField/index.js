@@ -169,9 +169,9 @@ export function FormikImageField(props) {
   const { formik, name, ...field } = props
 
   const handleChange = fileURI => {
-    formik.setFieldValue(name, fileURI)
-    let touched
-    if(fileURI !== undefined) {
+    formik.setFieldValue(name, fileURI ?? '')
+    let touched = { ...formik.touched }
+    if(fileURI !== undefined || formik.initialValues[name] !== (fileURI ?? '')) {
       touched = { ...formik.touched, [name]: true }
     } else {
       const formikTouched = { ...formik.touched }

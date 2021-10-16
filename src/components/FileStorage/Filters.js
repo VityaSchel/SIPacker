@@ -7,7 +7,8 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
 import { ContextMenuActions } from 'components/ContextMenu'
-import { deleteFilesOfPack, getDeletedPacks } from 'localStorage/fileStorage'
+import { deleteFilesOfPack, getDeletedPacks, getAllURIsFromPack } from 'localStorage/fileStorage'
+import store from 'reducers/index'
 
 Filters.propTypes = {
   packs: PropTypes.arrayOf(PropTypes.string),
@@ -37,10 +38,16 @@ export default function Filters(props) {
               const deletedPacks = await getDeletedPacks()
               await Promise.all(
                 deletedPacks.map(
-                  async packUUID => await deleteFilesOfPack(packUUID)
+                  async packUUID => {
+                    const fileURIs = await getAllURIsFromPack(packUUID)
+                    fileURIs.forEach(fileURI => store.dispatch({ type: 'fileRendering/fileUnlinked', fileURI }))
+                    await deleteFilesOfPack(packUUID)
+                  }
                 )
               )
             } else {
+              const fileURIs = await getAllURIsFromPack(uuid)
+              fileURIs.forEach(fileURI => store.dispatch({ type: 'fileRendering/fileUnlinked', fileURI }))
               await deleteFilesOfPack(uuid)
             }
             props.reloadPacks()

@@ -136,40 +136,47 @@ export async function generate(pack) {
                                   {
                                     type: 'element',
                                     name: 'scenario',
-                                    elements: [
+                                    elements: question.scenario.map(event => (
                                       {
                                         type: 'element',
                                         name: 'atom',
-                                        elements: [{ type: 'text', text: 'Чехия' }]
+                                        attributes: {
+                                          type: event.type,
+                                          time: event.duration
+                                        },
+                                        elements: [
+                                          {
+                                            type: 'text',
+                                            text: {
+                                              'text': event.data.text,
+                                              'image': event.data.imageField,
+                                            }[event.type]
+                                          }
+                                        ]
                                       }
-                                    ]
+                                    ))
                                   },
                                   {
                                     type: 'element',
                                     name: 'right',
-                                    elements: [
+                                    elements: question.correctAnswers.map(answer => (
                                       {
                                         type: 'element',
                                         name: 'answer',
-                                        elements: [{ type: 'text', text: 'Прага' }]
+                                        elements: [{ type: 'text', text: answer }]
                                       }
-                                    ]
+                                    ))
                                   },
                                   {
                                     type: 'element',
                                     name: 'wrong',
-                                    elements: [
+                                    elements: question.incorrectAnswers.map(answer => (
                                       {
                                         type: 'element',
                                         name: 'answer',
-                                        elements: [{ type: 'text', text: 'Самара' }]
-                                      },
-                                      {
-                                        type: 'element',
-                                        name: 'answer',
-                                        elements: [{ type: 'text', text: 'Москва' }]
+                                        elements: [{ type: 'text', text: answer }]
                                       }
-                                    ]
+                                    ))
                                   }
                                 ]
                               }

@@ -25,9 +25,9 @@ export default function RoundTable(props) {
           {props.themes.map((row, i) => (
             <TableRow
               key={i}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              sx={{ '&:last-child td, &:last-child th': { borderBottom: 0 } }}
             >
-              <TableCell component='th' scope='row' style={{ minWidth: '30%' }}>{row.name}</TableCell>
+              <TableCell component='th' scope='row' className={styles.rowName}>{row.name}</TableCell>
               {
                 row.questions.length
                   ? row.questions.map((question, j) =>
@@ -38,7 +38,7 @@ export default function RoundTable(props) {
                         </ButtonBase>
                       </Link>
                     </TableCell>)
-                  : <TableCell align='right'>
+                  : <TableCell align='right' colspan='1000'>
                     <Typography color='text.secondary' variant='caption'>Еще нет вопросов</Typography>
                   </TableCell>
               }

@@ -30,7 +30,11 @@ const validationSchema = yup.object({
   realpriceFrom: yup.number(),
   realpriceTo: yup.number(),
   realpriceStep: yup.number(),
-  correctAnswers: yup.array().ensure().min(1, 'Добавьте как минимум один правильный ответ'),
+  correctAnswers: yup
+    .array()
+    .ensure()
+    .min(1, 'Добавьте как минимум один правильный ответ')
+    .required('Добавьте как минимум один правильный ответ'),
   incorrectAnswers: yup.array().ensure()
 })
 
