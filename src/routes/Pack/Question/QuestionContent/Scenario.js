@@ -39,7 +39,7 @@ function Scenario({ formik, ...props }) {
     const pack = { ...props.pack }
     const round = params.roundIndex-1
     const questions = pack.rounds[round].themes[params.themeIndex-1].questions
-    const question = questions[questions.findIndex(({ price }) => price === Number(price))]
+    const question = questions[questions.findIndex(({ price }) => price === Number(questionPrice))]
     question.scenario = scenario
     await saveLocalPack(pack)
     props.dispatch({ type: 'pack/load', pack })

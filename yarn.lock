@@ -13138,6 +13138,11 @@
   "resolved" "https://registry.yarnpkg.com/ws/-/ws-7.4.3.tgz"
   "version" "7.4.3"
 
+"xml-escape@^1.1.0":
+  "integrity" "sha1-OQTBQ/qOs6ADDsZG0pAqLxtwbEQ="
+  "resolved" "https://registry.npmjs.org/xml-escape/-/xml-escape-1.1.0.tgz"
+  "version" "1.1.0"
+
 "xml-js@^1.6.11":
   "integrity" "sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g=="
   "resolved" "https://registry.npmjs.org/xml-js/-/xml-js-1.6.11.tgz"

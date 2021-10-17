@@ -33,7 +33,8 @@ export const validate = (values, props, params) => {
             break
 
           case 'byPlayer':
-            ['realpriceFrom', 'realpriceTo', 'realpriceStep'].forEach(checkNumber)
+            ['realpriceFrom', 'realpriceTo'].forEach(checkNumber)
+            if(values.realpriceStep === 0) errors.realpriceStep = 'Шаг не может быть равен 0'
             break
         }
       }

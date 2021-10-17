@@ -22,6 +22,7 @@ const priceSchema = yup
 const validationSchema = yup.object({
   price: priceSchema.required('Выберете стоимость вопроса'),
   realprice: priceSchema,
+  realtheme: yup.string(),
   type: yup
     .string()
     .required('Выберете тип вопроса'),
@@ -79,7 +80,7 @@ function QuestionContent(props) {
     validateOnBlur: false,
     onSubmit: async (values) => {
       const pack = { ...props.pack }
-      const question = newQuestion ? values : { ...props.data, ...values }
+      const question = newQuestion ? { ...values } : { ...props.data, ...values }
       const questions = pack.rounds[round-1].themes[params.themeIndex-1].questions
       if(newQuestion) {
         questions.push(question)

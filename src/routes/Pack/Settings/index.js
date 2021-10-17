@@ -27,6 +27,7 @@ const validationSchema = yup.object({
     .required('Заполните поле названия'),
   authors: yup
     .array()
+    .ensure()
     .min(1, 'Заполните поле автора')
     .required('Заполните поле автора'),
   publisher: yup
@@ -41,7 +42,7 @@ const validationSchema = yup.object({
   comment: yup
     .string('Введите комментарий'),
   tags: yup
-    .array('Введите теги'),
+    .array().ensure(),
   language: yup
     .string('Введите язык пака')
     .required('Заполните поле язык'),
@@ -77,6 +78,7 @@ function Settings(props) {
   useBeforeunload((event) => {
     if(Object.keys(formik.touched).length) event.preventDefault()
   })
+  console.log(formik.values);
 
   return (
     <div className={styles.container}>
