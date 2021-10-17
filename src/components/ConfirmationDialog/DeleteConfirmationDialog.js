@@ -34,6 +34,12 @@ const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
       const { confirmed } = await confirmationDialogRef.current
         .open('Вы уверены, что хотите удалить раунд? Все вопросы также будут удалены.', 'Удалить')
       return confirmed
+    },
+
+    async confirmDeleteQuestion() {
+      const { confirmed } = await confirmationDialogRef.current
+        .open('Вы уверены, что хотите удалить вопрос?', 'Удалить')
+      return confirmed
     }
   }))
 

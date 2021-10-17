@@ -12,6 +12,7 @@ import Item from 'components/ItemsList/Item'
 import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
 import Typography from '@mui/material/Typography'
 import Handle from 'components/ItemsList/Handle'
+import { ContextMenuActions } from 'components/ContextMenu'
 
 Round.propTypes = ItemContent.propTypes = {
   draggableId: PropTypes.string,
@@ -27,27 +28,40 @@ Round.propTypes = ItemContent.propTypes = {
 
 export default function Round(props) {
   const confirmationDialogRef = React.useRef()
+  const contextMenuActions = React.useContext(ContextMenuActions)
 
   const handleRemoveRound = async () => {
     if(!await confirmationDialogRef.current.confirmRoundDeletion()) return
     props.handleRemoveRound(props.index)
   }
 
+  const handleOpenMenu = e => {
+    contextMenuActions.open(e, [
+      { name: 'Удалить', icon: <MdDelete />, action: () => handleRemoveRound() }
+    ])
+  }
+
   return (
     <Item {...props} className={styles.cardOfRound}>
-      {(provided) => !props.editing
-        ? <Link to={`/pack/${props.pack.uuid}/rounds/${props.index+1}`} className={styles.link}>
-          <CardActionArea>
+      {(provided) => <>
+        {!props.editing
+          ? <Link
+            to={`/pack/${props.pack.uuid}/rounds/${props.index+1}`}
+            className={styles.link}
+            onContextMenu={handleOpenMenu}
+          >
+            <CardActionArea>
+              <ItemContent {...props} />
+            </CardActionArea>
+          </Link>
+          : <div className={styles.item}>
+            <Handle provided={provided} />
             <ItemContent {...props} />
-          </CardActionArea>
-        </Link>
-        : <div className={styles.item}>
-          <Handle provided={provided} />
-          <ItemContent {...props} />
-          <Toolbar handleRemoveRound={handleRemoveRound} />
-          <DeleteConfirmationDialog ref={confirmationDialogRef} />
-        </div>
-      }
+            <Toolbar handleRemoveRound={handleRemoveRound} />
+          </div>
+        }
+        <DeleteConfirmationDialog ref={confirmationDialogRef} />
+      </>}
     </Item>
   )
 }

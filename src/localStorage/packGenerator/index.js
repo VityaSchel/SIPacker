@@ -210,12 +210,12 @@ export async function generate(pack) {
                                           type: scenarioEvent.type,
                                           time: scenarioEvent.duration
                                         },
-                                        elements: scenarioEvent.type !== 'say' ? [
+                                        elements: !['say', 'marker'].includes(scenarioEvent.type) ? [
                                           {
                                             type: 'text',
                                             text: {
-                                              'text': xmlescape(scenarioEvent.data.text ?? '').replaceAll('\n', '\\n'),
-                                              'image': await files.resolve(
+                                              text: xmlescape(scenarioEvent.data.text ?? '').replaceAll('\n', '\\n'),
+                                              image: await files.resolve(
                                                 scenarioEvent.data.imageField,
                                                 `сценарий вопроса за ${question.price} в теме «${theme.name}» в раунде «${round.name}»`
                                               ),
@@ -236,19 +236,17 @@ export async function generate(pack) {
                                       }
                                     ))
                                   },
-                                  ...(question.incorrectAnswers && question.incorrectAnswers.length) ? [
-                                    {
-                                      type: 'element',
-                                      name: 'wrong',
-                                      elements: question.incorrectAnswers.map(answer => (
-                                        {
-                                          type: 'element',
-                                          name: 'answer',
-                                          elements: [{ type: 'text', text: xmlescape(answer) }]
-                                        }
-                                      ))
-                                    }
-                                  ] : []
+                                  {
+                                    type: 'element',
+                                    name: 'wrong',
+                                    elements: question.incorrectAnswers.map(answer => (
+                                      {
+                                        type: 'element',
+                                        name: 'answer',
+                                        elements: [{ type: 'text', text: xmlescape(answer) }]
+                                      }
+                                    ))
+                                  }
                                 ]
                               }
                             )))

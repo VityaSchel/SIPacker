@@ -115,6 +115,7 @@ function Scenario({ formik, ...props }) {
               <MenuItem value='image'>Изображение</MenuItem>
               <MenuItem value='voice'>Аудио</MenuItem>
               <MenuItem value='video'>Видео</MenuItem>
+              <MenuItem value='marker'><i>[Игроки отвечают]</i></MenuItem>
             </Select>
           </FormControl>
           <IconButton onClick={handleAddEvent} disabled={!newEventValue}>
