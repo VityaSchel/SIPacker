@@ -32,7 +32,6 @@ const SavingDialog = React.forwardRef((props, ref) => {
   React.useEffect(() => pack?.uuid && startProcessing(), [pack])
 
   const startProcessing = async () => {
-    setGenerating(false)
     const errors = await check(pack)
     setErrors(errors)
     if(errors.length) return
@@ -48,7 +47,8 @@ const SavingDialog = React.forwardRef((props, ref) => {
       zip = result.result
       warnings = result.warnings
     } catch(e) {
-      setErrors([e])
+      console.error(e)
+      return setErrors([e?.message])
     }
     setGenerating(false)
     saveAs(zip, `${slugify(pack.name)}.siq`, { autoBom: true })
@@ -66,15 +66,16 @@ const SavingDialog = React.forwardRef((props, ref) => {
       <DialogTitle>Генерация архива</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          { generating && (!errors.length ? <>
+          { generating && Boolean(!errors.length) && <>
             <p>Производится генерация файла пака. Это может занять несколько секунд, в зависимости от количества медиа-файлов.</p>
             <LinearProgress color='primary' />
-          </> : <>
+          </>}
+          { Boolean(errors.length) && <>
             <p>Исправьте следующие ошибки и перезапустите процесс генерации пака:</p>
             <ul>
               { errors.map((error, i) => <li key={i}>{error}</li>) }
             </ul>
-          </>) }
+          </> }
           { Boolean(warnings.length) && <>
             <p>Во время генерации возникли возникли следующие предупреждения, их не требуется исправлять:</p>
             <ul>

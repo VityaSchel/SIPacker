@@ -27,7 +27,7 @@ function CheckList(props) {
       //Установить равное колво вопросов во всех темах одного раунда
     ],
     optional: [
-      { name: 'Добавить иконку пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.icon) },
+      { name: 'Добавить иконку пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.logo) },
       { name: 'Добавить теги пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.tags) },
       { name: 'Добавить не менее 5 тем в каждом раунде', done: has5ThemesInEachRound(props.pack) },
       { name: 'Добавить не менее 25 вопросов всего', done: hasAtLeast25Questions(props.pack) },

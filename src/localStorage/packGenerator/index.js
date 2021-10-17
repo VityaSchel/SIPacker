@@ -28,7 +28,7 @@ export async function check(pack) {
   return errors
 }
 
-function questionType(question) {
+function questionType(question, currentTheme) {
   if(question.type !== 'simple') {
     return [{
       type: 'element',
@@ -36,12 +36,12 @@ function questionType(question) {
       attributes: {
         name: question.type
       },
-      elements: questionParams(question)
+      elements: questionParams(question, currentTheme)
     }]
   } else { return [] }
 }
 
-function questionParams(question){
+function questionParams(question, currentTheme){
   const params = {
     cat: ['theme', 'cost'],
     auction: [],
@@ -69,6 +69,7 @@ function questionParams(question){
       }
     }
     if(param === 'theme') text = xmlescape(text)
+    if(param === 'theme' && text === undefined) text = xmlescape(currentTheme)
     if(param === 'self') text = String(Boolean(text))
     return (
       {
@@ -198,7 +199,7 @@ export async function generate(pack) {
                                   price: question.price
                                 },
                                 elements: [
-                                  ...questionType(question),
+                                  ...questionType(question, theme.name),
                                   {
                                     type: 'element',
                                     name: 'scenario',
@@ -239,7 +240,7 @@ export async function generate(pack) {
                                   {
                                     type: 'element',
                                     name: 'wrong',
-                                    elements: question.incorrectAnswers.map(answer => (
+                                    elements: question.incorrectAnswers?.map(answer => (
                                       {
                                         type: 'element',
                                         name: 'answer',

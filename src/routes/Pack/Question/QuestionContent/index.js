@@ -81,12 +81,13 @@ function QuestionContent(props) {
     onSubmit: async (values) => {
       const pack = { ...props.pack }
       const question = newQuestion ? { ...values } : { ...props.data, ...values }
-      const questions = pack.rounds[round-1].themes[params.themeIndex-1].questions
+      let questions = pack.rounds[round-1].themes[params.themeIndex-1].questions
       if(newQuestion) {
         questions.push(question)
       } else {
         questions[questions.findIndex(({ price }) => price === Number(questionPrice))] = question
       }
+      questions = questions.sort((a, b) => a.price - b.price)
       await saveLocalPack(pack)
       props.dispatch({ type: 'pack/load', pack })
       history.push(`/pack/${pack.uuid}/rounds/${round}`)

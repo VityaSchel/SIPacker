@@ -39,6 +39,7 @@ export const initValues = (schema, object) => {
 
 
 export const hasQuestionInEachTheme = pack => Boolean(
+  pack.rounds.length &&
   pack.rounds.every(round =>
     round.themes.every(theme =>
       theme.questions.length
@@ -47,12 +48,14 @@ export const hasQuestionInEachTheme = pack => Boolean(
 )
 
 export const hasThemeInEachRound = pack => Boolean(
+  pack.rounds.length &&
   pack.rounds.every(round =>
     round.themes.length
   )
 )
 
-export const has5ThemesInEachRound = pack => pack.rounds.length && Boolean(
+export const has5ThemesInEachRound = pack => Boolean(
+  pack.rounds.length &&
   pack.rounds.every(round =>
     round.themes.length >= 5
   )
@@ -87,6 +90,7 @@ export const hasQuestionWithBagCat = pack => Boolean(
 )
 
 export const hasScenarioInEachQuestion = pack => Boolean(
+  pack.rounds.length &&
   pack.rounds.every(
     round => round.themes.every(
       theme => theme.questions.every(

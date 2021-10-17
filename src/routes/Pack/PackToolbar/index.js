@@ -44,6 +44,7 @@ function PackToolbar(props) {
     const theme = props.pack.rounds[round-1].themes[themeIndex-1]
     const questionIndex = theme.questions.findIndex(({ price }) => price === Number(questionPrice))
     theme.questions.splice(questionIndex, 1)
+    theme.questions = theme.questions.sort((a, b) => a.price - b.price)
     await saveLocalPack(pack)
     history.push(`/pack/${pack.uuid}/rounds/${round}`)
   }

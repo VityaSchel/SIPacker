@@ -61,7 +61,7 @@ function ItemContent(props) {
                 >
                   <TableCell {...cell1}>{question.price}</TableCell>
                   <Cell wp={10}>
-                    {question.scenario.filter(({ type }) => type === 'text').map(({ data }) => data.text).join(', ')}
+                    {question.scenario?.filter(({ type }) => type === 'text').map(({ data }) => data.text).join(', ')}
                   </Cell>
                   <Cell wp={10}>
                     {question.correctAnswers?.map((answer, i, a) =>
@@ -73,9 +73,9 @@ function ItemContent(props) {
                     </>)}
                   </Cell>
                   <Cell wp={3}>{questionType(question.type)}</Cell>
-                  <Cell wp={1}>{question.scenario.some(({ type }) => type === 'image') && <MdDone />}</Cell>
-                  <Cell wp={1}>{question.scenario.some(({ type }) => type === 'audio') && <MdDone />}</Cell>
-                  <Cell wp={1}>{question.scenario.some(({ type }) => type === 'movie') && <MdDone />}</Cell>
+                  <Cell wp={1}>{question.scenario?.some(({ type }) => type === 'image') && <MdDone />}</Cell>
+                  <Cell wp={1}>{question.scenario?.some(({ type }) => type === 'audio') && <MdDone />}</Cell>
+                  <Cell wp={1}>{question.scenario?.some(({ type }) => type === 'movie') && <MdDone />}</Cell>
                 </TableRow>
               ))
               : <TableRow {...row}>
