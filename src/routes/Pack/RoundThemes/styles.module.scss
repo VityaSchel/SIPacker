@@ -19,14 +19,21 @@
   margin-top: 10px;
 }
 
+$borderColor: rgb(81, 81, 81);
 div.table {
   box-shadow: none;
-  border: 1px solid rgba(81, 81, 81, 1);
+  border: 1px solid $borderColor;
+
+  .rowName {
+    min-width: 30%;
+    border-right: 1px solid $borderColor;
+  }
 
   .tableCell {
     padding: 0;
 
     .buttonBase {
+      font-weight: 600;
       padding: 16px;
       width: 100%;
     }
@@ -48,4 +55,9 @@ div.table {
 
 .tableRow {
   cursor: pointer;
+
+  .strikethrough {
+    text-decoration: line-through;
+    color: #b1b1b1;
+  }
 }

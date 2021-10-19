@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
-import PackBreadcrumbs from './PackBreadcrumbs'
+import PackBreadcrumbs from './PackBreadcrumbs/'
 import { connect } from 'react-redux'
 import { componentsPropTypes } from '../../consts'
 import PackToolbar from './PackToolbar/'

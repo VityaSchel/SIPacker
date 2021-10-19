@@ -13,24 +13,44 @@ import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Decimal from 'decimal.js'
 import ImageField from 'components/ImageField'
+import Fade from '@mui/material/Fade'
 
 ScenarioEvent.propTypes = {
   index: PropTypes.number,
   item: PropTypes.object,
   onDelete: PropTypes.func,
+  onChangeDuration: PropTypes.func,
+  onChangeData: PropTypes.func,
   draggableId: PropTypes.number,
   formik: PropTypes.object,
+  scenario: PropTypes.object
 }
 
 export default function ScenarioEvent(props) {
-  const [duration, setDuration] = React.useState(3)
-  const [imageFieldValue, setImageFieldValue] = React.useState()
+  const [duration, setDuration] = React.useState()
+  const [eventData, setEventData] = React.useState()
+  const [expand, setExpand] = React.useState(false)
   const formatTime = time => `${time.toFixed(1)} cек.`
 
   const handleDelete = e => {
     e.stopPropagation()
     props.onDelete(props.index)
   }
+
+  React.useEffect(() => {
+    if(props.index !== undefined && duration !== undefined)
+      props.onChangeDuration(props.index, duration)
+  }, [duration])
+
+  React.useEffect(() => {
+    const scenarioEvent = props.scenario[props.index]
+    const data = scenarioEvent.data
+    const eventDuration = scenarioEvent.duration
+    !eventData && setEventData(data)
+    !duration && setDuration(eventDuration)
+  }, [props.scenario])
+
+  React.useEffect(() => eventData && requestAnimationFrame(() => props.onChangeData(props.index, eventData)), [eventData])
 
   // 0.1 - 1.0 with step 0.1
   // 1.0 - 10.0 with step 0.5
@@ -51,24 +71,23 @@ export default function ScenarioEvent(props) {
     return duration
   }
 
-  const hasLabel = (marks, value) => marks.map(({ _label }) => _label).includes(value)
-
   return (
     <Item
       index={props.index}
       draggableId={props.draggableId.toString()}
     >
-      {(provided) => <Accordion>
+      {(provided) => <Accordion expanded={expand} onChange={(_, expanded) => setExpand(expanded)}>
         <AccordionSummary expandIcon={<MdExpandMore />}>
           <div className={styles.item}>
             <Handle provided={provided} />
             <Typography variant='body1' className={styles.itemType}>
               {{
-                'image': 'Изображение',
-                'voice': 'Аудио',
-                'video': 'Видео',
-                'text': 'Текст',
-                'say': 'Слово ведущего'
+                image: 'Изображение',
+                voice: 'Аудио',
+                video: 'Видео',
+                text: 'Текст',
+                say: 'Слово ведущего',
+                marker: <i>[Игроки отвечают]</i>
               }[props.item.type] ?? `Событие «${props.item.type}»`}
               <span className={styles.spacing} />
               {{
@@ -79,9 +98,13 @@ export default function ScenarioEvent(props) {
                 'say': <MdRecordVoiceOver />
               }[props.item.type]}
             </Typography>
-            <Typography variant='body2' color='text.secondary'>
-              {formatTime(props.item.duration)}
-            </Typography>
+            {props.item.type !== 'marker' && (
+              <Fade in={!expand}>
+                <Typography variant='body2' color='text.secondary'>
+                  {formatTime(props.item.duration)}
+                </Typography>
+              </Fade>
+            )}
             <IconButton
               onClick={handleDelete}
               className={styles.delete}
@@ -92,41 +115,48 @@ export default function ScenarioEvent(props) {
         </AccordionSummary>
         <AccordionDetails>
           <div className={styles.details}>
-            <div className={styles.duration}>
-              <Slider
-                defaultValue={durationMarks.find(({ _label }) => _label === 3).value}
-                step={null}
-                marks={durationMarks}
-                min={durationMarks[0].value}
-                max={durationMarks[durationMarks.length - 1].value}
-                valueLabelDisplay={hasLabel(durationMarks, duration) ? 'on' : 'off'}
-                valueLabelFormat={i => durationMarks[i]._label}
-                value={closestToMarks(duration, durationMarks)}
-                onChange={e => setDuration(durationMarks[e.target.value]._label)}
-              />
-              <TextField
-                label='Время'
-                variant='outlined'
-                size='small'
-                type='number'
-                InputProps={{ inputProps: { min: 0.1, step: 0.1 } }}
-                className={styles.time}
-                value={duration}
-                onChange={e => setDuration(Number(e.target.value))}
-              />
-            </div>
+            {props.item.type !== 'marker' && (
+              <div className={styles.duration}>
+                <Slider
+                  defaultValue={durationMarks.find(({ _label }) => _label === 3).value}
+                  step={null}
+                  marks={durationMarks}
+                  min={durationMarks[0].value}
+                  max={durationMarks[durationMarks.length - 1].value}
+                  valueLabelDisplay='off'
+                  valueLabelFormat={i => durationMarks[i]._label}
+                  value={duration !== undefined && closestToMarks(duration, durationMarks)}
+                  onChange={e => requestAnimationFrame(() => setDuration(durationMarks[e.target.value]._label))}
+                />
+                <TextField
+                  label='Время'
+                  variant='outlined'
+                  size='small'
+                  type='number'
+                  InputProps={{ inputProps: { min: 0.1, step: 0.1 } }}
+                  className={styles.time}
+                  value={duration}
+                  onChange={e => setDuration(Number(e.target.value))}
+                />
+              </div>
+            )}
             {{
               'text': <TextField
+                value={eventData?.text}
+                onChange={e => setEventData({ text: e.target.value })}
                 label='Введите текст'
                 multiline
                 rows={4}
                 fullWidth
               />,
               'image': <ImageField
-                value={imageFieldValue}
-                onChange={setImageFieldValue}
+                value={eventData?.imageField}
+                onChange={newValue => setEventData({ imageField: newValue })}
                 label='Изображение'
-              />
+              />,
+              'marker': <Typography variant='caption'>
+                Все события, идущие после этого, будут проигрываться после ответа игрока.
+              </Typography>
             }[props.item.type]}
           </div>
         </AccordionDetails>

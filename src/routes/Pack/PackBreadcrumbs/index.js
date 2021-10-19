@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Typography from '@mui/material/Typography'
 import { useLocation } from 'react-router'
-import styles from './styles.module.scss'
+import styles from '../styles.module.scss'
 import { connect } from 'react-redux'
-import { componentsPropTypes, uuidRegex } from '../../consts'
-import { mapPackState } from '../../utils'
-import { settings, rounds, question } from './pathRegexps.json'
+import { componentsPropTypes, uuidRegex } from 'consts'
+import { mapPackState } from 'utils'
+import { settings, rounds, question } from '../pathRegexps.json'
 
 PackBreadcrumbs.propTypes = {
   pack: componentsPropTypes.pack
@@ -28,7 +28,10 @@ function PackBreadcrumbs(props) {
       settings: { to: `/pack/${props.pack.uuid}/settings`, name: 'Настройки' },
       rounds: { to: `/pack/${props.pack.uuid}/rounds/${parts[2]}`, name: `Раунд ${parts[2]}` },
       theme: { name: `Тема ${parts[4]}` },
-      questions: { to: `/pack/${props.pack.uuid}/rounds/${parts[2]}/themes/${parts[4]}/questions/${parts[6]}`, name: `Вопрос за ${parts[6]}` }
+      questions: {
+        to: `/pack/${props.pack.uuid}/rounds/${parts[2]}/themes/${parts[4]}/questions/${parts[6]}`,
+        name: parts[6] === 'add' ? 'Новый вопрос' : `Вопрос за ${parts[6]}`
+      }
     }
 
     const paths = {

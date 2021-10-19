@@ -17,16 +17,18 @@ import Button from '@mui/material/Button'
 import { useBeforeunload } from 'react-beforeunload'
 import { useHistory, Prompt } from 'react-router-dom'
 import { saveLocalPack } from 'localStorage/localPacks'
-import { mapPackState } from '../../../utils'
+import { initValues, mapPackState } from '../../../utils'
 
-const schema = {
+const validationSchema = yup.object({
   logo: yup
     .string('Добавьте логотип пака'),
   name: yup
     .string('Введите название пака')
     .required('Заполните поле названия'),
   authors: yup
-    .string('Введите ваш никнейм')
+    .array()
+    .ensure()
+    .min(1, 'Заполните поле автора')
     .required('Заполните поле автора'),
   publisher: yup
     .string('Введите издателя'),
@@ -40,14 +42,13 @@ const schema = {
   comment: yup
     .string('Введите комментарий'),
   tags: yup
-    .string('Введите теги'),
+    .array().ensure(),
   language: yup
     .string('Введите язык пака')
     .required('Заполните поле язык'),
   over18: yup
     .bool('Введите ограничения пака')
-}
-const validationSchema = yup.object(schema)
+})
 
 Settings.propTypes = {
   pack: PropTypes.shape(componentsPropTypes),
@@ -55,15 +56,17 @@ Settings.propTypes = {
 }
 
 function Settings(props) {
-  const initialValues = {}
-  Object.keys(schema).forEach(key => initialValues[key] = props.pack[key] || '')
   const [submitting, setSubmitting] = React.useState(false)
   const history = useHistory()
+  const initialValues = initValues(validationSchema, props.pack)
 
   const formik = useFormik({
     initialValues,
-    validationSchema: validationSchema,
+    validationSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: async (values) => {
+      console.log(values.authors)
       setSubmitting(true)
       let pack = { ...props.pack, ...values }
       await saveLocalPack(pack)
@@ -75,6 +78,7 @@ function Settings(props) {
   useBeforeunload((event) => {
     if(Object.keys(formik.touched).length) event.preventDefault()
   })
+  console.log(formik.values);
 
   return (
     <div className={styles.container}>
@@ -142,7 +146,7 @@ function Settings(props) {
           color='primary'
           variant='contained'
           type='submit'
-          disabled={submitting}
+          disabled={!Object.keys(formik.touched).length || submitting}
         >
           Сохранить
         </Button>

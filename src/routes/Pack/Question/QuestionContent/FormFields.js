@@ -3,10 +3,11 @@ import styles from './styles.module.scss'
 import {
   FormikTextField,
   FormikSelect,
-  FormikCheckbox
+  FormikCheckbox,
+  FormikAutocomplete
 } from 'components/FormikField'
 import { questionTypes } from '../../../../utils'
-import { questionPriceHint, questionTypesHint, realPriceHint, bagcatRealPriceTypeHint } from './hints'
+import { questionPriceHint, questionTypesHint, realPriceHint, realPriceStepperHint, realThemeHint, bagcatRealPriceTypeHint } from './hints'
 import WithHint from './WithHint'
 import Typography from '@mui/material/Typography'
 
@@ -29,15 +30,23 @@ export default function FormFields({ formik, submitting }) {
     <>
       <Typography variant='h6'>Информация о вопросе</Typography>
       <WithHint hint={questionPriceHint}>
-        <FormikTextField name='price' label='Стоимость' {...fieldProps} />
+        <FormikTextField name='price' label='Стоимость' {...numberFieldProps} />
       </WithHint>
       <WithHint hint={questionTypesHint}>
         <FormikSelect name='type' label='Тип вопроса' options={questionTypes} {...fieldProps} />
       </WithHint>
-      {formik.values.type === 'cat' && <WithHint hint={realPriceHint}>
-        <FormikTextField name='realprice' label='Натоящая стоимость вопроса' {...fieldProps} />
-      </WithHint>}
+      {formik.values.type === 'cat' && <>
+        <WithHint hint={realPriceHint}>
+          <FormikTextField name='realprice' label='Настоящая стоимость вопроса' {...numberFieldProps} />
+        </WithHint>
+        <WithHint hint={realThemeHint}>
+          <FormikTextField name='realtheme' label='Настоящая тема вопроса' {...fieldProps} />
+        </WithHint>
+      </>}
       {formik.values.type === 'bagcat' && <>
+        <WithHint hint={realThemeHint}>
+          <FormikTextField name='realtheme' label='Настоящая тема вопроса' {...fieldProps} />
+        </WithHint>
         <WithHint hint={bagcatRealPriceTypeHint}>
           <FormikSelect
             name='questionPriceType'
@@ -51,9 +60,9 @@ export default function FormFields({ formik, submitting }) {
           />
         </WithHint>
         {formik.values.questionPriceType === 'fixed' && <WithHint hint={realPriceHint}>
-          <FormikTextField name='realprice' label='Натоящая стоимость вопроса' {...numberFieldProps} />
+          <FormikTextField name='realprice' label='Настоящая стоимость вопроса' {...numberFieldProps} />
         </WithHint>}
-        {formik.values.questionPriceType === 'byPlayer' && <WithHint hint={realPriceHint}>
+        {formik.values.questionPriceType === 'byPlayer' && <WithHint hint={realPriceStepperHint}>
           <div className={styles.grouped}>
             <FormikTextField name='realpriceFrom' label='От' {...numberFieldProps} />
             <FormikTextField name='realpriceTo' label='До' {...numberFieldProps} />
@@ -66,7 +75,7 @@ export default function FormFields({ formik, submitting }) {
         <WithHint hint={<p>Если выбран вариант <b>Никогда</b>, то вопрос не задаётся, игроку просто перечисляется его стоимость</p>}>
           <FormikSelect
             name='detailsDisclosure'
-            label='Когда узнается стоимость вопроса'
+            label='Когда узнается стоимость и тема'
             options={{
               'before': 'До передачи вопроса',
               'after': 'После передачи вопроса',
@@ -76,6 +85,19 @@ export default function FormFields({ formik, submitting }) {
           />
         </WithHint>
       </>}
+      <Typography variant='h6'>Ответы</Typography>
+      <FormikAutocomplete
+        name='correctAnswers'
+        formik={formik}
+        label='Правильные ответы'
+        disabled={submitting}
+      />
+      <FormikAutocomplete
+        name='incorrectAnswers'
+        formik={formik}
+        label='Неправильные ответы (необязательно)'
+        disabled={submitting}
+      />
     </>
   )
 }

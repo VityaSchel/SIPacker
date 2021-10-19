@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
 import Round from './Round'
 import AddItem from 'components/ItemsList/AddItem'
@@ -15,10 +16,17 @@ const reorder = (list, startIndex, endIndex) => {
   return result
 }
 
-export default connect(mapPackState)(function RoundsList(props) {
-  const [rounds, setRounds] = React.useState(props.pack.rounds)
+RoundsList.propTypes = {
+  pack: PropTypes.object,
+  dispatch: PropTypes.func
+}
+
+function RoundsList(props) {
+  const [rounds, setRounds] = React.useState([])
   const [editing, setEditing] = React.useState(false)
   const pack = props.pack
+
+  React.useEffect(() => setRounds(props.pack.rounds), [props.pack.rounds])
 
   const handleAddRound = async name => {
     let packRounds = [...pack.rounds]
@@ -86,4 +94,6 @@ export default connect(mapPackState)(function RoundsList(props) {
       />
     </div>
   )
-})
+}
+
+export default connect(mapPackState)(RoundsList)

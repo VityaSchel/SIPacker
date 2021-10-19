@@ -14,8 +14,8 @@ import styles from './styles.module.scss'
 import ImageField from 'components/ImageField'
 
 const formikMuiErrors = (formik, name) => ({
-  error: formik.touched[name] && Boolean(formik.errors[name]),
-  helperText: formik.touched[name] && formik.errors[name]
+  error: Boolean(formik.errors[name]),
+  helperText: formik.errors[name]
 })
 
 FormikTextField.propTypes =
@@ -51,11 +51,11 @@ export function FormikAutocomplete(props) {
   const { formik, name, ...field } = props
 
   const handleChange = (_, value) => {
-    formik.setFieldValue(name, value.map(v => v.replaceAll(',', '') || '.').join(','))
+    formik.setFieldValue(name, value)
     formik.setTouched({ ...formik.touched, [name]: true })
   }
 
-  let value = formik.values[name].split(',')
+  let value = formik.values[name] ?? []
   if(value.length === 1 && value[0] === '') value = []
 
   const handleKeyDown = e => {
@@ -89,7 +89,7 @@ export function FormikAutocomplete(props) {
 FormikSelect.propTypes = { ...FormikTextField.propTypes, options: PropTypes.object }
 export function FormikSelect(props) {
   const { formik, name, options, ...field } = props
-  const error = { error: formik.touched[name] && Boolean(formik.errors[name]) }
+  const error = { error: Boolean(formik.errors[name]) }
 
   const handleChange = e => {
     formik.handleChange(e)
@@ -108,7 +108,7 @@ export function FormikSelect(props) {
       >
         {Object.entries(options).map(([id, label]) => <MenuItem value={id} key={id}>{label}</MenuItem>)}
       </Select>
-      <FormHelperText error>{formik.touched[name] && formik.errors[name]}</FormHelperText>
+      <FormHelperText error>{formik.errors[name] && formik.errors[name]}</FormHelperText>
     </FormControl>
   )
 }
@@ -143,8 +143,8 @@ export function FormikSlider(props) {
   const { formik, name, ...field } = props
   const [value, setValue] = React.useState(formik.values[name])
 
-  const handleChange = e => {
-    setValue(e.target.value)
+  const handleChange = value => {
+    setValue(value)
     formik.setTouched({ ...formik.touched, [name]: true })
   }
 
@@ -156,7 +156,7 @@ export function FormikSlider(props) {
       <Slider
         name={name}
         value={value}
-        onChange={handleChange}
+        onChange={e => requestAnimationFrame(() => handleChange(e.target.value))}
         valueLabelDisplay='auto'
         marks
         {...field}
@@ -169,9 +169,9 @@ export function FormikImageField(props) {
   const { formik, name, ...field } = props
 
   const handleChange = fileURI => {
-    formik.setFieldValue(name, fileURI)
-    let touched
-    if(fileURI !== undefined) {
+    formik.setFieldValue(name, fileURI ?? '')
+    let touched = { ...formik.touched }
+    if(fileURI !== undefined || formik.initialValues[name] !== (fileURI ?? '')) {
       touched = { ...formik.touched, [name]: true }
     } else {
       const formikTouched = { ...formik.touched }

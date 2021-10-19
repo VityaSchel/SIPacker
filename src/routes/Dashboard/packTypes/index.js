@@ -7,6 +7,7 @@ import { componentsPropTypes } from '../../../consts'
 import { getFile } from 'localStorage/fileStorage'
 export { default as Upload } from './Upload'
 export { default as Pack } from './Pack'
+import { connect } from 'react-redux'
 
 export function Create() {
   return (
@@ -26,18 +27,34 @@ export function Loading(props) {
   )
 }
 
-PackImage.propTypes = { src: componentsPropTypes.pack.thumbnail }
-export default function PackImage(props) {
+PackImage.propTypes = {
+  src: componentsPropTypes.pack.thumbnail,
+  dispatch: PropTypes.func
+}
+
+function PackImage(props) {
   const [src, setSrc] = React.useState()
+
+  React.useEffect(() => {
+    if(!src) return
+    props.dispatch({ type: 'fileRendering/setFileUnlinkCallback', fileURI: props.src, callback: () => setSrc() })
+  }, [setSrc])
 
   React.useEffect(() => {
     let cleanup = () => {}
     if(props.src) {
       (async () => {
         const file = await getFile(props.src)
+        if(file === null) return setSrc()
+
         const src = URL.createObjectURL(file.blob)
-        cleanup = () => URL.revokeObjectURL(src)
         setSrc(src)
+        props.dispatch({ type: 'fileRendering/fileRenderingStarted', fileURI: props.src, callback: () => setSrc() })
+
+        cleanup = () => {
+          URL.revokeObjectURL(src)
+          props.dispatch({ type: 'fileRendering/fileRenderingStopped', fileURI: props.src })
+        }
       })()
     } else {
       setSrc()
@@ -54,3 +71,5 @@ export default function PackImage(props) {
     </div>
   )
 }
+
+export default connect(null)(PackImage)

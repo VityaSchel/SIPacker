@@ -39,18 +39,7 @@ function RoundThemes(props) {
 
   const handleAddTheme = async name => {
     let roundThemes = [...themes]
-    roundThemes.push({ name, id: Date.now(), questions: [{
-      price: 100,
-      text: 'Сколько у вити чела игр в сторах?',
-      answer: '3',
-      type: 'simple'
-    },
-    {
-      price: 200,
-      image: 'ihskdab,jsakjd',
-      answer: 'Stigfinnare',
-      type: 'auction'
-    }] })
+    roundThemes.push({ name, id: Date.now(), questions: [] })
     updateThemes(roundThemes)
   }
 
@@ -89,7 +78,7 @@ function RoundThemes(props) {
       found
         ? <div>
           <EditingToolbar
-            showButton={true}
+            showButton={Boolean(themes.length)}
             onSwitch={() => setEditing(!editing)}
             editing={editing}
             heading={`Темы и вопросы раунда ${round.name}`}

@@ -12,11 +12,38 @@ import ScenarioEvent from './ScenarioEvent'
 import { MdAdd } from 'react-icons/md'
 import { scenarioHint } from './hints'
 import WithHint from './WithHint'
+import { connect } from 'react-redux'
+import { useParams } from 'react-router'
+import { saveLocalPack } from 'localStorage/localPacks'
+import { mapPackState } from 'utils.js'
 
-Scenario.propTypes = { formik: PropTypes.object }
-export default function Scenario({ formik }) {
+Scenario.propTypes = { formik: PropTypes.object, pack: PropTypes.object, dispatch: PropTypes.func }
+function Scenario({ formik, ...props }) {
   const [scenario, setScenario] = React.useState([])
   const [newEventValue, setNewEventValue] = React.useState('')
+  const [scenarioUpdateTimeout, setScenarioUpdateTimeout] = React.useState()
+  const params = useParams()
+  const round = params.roundIndex
+  const questionPrice = params.questionPrice
+  const questions = props.pack.rounds[round-1].themes[params.themeIndex-1].questions
+  const question = questions[questions.findIndex(({ price }) => price === Number(questionPrice))]
+  React.useEffect(() => question.scenario && setScenario(question.scenario), [])
+
+  React.useEffect(() => {
+    clearTimeout(scenarioUpdateTimeout)
+    const scenarioUpdateQueue = setTimeout(() => updateQuestionScenario(scenario), 1000)
+    setScenarioUpdateTimeout(scenarioUpdateQueue)
+  }, [scenario])
+
+  const updateQuestionScenario = async scenario => {
+    const pack = { ...props.pack }
+    const round = params.roundIndex-1
+    const questions = pack.rounds[round].themes[params.themeIndex-1].questions
+    const question = questions[questions.findIndex(({ price }) => price === Number(questionPrice))]
+    question.scenario = scenario
+    await saveLocalPack(pack)
+    props.dispatch({ type: 'pack/load', pack })
+  }
 
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list)
@@ -32,13 +59,25 @@ export default function Scenario({ formik }) {
   }
 
   const handleAddEvent = () => {
-    setNewEventValue()
-    setScenario([...scenario, { type: newEventValue, duration: 3 }])
+    setNewEventValue('')
+    setScenario([...scenario, { type: newEventValue, duration: 3, data: {} }])
   }
 
   const handleDelete = index => {
     const newScenario = [...scenario]
     newScenario.splice(index, 1)
+    setScenario(newScenario)
+  }
+
+  const handleChangeDuration = (index, value) => {
+    const newScenario = [...scenario]
+    newScenario[index].duration = value
+    setScenario(newScenario)
+  }
+
+  const handleChangeData = (index, data) => {
+    const newScenario = [...scenario]
+    newScenario[index].data = data
     setScenario(newScenario)
   }
 
@@ -52,7 +91,10 @@ export default function Scenario({ formik }) {
         onDragEnd={onDragEnd}
         list={scenario}
         draggableProps={{
-          onDelete: handleDelete, formik
+          onDelete: handleDelete, formik,
+          onChangeDuration: handleChangeDuration,
+          onChangeData: handleChangeData,
+          scenario
         }}
         noItemsLabel='Сценарий пуст'
         itemComponent={ScenarioEvent}
@@ -73,6 +115,7 @@ export default function Scenario({ formik }) {
               <MenuItem value='image'>Изображение</MenuItem>
               <MenuItem value='voice'>Аудио</MenuItem>
               <MenuItem value='video'>Видео</MenuItem>
+              <MenuItem value='marker'><i>[Игроки отвечают]</i></MenuItem>
             </Select>
           </FormControl>
           <IconButton onClick={handleAddEvent} disabled={!newEventValue}>
@@ -85,3 +128,5 @@ export default function Scenario({ formik }) {
     </div>
   )
 }
+
+export default connect(mapPackState)(Scenario)

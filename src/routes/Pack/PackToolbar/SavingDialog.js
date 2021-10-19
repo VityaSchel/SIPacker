@@ -17,7 +17,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const SavingDialog = React.forwardRef((props, ref) => {
   const [open, setOpen] = React.useState(false)
+  const [generating, setGenerating] = React.useState(false)
   const [errors, setErrors] = React.useState([])
+  const [warnings, setWarnings] = React.useState([])
   const [pack, setPack] = React.useState()
 
   React.useImperativeHandle(ref, () => ({
@@ -34,13 +36,24 @@ const SavingDialog = React.forwardRef((props, ref) => {
     setErrors(errors)
     if(errors.length) return
 
+    setGenerating(true)
     setTimeout(bundlePack, 500)
   }
 
   const bundlePack = async () => {
-    const zipInBlob = await generate(pack)
-    saveAs(zipInBlob, slugify(pack.name))
-    setOpen(false)
+    let zip, warnings = []
+    try {
+      const result = await generate(pack)
+      zip = result.result
+      warnings = result.warnings
+    } catch(e) {
+      console.error(e)
+      return setErrors([e?.message])
+    }
+    setGenerating(false)
+    saveAs(zip, `${slugify(pack.name)}.siq`, { autoBom: true })
+    setWarnings(warnings)
+    setOpen(warnings.length)
   }
 
   return (
@@ -53,18 +66,25 @@ const SavingDialog = React.forwardRef((props, ref) => {
       <DialogTitle>Генерация архива</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          { !errors.length ? <>
+          { generating && Boolean(!errors.length) && <>
             <p>Производится генерация файла пака. Это может занять несколько секунд, в зависимости от количества медиа-файлов.</p>
             <LinearProgress color='primary' />
-          </> : <>
+          </>}
+          { Boolean(errors.length) && <>
             <p>Исправьте следующие ошибки и перезапустите процесс генерации пака:</p>
             <ul>
-              { errors.map(error => <li key={error}>{error}</li>) }
+              { errors.map((error, i) => <li key={i}>{error}</li>) }
+            </ul>
+          </> }
+          { Boolean(warnings.length) && <>
+            <p>Во время генерации возникли возникли следующие предупреждения, их не требуется исправлять:</p>
+            <ul>
+              { warnings.map((warning, i) => <li key={i}>{warning}</li>) }
             </ul>
           </> }
         </DialogContentText>
       </DialogContent>
-      { errors.length &&
+      { !generating &&
         <DialogActions>
           <Button autoFocus onClick={() => setOpen(false)}>
             Закрыть

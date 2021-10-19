@@ -8,72 +8,31 @@ import { Link } from 'react-router-dom'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 import cx from 'classnames'
 import { mapPackState } from '../../../../utils'
+import {
+  hasQuestionInEachTheme, hasThemeInEachRound, has5ThemesInEachRound, hasAtLeast25Questions, hasQuestionWithAuction,
+  hasQuestionWithBagCat, hasScenarioInEachQuestion
+} from 'utils'
 
 CheckList.propTypes = { pack: PropTypes.object }
 function CheckList(props) {
-  const hasAtLeast1Question = Boolean(
-    props.pack.rounds.some(round =>
-      round.themes.some(theme =>
-        theme.questions.length
-      )
-    )
-  )
-  const hasAtLeast1Theme = Boolean(
-    props.pack.rounds.some(round =>
-      round.themes.length
-    )
-  )
-  const has5ThemesInEachRound = props.pack.rounds.length && Boolean(
-    props.pack.rounds.every(round =>
-      round.themes.length >= 5
-    )
-  )
-  const hasAtLeast25Questions = Boolean(
-    props.pack.rounds.reduce(
-      (prev, round) => prev+round.themes.reduce(
-        (prev, theme) => prev+theme.questions.length, 0
-      ), 0
-    ) >= 25
-  )
-  const hasQuestionWithAuction = Boolean(
-    props.pack.rounds.some(
-      round => round.themes.some(
-        theme => theme.questions.some(
-          question => question.type === 'auction'
-        )
-      )
-    )
-  )
-  const hasQuestionWithBagCat = Boolean(
-    props.pack.rounds.some(
-      round => round.themes.some(
-        theme => theme.questions.some(
-          question => question.type === 'bagcat'
-        )
-      )
-    )
-  )
 
   const items = {
     required: [
       { name: 'Добавить авторов пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.authors) },
       { name: 'Установить язык пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.language) },
       { name: 'Создать раунд', link: '/pack/%packUUID%/', done: Boolean(props.pack.rounds.length) },
-      { name: 'Создать тему', link: props.pack.rounds.length && '/pack/%packUUID%/rounds/1', done: hasAtLeast1Theme },
-      { name: 'Создать вопрос', link:
-        props.pack.rounds.length &&
-        props.pack.rounds[0].questions?.length &&
-        '/pack/%packUUID%/rounds/1/1',
-      done: hasAtLeast1Question }
+      { name: 'Создать темы во всех раундах', done: hasThemeInEachRound(props.pack) },
+      { name: 'Создать вопросы во всех темах', done: hasQuestionInEachTheme(props.pack) },
+      { name: 'Создать события сценария в каждом вопросе', done: hasScenarioInEachQuestion(props.pack) },
       //Установить равное колво вопросов во всех темах одного раунда
     ],
     optional: [
-      { name: 'Добавить иконку пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.icon) },
+      { name: 'Добавить иконку пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.logo) },
       { name: 'Добавить теги пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.tags) },
-      { name: 'Добавить не менее 5 тем в каждом раунде', done: has5ThemesInEachRound },
-      { name: 'Добавить не менее 25 вопросов всего', done: hasAtLeast25Questions },
-      { name: 'Добавить вопрос со ставкой', done: hasQuestionWithAuction },
-      { name: 'Добавить вопрос Кот в мешке', done: hasQuestionWithBagCat },
+      { name: 'Добавить не менее 5 тем в каждом раунде', done: has5ThemesInEachRound(props.pack) },
+      { name: 'Добавить не менее 25 вопросов всего', done: hasAtLeast25Questions(props.pack) },
+      { name: 'Добавить вопрос со ставкой', done: hasQuestionWithAuction(props.pack) },
+      { name: 'Добавить вопрос Кот в мешке', done: hasQuestionWithBagCat(props.pack) },
       { name: 'Сжать файлы, чтобы размер каждого был менее 1 МБ' }
     ]
   }
