@@ -6,6 +6,9 @@ import { MdFileUpload, MdDone } from 'react-icons/md'
 import CircularProgress from '@mui/material/CircularProgress'
 import { saveFile, allowedFileTypes } from 'localStorage/fileStorage'
 import Button from '@mui/material/Button'
+import { FormikTextField } from 'components/FormikField'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 
 Upload.propTypes = {
   packUUID: PropTypes.string,
@@ -44,25 +47,54 @@ export default function Upload(props) {
     }
   }
 
+  const formik = useFormik({
+    initialValues: { url: '' },
+    validationSchema: yup.object({
+      url: yup
+        .string()
+        .url('Некорректный формат адреса')
+        .required('Введите адрес')
+    }),
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: async values => {
+      console.log(values)
+    }
+  })
+
   return (
     !uploading
-      ? <Dropzone
-        onDropAccepted={handleDrop}
-        accept={allowedFileTypes}
-      >
-        {({ getRootProps, getInputProps }) => (
-          <div className={styles.dropzone} {...getRootProps()}>
-            <input {...getInputProps()} />
-            <span className={styles.flex}><MdFileUpload /> Загрузить медиа-файл</span>
-            <span className={styles.supportedTypes}>
-              <span>Поддерживаемые типы файлов:</span>
-              <span>Фото: png, jpeg, gif</span>
-              <span>Аудио: mp3, wav, ogg</span>
-              <span>Видео: mp4</span>
-            </span>
-          </div>
-        )}
-      </Dropzone>
+      ? <div className={styles.addForm}>
+        <Dropzone
+          onDropAccepted={handleDrop}
+          accept={allowedFileTypes}
+        >
+          {({ getRootProps, getInputProps }) => (
+            <div className={styles.dropzone} {...getRootProps()}>
+              <input {...getInputProps()} />
+              <span className={styles.flex}><MdFileUpload /> Загрузить медиа-файл</span>
+              <span className={styles.supportedTypes}>
+                <span>Поддерживаемые типы файлов:</span>
+                <span>Фото: png, jpeg, gif</span>
+                <span>Аудио: mp3, wav, ogg</span>
+                <span>Видео: mp4</span>
+              </span>
+            </div>
+          )}
+        </Dropzone>
+        <form onSubmit={formik.handleSubmit} className={styles.downloadByURL}>
+          <span className={styles.hint}>Или загрузить по URL:</span>
+          <FormikTextField
+            name='url'
+            formik={formik}
+            label='Адрес файла'
+            placeholder='https://example.com/image.png'
+            size='small'
+            className={styles.input}
+          />
+          <Button type='submit'>Добавить</Button>
+        </form>
+      </div>
       : <div className={styles.uploadingFiles}>
         <div className={styles.uploadingScreen}>
           <div className={styles.uploadingCaption}>
