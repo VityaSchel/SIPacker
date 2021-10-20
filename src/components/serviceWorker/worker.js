@@ -11,6 +11,7 @@ clientsClaim()
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST)
+console.log('sw-worker-debug', 'webpack manifest caching', self.__WB_MANIFEST)
 
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
@@ -19,6 +20,7 @@ const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
 registerRoute(
   // Return false to exempt requests from being fulfilled by index.html.
   ({ request, url }) => {
+    console.log('sw-worker-debug', 'registering route', request, url)
     // If this isn't a navigation, skip.
     if (request.mode !== 'navigate') {
       return false
@@ -55,6 +57,7 @@ registerRoute(
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
+  console.log('sw-worker-debug', 'message is', event)
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting()
   }
