@@ -57,11 +57,12 @@ export default function Upload(props) {
       return { url: 'Не удалось получить изображение' }
     }
     values.file = {}
-    values.file.type = responseRaw?.headers?.get('content-type')
+    values.file.type = responseRaw?.headers?.get?.('content-type')
     if(!allowedFileTypes.includes(values.file.type))
       return { url: 'Неподдерживаемый тип файла' }
-    values.file.size = 
-    values.file.name = url.split('/').splice(-1) || 'Без названия'
+    const blob = await responseRaw.blob()
+    values.file.size = blob.size
+    values.file.name = blob.name || responseRaw?.headers?.get?.('content-disposition') || url.split('/').splice(-1) || 'Без названия'
   }
 
   const formik = useFormik({
@@ -78,11 +79,11 @@ export default function Upload(props) {
     onSubmit: async values => {
       let hasErrors = false
       try {
-        await saveFileAsURL(values.url, values.fileType, values.fileName, props.packUUID)
+        await saveFileAsURL(values.url, values.file, props.packUUID)
       } catch(e) {
         console.error(e)
         hasErrors = true
-        setErrors([{ filename: values.fileName, errorMessage: e }])
+        setErrors([{ filename: values.file.name, errorMessage: e }])
         setUploading(true)
       }
       !hasErrors && props.setTab('added')

@@ -20,6 +20,9 @@ export default class FileResolver {
     // this.getDir('Video')
     const file = await getFile(fileURI)
     if(!file) throw `Файл не найден: Проверьте поле ${error}`
+
+    if(file.url) return file.url
+
     if(file.blob.size > 1024*1024) this.warnings.push(`Файл «${file.fileName}» весит больше 1 МБ`)
 
     let id, extension

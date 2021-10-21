@@ -45,15 +45,15 @@ function ImageField(props) {
 
         const blob = file.miniature
         const name = file.fileName
-        const size = blob.size
+        const size = file.size
         setSrc({ name, size })
 
-        const url = URL.createObjectURL(blob)
+        const url = file.url ?? URL.createObjectURL(blob)
         setSrcUrl(url)
         props.dispatch({ type: 'fileRendering/fileRenderingStarted', fileURI: file.fileURI, callback: () => setNoFile(true) })
 
         cleanup = () => {
-          URL.revokeObjectURL(url)
+          url.startsWith('blob:') && URL.revokeObjectURL(url)
           store.dispatch({ type: 'fileRendering/fileRenderingStopped', fileURI: file.fileURI })
         }
       })()
