@@ -44,6 +44,30 @@ export async function saveFile(blob, packUUID) {
   return fileURI
 }
 
+export async function saveFileAsURL(url, fileType, fileName, packUUID) {
+  const db = init()
+
+  let results = await db.files.where({ packUUID, url }).toArray()
+  if(results.length) throw 'File with such url already exist'
+
+  const type = Object.entries(mimeTypes).find(
+    ([,mimeType]) => mimeType.some(type => type === fileType)
+  )[0]
+
+  const fileURI = nanoid()
+  const fileObject = {
+    fileURI,
+    type,
+    url,
+    fileName,
+    packUUID,
+    addedAt: Date.now()
+  }
+
+  await db.files.put(fileObject)
+  return fileURI
+}
+
 const maxSize = 100
 async function generateMiniature(blob) {
   const img = document.createElement('img')

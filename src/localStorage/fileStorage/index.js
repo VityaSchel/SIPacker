@@ -1,6 +1,6 @@
 import { init } from '../indexeddb'
 import { loadLocalPacks } from 'localStorage/localPacks'
-export { allowedFileTypes, saveFile } from './saveFile'
+export { allowedFileTypes, saveFile, saveFileAsURL } from './saveFile'
 
 export async function getFile(fileURI) {
   const db = init()

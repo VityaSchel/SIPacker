@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone'
 import styles from './styles.module.scss'
 import { MdFileUpload, MdDone } from 'react-icons/md'
 import CircularProgress from '@mui/material/CircularProgress'
-import { saveFile, allowedFileTypes } from 'localStorage/fileStorage'
+import { saveFile, saveFileAsURL, allowedFileTypes } from 'localStorage/fileStorage'
 import Button from '@mui/material/Button'
 import { FormikTextField } from 'components/FormikField'
 import { useFormik } from 'formik'
@@ -47,6 +47,23 @@ export default function Upload(props) {
     }
   }
 
+  const validate = async values => {
+    const url = values.url
+    let responseRaw
+    try {
+      responseRaw = await fetch(url)
+      if(responseRaw?.status !== 200) throw {}
+    } catch(e) {
+      return { url: 'Не удалось получить изображение' }
+    }
+    values.file = {}
+    values.file.type = responseRaw?.headers?.get('content-type')
+    if(!allowedFileTypes.includes(values.file.type))
+      return { url: 'Неподдерживаемый тип файла' }
+    values.file.size = 
+    values.file.name = url.split('/').splice(-1) || 'Без названия'
+  }
+
   const formik = useFormik({
     initialValues: { url: '' },
     validationSchema: yup.object({
@@ -55,10 +72,20 @@ export default function Upload(props) {
         .url('Некорректный формат адреса')
         .required('Введите адрес')
     }),
+    validate,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      console.log(values)
+      let hasErrors = false
+      try {
+        await saveFileAsURL(values.url, values.fileType, values.fileName, props.packUUID)
+      } catch(e) {
+        console.error(e)
+        hasErrors = true
+        setErrors([{ filename: values.fileName, errorMessage: e }])
+        setUploading(true)
+      }
+      !hasErrors && props.setTab('added')
     }
   })
 

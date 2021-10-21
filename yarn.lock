@@ -3988,7 +3988,7 @@
     "strip-ansi" "^6.0.0"
     "wrap-ansi" "^7.0.0"
 
-"clsx@^1.0.4", "clsx@^1.1.1":
+"clsx@^1.0.4", "clsx@^1.1.0", "clsx@^1.1.1":
   "integrity" "sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA=="
   "resolved" "https://registry.npmjs.org/clsx/-/clsx-1.1.1.tgz"
   "version" "1.1.1"
@@ -8806,6 +8806,14 @@
     "query-string" "^4.1.0"
     "sort-keys" "^1.0.0"
 
+"notistack@^1.0.6-next.3":
+  "integrity" "sha512-vtRMCAOyfFzfRIaJgpftwPG/gojL0JqPvEFnpoYSWWZmW80C32dXU+Pq7BrWhW6Y4yO7wv/d2toNM7QJJxdW9Q=="
+  "resolved" "https://registry.npmjs.org/notistack/-/notistack-1.0.6-next.3.tgz"
+  "version" "1.0.6-next.3"
+  dependencies:
+    "clsx" "^1.1.0"
+    "hoist-non-react-statics" "^3.3.0"
+
 "npm-run-path@^2.0.0":
   "integrity" "sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8="
   "resolved" "https://registry.yarnpkg.com/npm-run-path/-/npm-run-path-2.0.2.tgz"
@@ -10417,7 +10425,7 @@
     "strip-ansi" "6.0.0"
     "text-table" "0.2.0"
 
-"react-dom@*", "react-dom@^16.8.5 || ^17.0.0", "react-dom@^17.0.2", "react-dom@>=16.6.0":
+"react-dom@*", "react-dom@^16.8.0 || ^17.0.0", "react-dom@^16.8.5 || ^17.0.0", "react-dom@^17.0.2", "react-dom@>=16.6.0":
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"
