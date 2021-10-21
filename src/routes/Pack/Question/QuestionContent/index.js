@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import * as yup from 'yup'
 import styles from './styles.module.scss'
@@ -52,6 +53,7 @@ function QuestionContent(props) {
   const questionPrice = params.questionPrice
   const questions = props.pack.rounds[round-1].themes[params.themeIndex-1].questions
   const newQuestion = questionPrice === 'add'
+  const scenarioRef = React.useRef()
 
   const getNextPrice = questions => {
     const findRegularity = () => {
@@ -81,7 +83,11 @@ function QuestionContent(props) {
     onSubmit: async (values) => {
       const pack = { ...props.pack }
       const theme = params.themeIndex
-      const question = newQuestion ? { ...values } : { ...props.data, ...values }
+      const question = newQuestion ? { ...values } : {
+        ...props.data,
+        ...values,
+        scenario: scenarioRef.current.getScenario()
+      }
       let questions = pack.rounds[round-1].themes[theme-1].questions
       if(newQuestion) {
         questions.push(question)
@@ -118,7 +124,7 @@ function QuestionContent(props) {
       </form>
       {newQuestion
         ? <NoScenario />
-        : <Scenario formik={formik} submitting={formik.isValidating || submitting} />
+        : <Scenario formik={formik} submitting={formik.isValidating || submitting} ref={scenarioRef} />
       }
       <Prompt
         when={Object.keys(formik.touched).length && !submitting}

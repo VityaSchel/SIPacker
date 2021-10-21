@@ -18,6 +18,8 @@ PackPageContainer.propTypes = {
   toolbar: PropTypes.string
 }
 
+export const questionPath = '/rounds/:roundIndex/themes/:themeIndex/questions/:questionPrice'
+
 function PackPageContainer(props) {
   const { path } = useRouteMatch()
 
@@ -37,7 +39,7 @@ function PackPageContainer(props) {
           <Route path={`${path}/settings`}>
             <Settings />
           </Route>
-          <Route path={`${path}/rounds/:roundIndex/themes/:themeIndex/questions/:questionPrice`}>
+          <Route path={`${path}${questionPath}`}>
             <Question />
           </Route>
           <Route path={`${path}/rounds/:roundIndex`}>
