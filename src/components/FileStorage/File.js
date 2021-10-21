@@ -28,9 +28,13 @@ export default function File(props) {
   const contextMenuActions = React.useContext(ContextMenuActions)
 
   React.useEffect(() => {
-    const src = URL.createObjectURL(props.file.miniature)
-    setFileSrc(src)
-    return () => URL.revokeObjectURL(src)
+    const url = props.file.url
+    if(url) setFileSrc(url)
+    else {
+      const src = URL.createObjectURL(props.file.miniature)
+      setFileSrc(src)
+      return () => URL.revokeObjectURL(src)
+    }
   }, [props.file.miniature])
 
   const handleSelect = () => props.handleSelect(props.file.fileURI)
@@ -91,7 +95,7 @@ export default function File(props) {
       >
         <DialogTitle className={styles.title}>Информация о файле {props.file.filename}</DialogTitle>
         <DialogContent>
-          <p>Размер файла: <b>{filesize(props.file.blob.size, { symbols })}</b></p>
+          <p>Размер файла: <b>{filesize(props.file.size, { symbols })}</b></p>
           <p>Дата добавления: <b>{formatDate(new Date(props.file.addedAt))}</b></p>
           <Button
             variant='contained'

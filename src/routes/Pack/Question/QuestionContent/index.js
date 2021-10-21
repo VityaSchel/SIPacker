@@ -80,8 +80,9 @@ function QuestionContent(props) {
     validateOnBlur: false,
     onSubmit: async (values) => {
       const pack = { ...props.pack }
+      const theme = params.themeIndex
       const question = newQuestion ? { ...values } : { ...props.data, ...values }
-      let questions = pack.rounds[round-1].themes[params.themeIndex-1].questions
+      let questions = pack.rounds[round-1].themes[theme-1].questions
       if(newQuestion) {
         questions.push(question)
       } else {
@@ -90,7 +91,8 @@ function QuestionContent(props) {
       questions = questions.sort((a, b) => a.price - b.price)
       await saveLocalPack(pack)
       props.dispatch({ type: 'pack/load', pack })
-      history.push(`/pack/${pack.uuid}/rounds/${round}`)
+      formik.resetForm()
+      history.push(`/pack/${pack.uuid}/rounds/${round}/themes/${theme}/questions/${question.price}`)
     },
   })
 

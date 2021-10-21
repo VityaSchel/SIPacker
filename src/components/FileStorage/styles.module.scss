@@ -144,35 +144,60 @@
     height: 400px;
     padding: 10px;
 
-    .dropzone {
-      height: 100%;
-      border: 3px dashed rgba(#777, 0.4);
-      border-radius: 10px;
+    .addForm {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      transition: border 200ms;
+      height: 100%;
+      gap: 10px;
 
-      &:hover {
-        border: 3px dashed rgba(#777, 0.8);
-      }
-
-      .flex > svg {
-        vertical-align: middle
-      }
-
-      .supportedTypes {
-        margin-top: 20px;
+      .dropzone {
+        height: 100%;
+        border: 3px dashed rgba(#777, 0.4);
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
-        font-size: 0.8rem;
-        gap: 5px;
-        color: #777;
+        cursor: pointer;
+        transition: border 200ms;
+        flex: 1;
+
+        &:hover {
+          border: 3px dashed rgba(#777, 0.8);
+        }
+
+        .flex > svg {
+          vertical-align: middle
+        }
+
+        .supportedTypes {
+          margin-top: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-size: 0.8rem;
+          gap: 5px;
+          color: #777;
+        }
+      }
+
+      .downloadByURL {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .hint {
+          display: block;
+          margin: 0 10px;
+          font-size: 0.9rem;
+        }
+
+        .input {
+          flex: 1;
+        }
       }
     }
+
 
     .uploadingFiles {
       display: flex;

@@ -66,7 +66,6 @@ function Settings(props) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      console.log(values.authors)
       setSubmitting(true)
       let pack = { ...props.pack, ...values }
       await saveLocalPack(pack)
@@ -78,7 +77,6 @@ function Settings(props) {
   useBeforeunload((event) => {
     if(Object.keys(formik.touched).length) event.preventDefault()
   })
-  console.log(formik.values);
 
   return (
     <div className={styles.container}>
