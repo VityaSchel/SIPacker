@@ -73,7 +73,7 @@ $ REACT_APP_PREFIX=/SIPacker npm run build
 
 ## Поддержка браузерами
 
-![Поддержка браузерами](./.github/README/compatibility.svg)
+![Поддержка браузерами](./.github/README/compatibility-table.svg)
 
 ## Contributing
 
