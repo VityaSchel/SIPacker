@@ -21,6 +21,7 @@ const FileStorage = React.forwardRef((props, ref) => {
   const [packs, setPacks] = React.useState([])
   const [packUUID, setPackUUID] = React.useState([])
   const [checkboxes, setCheckboxes] = React.useState([])
+  const [acceptableType, setAcceptableType] = React.useState()
 
   const handleClose = () => {
     setOpen(false)
@@ -33,11 +34,12 @@ const FileStorage = React.forwardRef((props, ref) => {
   }
 
   React.useImperativeHandle(ref, () => ({
-    async open(packUUID, callback) {
+    async open(packUUID, acceptableType, callback) {
       setCallback(() => callback)
       await loadPacks()
       setOpen(true)
       setPackUUID(packUUID)
+      setAcceptableType(acceptableType)
     }
   }))
 
@@ -112,6 +114,7 @@ const FileStorage = React.forwardRef((props, ref) => {
             <List
               packs={filteredPacks}
               handleSelect={handleSelect}
+              acceptableType={acceptableType}
             />
           </div>
         }

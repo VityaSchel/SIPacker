@@ -65,7 +65,7 @@ function ImageField(props) {
   }, [props.value])
 
   const handleClick = async () => {
-    let result = await new Promise(resolve => fileStorage.current.open(props.pack.uuid, resolve))
+    let result = await new Promise(resolve => fileStorage.current.open(props.pack.uuid, 'image', resolve))
     if(!result) { return }
     props.onChange(result)
   }

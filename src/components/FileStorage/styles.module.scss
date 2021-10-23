@@ -64,6 +64,12 @@
             padding: 10px;
             height: 140px;
 
+            &.disabled {
+              pointer-events: none;
+              opacity: 0.35;
+              user-select: none;
+            }
+
             .itemInner {
               height: 100%;
               border-radius: 10px;

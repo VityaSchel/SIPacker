@@ -8,7 +8,8 @@ import Typography from '@mui/material/Typography'
 
 List.propTypes = {
   packs: PropTypes.array,
-  handleSelect: PropTypes.func
+  handleSelect: PropTypes.func,
+  acceptableType: PropTypes.string,
 }
 
 export default function List(props) {
@@ -53,6 +54,7 @@ export default function List(props) {
                     key={`${i}_${j}`}
                     handleSelect={props.handleSelect}
                     onRemove={mapFiles}
+                    disabled={file.type !== props.acceptableType}
                   />
                 )}
               </Grid>

@@ -14,11 +14,13 @@ import { formatDate } from '../../utils'
 import { deleteFile } from 'localStorage/fileStorage'
 import store from 'reducers/index'
 import { ContextMenuActions } from 'components/ContextMenu'
+import cx from 'classnames'
 
 File.propTypes = {
   file: PropTypes.object,
   handleSelect: PropTypes.func,
-  onRemove: PropTypes.func
+  onRemove: PropTypes.func,
+  disabled: PropTypes.bool
 }
 
 export default function File(props) {
@@ -70,7 +72,7 @@ export default function File(props) {
     <>
       <Grid
         item xs={4} md={6} sm={12}
-        className={styles.item}
+        className={cx(styles.item, { [styles.disabled]: props.disabled })}
         onClick={handleSelect}
         onContextMenu={handleOpenMenu}
       >
