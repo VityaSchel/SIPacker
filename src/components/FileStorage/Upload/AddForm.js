@@ -7,7 +7,7 @@ import { saveFileAsURL, allowedFileTypes } from 'localStorage/fileStorage'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import Button from '@mui/material/Button'
-
+import Tooltip from '@mui/material/Tooltip'
 
 AddForm.propTypes = {
   setTab: PropTypes.func,
@@ -25,12 +25,21 @@ function AddForm(props) {
   }
 
   const validate = async values => {
-    const url = values.url
+    const url = values.url.startsWith('!') ? values.url.substring(1) : values.url
+    try {
+      await yup
+        .string()
+        .url('Некорректный формат адреса')
+        .required('Введите адрес')
+        .validate(url)
+    } catch(e) { return { url: e.errors } }
+    if(!url.startsWith('http')) return { url: 'Поддерживается только схема https' }
     let responseRaw
     try {
       responseRaw = await fetch(url)
       if(responseRaw?.status !== 200) throw {}
     } catch(e) {
+      console.error(e)
       return { url: 'Не удалось получить изображение' }
     }
     values.file = {}
@@ -44,12 +53,6 @@ function AddForm(props) {
 
   const formik = useFormik({
     initialValues: { url: '' },
-    validationSchema: yup.object({
-      url: yup
-        .string()
-        .url('Некорректный формат адреса')
-        .required('Введите адрес')
-    }),
     validate,
     validateOnChange: false,
     validateOnBlur: false,
@@ -66,6 +69,8 @@ function AddForm(props) {
       !hasErrors && props.setTab('added')
     }
   })
+
+  const httpScheme = formik.values.url?.startsWith('http:')
 
   return (
     <div className={styles.addForm}>
@@ -96,7 +101,11 @@ function AddForm(props) {
           size='small'
           className={styles.input}
         />
-        <Button type='submit'>Добавить</Button>
+        <Tooltip title={httpScheme ? <p>В связи с техническими ограничениями браузера добавлять медиа-контент можно только по протоколу https. Однако, текущая версия SIGame не поддерживает https, поэтому вы можете добавить http ссылку в SIPacker, дописав ! в начале адреса, но в таком случае вы не сможете просматривать файлы через Хранилище файлов. Если вы все равно желаете добавить файл, напишите его адрес вот так: <pre>!{formik.values.url}</pre></p> : ''}>
+          <span>
+            <Button type='submit' disabled={httpScheme}>Добавить</Button>
+          </span>
+        </Tooltip>
       </form>
     </div>
   )

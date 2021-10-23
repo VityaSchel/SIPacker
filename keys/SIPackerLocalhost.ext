@@ -1,0 +1,7 @@
+subjectAltName = @alt_names
+extendedKeyUsage = serverAuth
+
+[alt_names]
+DNS.1 = sipacker.test
+IP.1 = 192.168.0.104
+IP.2 = 127.0.0.1

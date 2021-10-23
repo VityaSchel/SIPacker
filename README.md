@@ -71,6 +71,10 @@ $ npm run build
 $ REACT_APP_PREFIX=/SIPacker npm run build
 ```
 
+## Запуск с фейковым доменом
+
+Если вам интересно, как запустить SIPacker с фейковым доменом и самоподписанным сертификатом (например https://sipacker.test без загрузки в веб), прочитайте инструкцию [/keys/Instructions.txt](/keys/Instructions.txt)
+
 ## Поддержка браузерами
 
 ![Поддержка браузерами](./.github/README/compatibility-table.svg)
