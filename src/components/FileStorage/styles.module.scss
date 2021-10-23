@@ -20,6 +20,7 @@
 
     .filters {
       margin: 20px;
+      max-width: 135px;
 
       .text {
         display: flex;
@@ -29,6 +30,7 @@
 
       .checkbox {
         user-select: none;
+        word-break: break-word;
       }
     }
 
@@ -142,13 +144,13 @@
 
   .upload {
     height: 400px;
-    padding: 10px;
 
     .addForm {
       display: flex;
       flex-direction: column;
       height: 100%;
       gap: 10px;
+      padding: 10px;
 
       .dropzone {
         height: 100%;

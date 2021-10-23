@@ -13,11 +13,10 @@ import { MdAdd } from 'react-icons/md'
 import { scenarioHint } from './hints'
 import WithHint from './WithHint'
 import { connect } from 'react-redux'
-import { useParams, matchPath } from 'react-router'
+import { useParams } from 'react-router'
 import { saveLocalPack } from 'localStorage/localPacks'
-import { mapPackState, history } from 'utils'
+import { mapPackState } from 'utils'
 import sipackerStore from 'reducers'
-import { questionPath } from '../../index'
 
 const Scenario = React.forwardRef(({ formik, ...props }, ref) => {
   const [scenario, setScenario] = React.useState([])
@@ -44,7 +43,6 @@ const Scenario = React.forwardRef(({ formik, ...props }, ref) => {
   }))
 
   const updateQuestionScenario = async scenario => {
-    // const { params } = matchPath(window.location.pathname, { path: `/pack/:packUUID${questionPath}` })
     const pack = { ...sipackerStore.getState().pack }
     const round = params.roundIndex-1
     const questions = pack.rounds[round].themes[params.themeIndex-1].questions

@@ -12,7 +12,7 @@ import { getDeletedPacks } from 'localStorage/fileStorage'
 import List from './List'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
-import Upload from './Upload'
+import Upload from './Upload/'
 
 const FileStorage = React.forwardRef((props, ref) => {
   const [tab, setTab] = React.useState('added')
@@ -115,12 +115,7 @@ const FileStorage = React.forwardRef((props, ref) => {
             />
           </div>
         }
-        {
-          tab === 'upload' &&
-          <div className={styles.upload}>
-            <Upload packUUID={packUUID} setTab={setTab} />
-          </div>
-        }
+        { tab === 'upload' && <Upload packUUID={packUUID} setTab={setTab} /> }
       </DialogContent>
     </Dialog>
   )

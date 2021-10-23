@@ -4,7 +4,7 @@ import { init } from '../indexeddb'
 import drawTransparentPattern from 'checkerboardjs'
 
 const mimeTypes = {
-  image: ['image/png', 'image/jpeg'],
+  image: ['image/png', 'image/jpeg', 'image/gif'],
   audio: ['audio/mpeg', 'audio/wav', 'audio/ogg'],
   video: ['video/mpeg']
 }

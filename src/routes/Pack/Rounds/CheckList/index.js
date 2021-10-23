@@ -24,7 +24,6 @@ function CheckList(props) {
       { name: 'Создать темы во всех раундах', done: hasThemeInEachRound(props.pack) },
       { name: 'Создать вопросы во всех темах', done: hasQuestionInEachTheme(props.pack) },
       { name: 'Создать события сценария в каждом вопросе', done: hasScenarioInEachQuestion(props.pack) },
-      //Установить равное колво вопросов во всех темах одного раунда
     ],
     optional: [
       { name: 'Добавить иконку пака', link: '/pack/%packUUID%/settings/', done: Boolean(props.pack.logo) },

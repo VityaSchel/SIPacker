@@ -10,7 +10,7 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom'
 import RoundThemes from './RoundThemes'
 import NotFound404 from 'components/NotFound404'
 import Question from './Question'
-import { mapPackState } from '../../utils'
+import { mapPackState } from 'utils'
 
 PackPageContainer.propTypes = {
   children: PropTypes.node,

@@ -6,6 +6,12 @@
   <img src="https://user-images.githubusercontent.com/59040542/137257961-73f0aceb-19c9-4e1f-a3fe-80204f145f2d.png" />
 </p>
 
+## Преимущества перед другими редакторами
+
+ |SIPacker|SIQuester (официальный клиент)
+---|---
+Сохранение|
+
 ## Развернутая версия
 
 [https://vityaschel.github.io/SIPacker](https://vityaschel.github.io/SIPacker) (ветка gh-pages)

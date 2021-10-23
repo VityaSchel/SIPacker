@@ -34,7 +34,7 @@ export default class FileResolver {
 
         this.resolvedFiles[id] = true
         const images = this.getDir('Images')
-        extension = {'image/png': 'png', 'image/jpeg': 'jpg'}[file.blob.type]
+        extension = {'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif'}[file.blob.type]
         images.file(`${id}.${extension}`, file.blob)
     }
     return `@${id}.${extension}`

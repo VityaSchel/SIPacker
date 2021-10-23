@@ -1,0 +1,115 @@
+@import '../../../../consts.scss';
+
+.preview {
+  display: flex;
+  height: 100%;
+
+  .list {
+    width: 175px;
+    display: flex;
+    flex-direction: column;
+
+    .scrollable {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .treeFile {
+        padding: 20px;
+        border-bottom: 1px solid rgba(#000, 0.25);
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        cursor: pointer;
+        user-select: none;
+
+        &.selected {
+          background-color: rgba(#fff, 0.1);
+        }
+      }
+    }
+
+    .actions {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+
+  .file {
+    flex: 1;
+    box-shadow: inset 0 0 6px 0 rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    overflow-y: auto;
+
+    @include headings {
+      margin: 0;
+    }
+
+    h2 {
+      font-weight: 800;
+    }
+
+    h4 {
+      margin-top: 5px;
+      font-weight: 400;
+      color: #909090;
+    }
+
+    .choose,
+    .fileInfo {
+      margin-top: 25px;
+    }
+
+    .choose {
+      .versionsPreview {
+        display: flex;
+        gap: 20px;
+        width: 100%;
+
+        div {
+          flex: 1;
+          cursor: pointer;
+
+          img {
+            width: 100%;
+          }
+        }
+      }
+
+      .row {
+        margin-top: 10px;
+
+        label {
+          flex: 1;
+          word-break: break-word;
+          hyphens: auto;
+        }
+      }
+    }
+
+    .fileInfo {
+      img {
+        width: 100%;
+      }
+
+      .info {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .hint {
+          color: #777;
+          font-size: 0.7rem;
+
+          svg {
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+  }
+}
