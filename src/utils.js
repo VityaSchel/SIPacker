@@ -1,4 +1,5 @@
 import { createBrowserHistory } from 'history'
+import filesizeToText from 'filesize'
 
 export const removeUndefined = object => Object.fromEntries(Object.entries(object).filter(([, val]) => val !== undefined))
 
@@ -99,3 +100,6 @@ export const hasScenarioInEachQuestion = pack => Boolean(
     )
   )
 )
+
+const symbols = { B: 'Б', kB: 'кБ', MB: 'МБ', GB: 'ГБ', TB: 'ТБ', PB: 'ПБ', EB: 'ЭБ', ZB: 'ЗБ', YB: 'ЙБ' }
+export const filesize = size => size === null ? 'Неизвестно' : filesizeToText(size, { symbols })

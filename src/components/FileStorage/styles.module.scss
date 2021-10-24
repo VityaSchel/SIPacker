@@ -6,6 +6,16 @@
   justify-content: space-between;
 }
 
+.link {
+  width: 400px;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
 .dialog {
   width: 600px;
   padding: 0 !important;

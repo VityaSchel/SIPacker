@@ -6,8 +6,7 @@ import cx from 'classnames'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
-import filesize from 'filesize'
-import { symbols } from 'components/ImageField'
+import { filesize } from 'utils'
 import Compressor from 'compressorjs'
 import { MdInfoOutline } from 'react-icons/md'
 
@@ -196,7 +195,7 @@ function FileInfo(props) {
         <img src={src} />
       }
       <div className={styles.info}>
-        <span>Размер: {filesize(props.file.blob.size, { symbols })}</span>
+        <span>Размер: {filesize(props.file.blob.size)}</span>
         <span className={styles.hint}><MdInfoOutline /> Сжатие файла этого типа в браузере невозможно, попробуйте сжать файл самостоятельно и загрузить сжатую версию.</span>
       </div>
     </div>

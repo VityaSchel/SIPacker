@@ -8,6 +8,7 @@ import { getFile } from 'localStorage/fileStorage'
 export { default as Upload } from './Upload'
 export { default as Pack } from './Pack'
 import { connect } from 'react-redux'
+import unknownFileType from 'assets/unknownFileType.svg'
 
 export function Create() {
   return (
@@ -47,12 +48,16 @@ function PackImage(props) {
         const file = await getFile(props.src)
         if(file === null) return setSrc()
 
-        const src = URL.createObjectURL(file.blob)
-        setSrc(src)
+        if(file.url) {
+          setSrc(file.type === 'unknown' ? unknownFileType : file.url)
+        } else {
+          const src = URL.createObjectURL(file.blob)
+          setSrc(src)
+        }
         props.dispatch({ type: 'fileRendering/fileRenderingStarted', fileURI: props.src, callback: () => setSrc() })
 
         cleanup = () => {
-          URL.revokeObjectURL(src)
+          src?.startsWith('blob:') && URL.revokeObjectURL(src)
           props.dispatch({ type: 'fileRendering/fileRenderingStopped', fileURI: props.src })
         }
       })()

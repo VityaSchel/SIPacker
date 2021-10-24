@@ -8,13 +8,13 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import Button from '@mui/material/Button'
-import filesize from 'filesize'
-import { symbols } from 'components/ImageField'
+import { filesize } from 'utils'
 import { formatDate } from '../../utils'
 import { deleteFile } from 'localStorage/fileStorage'
 import store from 'reducers/index'
 import { ContextMenuActions } from 'components/ContextMenu'
 import cx from 'classnames'
+import unknownFileType from 'assets/unknownFileType.svg'
 
 File.propTypes = {
   file: PropTypes.object,
@@ -31,8 +31,9 @@ export default function File(props) {
 
   React.useEffect(() => {
     const url = props.file.url
-    if(url) setFileSrc(url)
-    else {
+    if(url) {
+      setFileSrc(props.file.type === 'unknown' ? unknownFileType : url)
+    } else {
       const src = URL.createObjectURL(props.file.miniature)
       setFileSrc(src)
       return () => URL.revokeObjectURL(src)
@@ -97,8 +98,12 @@ export default function File(props) {
       >
         <DialogTitle className={styles.title}>Информация о файле {props.file.filename}</DialogTitle>
         <DialogContent>
-          <p>Размер файла: <b>{filesize(props.file.size, { symbols })}</b></p>
+          <p>Размер файла: <b>{filesize(props.file.size)}</b></p>
           <p>Дата добавления: <b>{formatDate(new Date(props.file.addedAt))}</b></p>
+          {props.file.url && <p>
+            Адрес файла:
+            <b><a target='_blank' href={props.file.url} rel='noreferrer' className={styles.link}>{props.file.url}</a></b>
+          </p>}
           <Button
             variant='contained'
             className={styles.delete}

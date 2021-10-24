@@ -54,7 +54,7 @@ export default function List(props) {
                     key={`${i}_${j}`}
                     handleSelect={props.handleSelect}
                     onRemove={mapFiles}
-                    disabled={file.type !== props.acceptableType}
+                    disabled={file.type !== 'unknown' && file.type !== props.acceptableType}
                   />
                 )}
               </Grid>

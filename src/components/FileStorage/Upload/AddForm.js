@@ -8,6 +8,7 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
+import contentType from 'content-type'
 
 AddForm.propTypes = {
   setTab: PropTypes.func,
@@ -26,6 +27,7 @@ function AddForm(props) {
 
   const validate = async values => {
     const url = values.url.startsWith('!') ? values.url.substring(1) : values.url
+    const urlName = url.split('/').splice(-1) || 'Без названия'
     try {
       await yup
         .string()
@@ -34,21 +36,32 @@ function AddForm(props) {
         .validate(url)
     } catch(e) { return { url: e.errors } }
     if(!url.startsWith('http')) return { url: 'Поддерживается только схема https' }
-    let responseRaw
-    try {
-      responseRaw = await fetch(url)
-      if(responseRaw?.status !== 200) throw {}
-    } catch(e) {
-      console.error(e)
-      return { url: 'Не удалось получить изображение' }
+    if(url.startsWith('http://')){
+      values.file = {
+        type: 'unknown',
+        size: null,
+        name: urlName
+      }
+    } else {
+      let responseRaw
+      try {
+        responseRaw = await fetch(url)
+        if(responseRaw?.status !== 200) throw {}
+      } catch(e) {
+        return { url: 'Не удалось получить изображение' }
+      }
+      values.file = {}
+      const contentTypeHeader = responseRaw?.headers?.get?.('content-type')
+      console.log(contentTypeHeader)
+      const actualMimeType = contentType.parse(contentTypeHeader).type
+      console.log(actualMimeType)
+      values.file.type = actualMimeType
+      if(!allowedFileTypes.includes(values.file.type))
+        return { url: 'Неподдерживаемый тип файла' }
+      const blob = await responseRaw.blob()
+      values.file.size = blob.size
+      values.file.name = blob.name || responseRaw?.headers?.get?.('content-disposition') || urlName
     }
-    values.file = {}
-    values.file.type = responseRaw?.headers?.get?.('content-type')
-    if(!allowedFileTypes.includes(values.file.type))
-      return { url: 'Неподдерживаемый тип файла' }
-    const blob = await responseRaw.blob()
-    values.file.size = blob.size
-    values.file.name = blob.name || responseRaw?.headers?.get?.('content-disposition') || url.split('/').splice(-1) || 'Без названия'
   }
 
   const formik = useFormik({
@@ -59,7 +72,8 @@ function AddForm(props) {
     onSubmit: async values => {
       let hasErrors = false
       try {
-        await saveFileAsURL(values.url, values.file, props.packUUID)
+        const url = values.url.startsWith('!') ? values.url.substring(1) : values.url
+        await saveFileAsURL(url, values.file, props.packUUID)
       } catch(e) {
         console.error(e)
         hasErrors = true
