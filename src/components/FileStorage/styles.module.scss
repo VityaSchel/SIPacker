@@ -6,6 +6,16 @@
   justify-content: space-between;
 }
 
+.link {
+  width: 400px;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
 .dialog {
   width: 600px;
   padding: 0 !important;
@@ -20,6 +30,7 @@
 
     .filters {
       margin: 20px;
+      max-width: 135px;
 
       .text {
         display: flex;
@@ -29,6 +40,7 @@
 
       .checkbox {
         user-select: none;
+        word-break: break-word;
       }
     }
 
@@ -61,6 +73,12 @@
           .item {
             padding: 10px;
             height: 140px;
+
+            &.disabled {
+              pointer-events: none;
+              opacity: 0.35;
+              user-select: none;
+            }
 
             .itemInner {
               height: 100%;
@@ -142,13 +160,13 @@
 
   .upload {
     height: 400px;
-    padding: 10px;
 
     .addForm {
       display: flex;
       flex-direction: column;
       height: 100%;
       gap: 10px;
+      padding: 10px;
 
       .dropzone {
         height: 100%;

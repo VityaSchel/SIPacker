@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import * as yup from 'yup'
 import styles from './styles.module.scss'
@@ -8,7 +9,7 @@ import { useBeforeunload } from 'react-beforeunload'
 import FormFields from './FormFields'
 import Scenario from './Scenario'
 import NoScenario from './NoScenario'
-import { mapPackState, initValues } from '../../../../utils'
+import { mapPackState, initValues } from 'utils'
 import { connect } from 'react-redux'
 import { saveLocalPack } from 'localStorage/localPacks'
 import { validate } from './validation'
@@ -52,6 +53,7 @@ function QuestionContent(props) {
   const questionPrice = params.questionPrice
   const questions = props.pack.rounds[round-1].themes[params.themeIndex-1].questions
   const newQuestion = questionPrice === 'add'
+  const scenarioRef = React.useRef()
 
   const getNextPrice = questions => {
     const findRegularity = () => {
@@ -78,10 +80,14 @@ function QuestionContent(props) {
     validate: values => validate(values, props, params), validationSchema,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       const pack = { ...props.pack }
       const theme = params.themeIndex
-      const question = newQuestion ? { ...values } : { ...props.data, ...values }
+      const question = newQuestion ? { ...values } : {
+        ...props.data,
+        ...values,
+        scenario: scenarioRef.current.getScenario()
+      }
       let questions = pack.rounds[round-1].themes[theme-1].questions
       if(newQuestion) {
         questions.push(question)
@@ -91,8 +97,8 @@ function QuestionContent(props) {
       questions = questions.sort((a, b) => a.price - b.price)
       await saveLocalPack(pack)
       props.dispatch({ type: 'pack/load', pack })
-      formik.resetForm()
-      history.push(`/pack/${pack.uuid}/rounds/${round}/themes/${theme}/questions/${question.price}`)
+      await history.push(`/pack/${pack.uuid}/rounds/${round}/themes/${theme}/questions/${question.price}`)
+      resetForm({ values })
     },
   })
 
@@ -118,7 +124,7 @@ function QuestionContent(props) {
       </form>
       {newQuestion
         ? <NoScenario />
-        : <Scenario formik={formik} submitting={formik.isValidating || submitting} />
+        : <Scenario formik={formik} submitting={formik.isValidating || submitting} ref={scenarioRef} />
       }
       <Prompt
         when={Object.keys(formik.touched).length && !submitting}

@@ -15,10 +15,10 @@ import WithHint from './WithHint'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import { saveLocalPack } from 'localStorage/localPacks'
-import { mapPackState } from 'utils.js'
+import { mapPackState } from 'utils'
+import sipackerStore from 'reducers'
 
-Scenario.propTypes = { formik: PropTypes.object, pack: PropTypes.object, dispatch: PropTypes.func }
-function Scenario({ formik, ...props }) {
+const Scenario = React.forwardRef(({ formik, ...props }, ref) => {
   const [scenario, setScenario] = React.useState([])
   const [newEventValue, setNewEventValue] = React.useState('')
   const [scenarioUpdateTimeout, setScenarioUpdateTimeout] = React.useState()
@@ -35,14 +35,21 @@ function Scenario({ formik, ...props }) {
     setScenarioUpdateTimeout(scenarioUpdateQueue)
   }, [scenario])
 
+  React.useImperativeHandle(ref, () => ({
+    getScenario() {
+      clearTimeout(scenarioUpdateTimeout)
+      return scenario
+    }
+  }))
+
   const updateQuestionScenario = async scenario => {
-    const pack = { ...props.pack }
+    const pack = { ...sipackerStore.getState().pack }
     const round = params.roundIndex-1
     const questions = pack.rounds[round].themes[params.themeIndex-1].questions
     const question = questions[questions.findIndex(({ price }) => price === Number(questionPrice))]
     question.scenario = scenario
     await saveLocalPack(pack)
-    props.dispatch({ type: 'pack/load', pack })
+    sipackerStore.dispatch({ type: 'pack/load', pack })
   }
 
   const reorder = (list, startIndex, endIndex) => {
@@ -127,6 +134,12 @@ function Scenario({ formik, ...props }) {
       </Typography>
     </div>
   )
-}
+})
 
-export default connect(mapPackState)(Scenario)
+Scenario.propTypes = {
+  formik: PropTypes.object,
+  pack: PropTypes.object,
+  dispatch: PropTypes.func
+}
+Scenario.displayName = 'Scenario'
+export default connect(mapPackState, null, null, { forwardRef: true })(Scenario)

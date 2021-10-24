@@ -12,7 +12,7 @@ import { getDeletedPacks } from 'localStorage/fileStorage'
 import List from './List'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
-import Upload from './Upload'
+import Upload from './Upload/'
 
 const FileStorage = React.forwardRef((props, ref) => {
   const [tab, setTab] = React.useState('added')
@@ -21,6 +21,7 @@ const FileStorage = React.forwardRef((props, ref) => {
   const [packs, setPacks] = React.useState([])
   const [packUUID, setPackUUID] = React.useState([])
   const [checkboxes, setCheckboxes] = React.useState([])
+  const [acceptableType, setAcceptableType] = React.useState()
 
   const handleClose = () => {
     setOpen(false)
@@ -33,11 +34,12 @@ const FileStorage = React.forwardRef((props, ref) => {
   }
 
   React.useImperativeHandle(ref, () => ({
-    async open(packUUID, callback) {
+    async open(packUUID, acceptableType, callback) {
       setCallback(() => callback)
       await loadPacks()
       setOpen(true)
       setPackUUID(packUUID)
+      setAcceptableType(acceptableType)
     }
   }))
 
@@ -112,15 +114,11 @@ const FileStorage = React.forwardRef((props, ref) => {
             <List
               packs={filteredPacks}
               handleSelect={handleSelect}
+              acceptableType={acceptableType}
             />
           </div>
         }
-        {
-          tab === 'upload' &&
-          <div className={styles.upload}>
-            <Upload packUUID={packUUID} setTab={setTab} />
-          </div>
-        }
+        { tab === 'upload' && <Upload packUUID={packUUID} setTab={setTab} /> }
       </DialogContent>
     </Dialog>
   )

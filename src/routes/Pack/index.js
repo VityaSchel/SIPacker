@@ -10,13 +10,15 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom'
 import RoundThemes from './RoundThemes'
 import NotFound404 from 'components/NotFound404'
 import Question from './Question'
-import { mapPackState } from '../../utils'
+import { mapPackState } from 'utils'
 
 PackPageContainer.propTypes = {
   children: PropTypes.node,
   pack: componentsPropTypes.pack,
   toolbar: PropTypes.string
 }
+
+export const questionPath = '/rounds/:roundIndex/themes/:themeIndex/questions/:questionPrice'
 
 function PackPageContainer(props) {
   const { path } = useRouteMatch()
@@ -37,7 +39,7 @@ function PackPageContainer(props) {
           <Route path={`${path}/settings`}>
             <Settings />
           </Route>
-          <Route path={`${path}/rounds/:roundIndex/themes/:themeIndex/questions/:questionPrice`}>
+          <Route path={`${path}${questionPath}`}>
             <Question />
           </Route>
           <Route path={`${path}/rounds/:roundIndex`}>

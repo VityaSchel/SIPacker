@@ -55,10 +55,29 @@ Settings.propTypes = {
   dispatch: PropTypes.func
 }
 
+const removeDuplicates = (cur, i, array) => !array.slice(0, i).some(value => value.toUpperCase() === cur.toUpperCase())
+
 function Settings(props) {
   const [submitting, setSubmitting] = React.useState(false)
+  const [tags, setTags] = React.useState([])
   const history = useHistory()
   const initialValues = initValues(validationSchema, props.pack)
+
+  React.useEffect(() => {
+    fetch('https://sigame.ru/api/tags')
+      .then(response => response.json())
+      .then(json =>
+        setTags(
+          json.data
+            .sort((a, b) => a.count - b.count)
+            .reverse()
+            .filter(({ _id }) => typeof _id === 'string')
+            .filter(({ count }) => count >= 4)
+            .map(({ _id }) => _id)
+            .filter(removeDuplicates)
+        )
+      )
+  }, [])
 
   const formik = useFormik({
     initialValues,
@@ -130,6 +149,7 @@ function Settings(props) {
         />
         <FormikAutocomplete
           name='tags'
+          options={tags}
           formik={formik}
           label='Теги (необязательно)'
           disabled={submitting}

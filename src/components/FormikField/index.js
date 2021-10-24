@@ -68,7 +68,7 @@ export function FormikAutocomplete(props) {
     <Autocomplete
       {...field}
       multiple
-      options={[]}
+      options={props.options ?? []}
       value={value}
       getOptionLabel={(option) => option}
       freeSolo clearOnBlur={true}

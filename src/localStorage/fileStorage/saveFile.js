@@ -4,7 +4,7 @@ import { init } from '../indexeddb'
 import drawTransparentPattern from 'checkerboardjs'
 
 const mimeTypes = {
-  image: ['image/png', 'image/jpeg'],
+  image: ['image/png', 'image/jpeg', 'image/gif'],
   audio: ['audio/mpeg', 'audio/wav', 'audio/ogg'],
   video: ['video/mpeg']
 }
@@ -51,9 +51,11 @@ export async function saveFileAsURL(url, file, packUUID) {
   let results = await db.files.where({ packUUID, url }).toArray()
   if(results.length) throw 'File with such url already exist'
 
-  const type = Object.entries(mimeTypes).find(
-    ([,mimeType]) => mimeType.some(type => type === file.type)
-  )[0]
+  const type = file.type === 'unknown'
+    ? 'unknown'
+    : Object.entries(mimeTypes).find(
+      ([,mimeType]) => mimeType.some(type => type === file.type)
+    )[0]
 
   const fileURI = nanoid()
   const fileObject = {

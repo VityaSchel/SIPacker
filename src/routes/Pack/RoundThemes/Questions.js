@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
 import TableContainer from '@mui/material/TableContainer'
@@ -6,14 +7,15 @@ import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
-import { MdImage, MdDone, MdMusicNote, MdVideocam, MdAdd } from 'react-icons/md'
-import { useHistory, useRouteMatch } from 'react-router'
+import { MdImage, MdDone, MdMusicNote, MdVideocam, MdAdd, MdDelete } from 'react-icons/md'
+import { useHistory, useRouteMatch, useParams } from 'react-router'
 import { Link } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { connect } from 'react-redux'
-import { mapPackState, questionTypes } from '../../../utils'
+import { mapPackState, questionTypes } from 'utils'
 import Typography from '@mui/material/Typography'
-
+import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
+import { ContextMenuActions } from 'components/ContextMenu'
 
 ItemContent.propTypes = {
   themeIndex: PropTypes.number,
@@ -24,6 +26,9 @@ ItemContent.propTypes = {
 function ItemContent(props) {
   const history = useHistory()
   const route = useRouteMatch()
+  const params = useParams()
+  const confirmationDialogRef = React.useRef()
+  const contextMenuActions = React.useContext(ContextMenuActions)
 
   const sortedQuestions = props.theme.questions.sort((a,b) => a.price - b.price)
 
@@ -33,6 +38,19 @@ function ItemContent(props) {
   const handleOpenQuestion = price => () => history.push(`${questionURL}/${price}`)
   const row = { sx: { '&:last-child td, &:last-child th': { border: 0 } } }
   const cell1 = { component: 'th', scope: 'row' }
+
+
+  const handleDeleteQuestion = async questionPrice => {
+    const round = params.roundIndex-1
+    const themeIndex = props.themeIndex
+    confirmationDialogRef.current.confirmDeleteQuestion(round, themeIndex, questionPrice)
+  }
+
+  const handleOpenMenu = price => e => {
+    contextMenuActions.open(e, [
+      { name: 'Удалить', icon: <MdDelete />, action: () => handleDeleteQuestion(price) }
+    ])
+  }
 
   return (
     <>
@@ -57,6 +75,7 @@ function ItemContent(props) {
                   hover
                   onClick={handleOpenQuestion(question.price)}
                   className={styles.tableRow}
+                  onContextMenu={handleOpenMenu(question.price)}
                   {...row}
                 >
                   <TableCell {...cell1}>{question.price}</TableCell>
@@ -92,6 +111,7 @@ function ItemContent(props) {
           startIcon={<MdAdd />}
         >Создать вопрос</Button>
       </Link>
+      <DeleteConfirmationDialog ref={confirmationDialogRef} />
     </>
   )
 }

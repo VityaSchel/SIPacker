@@ -9,8 +9,8 @@ import { saveLocalPack } from 'localStorage/localPacks'
 import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
 import SavingDialog from './SavingDialog'
 import { mapPackState } from 'utils'
+import { root, rounds, questionNoAdd } from '../pathRegexps.json'
 import { uuidRegex } from 'consts'
-import { root, rounds, question } from '../pathRegexps.json'
 
 PackToolbar.propTypes = {
   pack: componentsPropTypes.pack
@@ -37,16 +37,11 @@ function PackToolbar(props) {
   }
 
   const handleDeleteQuestion = async () => {
-    if(!await confirmationDialogRef.current.confirmDeleteQuestion()) return
-    const pack = { ...props.pack }
     let [,round,themeIndex,questionPrice] = pathname.match(new RegExp(`/pack/${uuidRegex}/rounds/(\\d+)/themes/(\\d+)/questions/(\\d+)`))
-    questionPrice = parseInt(questionPrice)
-    const theme = props.pack.rounds[round-1].themes[themeIndex-1]
-    const questionIndex = theme.questions.findIndex(({ price }) => price === Number(questionPrice))
-    theme.questions.splice(questionIndex, 1)
-    theme.questions = theme.questions.sort((a, b) => a.price - b.price)
-    await saveLocalPack(pack)
-    history.push(`/pack/${pack.uuid}/rounds/${round}`)
+    round -= 1
+    themeIndex -= 1
+    await confirmationDialogRef.current.confirmDeleteQuestion(round, themeIndex, questionPrice)
+    history.push(`/pack/${props.pack.uuid}/rounds/${round+1}`)
   }
 
   const buttons = props.pack && {
@@ -58,7 +53,7 @@ function PackToolbar(props) {
     [rounds]: [
       [handleDeleteRound, <MdDelete key='delete' />, styles.delete]
     ],
-    [question]: [
+    [questionNoAdd]: [
       [handleDeleteQuestion, <MdDelete key='delete' />, styles.delete]
     ]
   }
