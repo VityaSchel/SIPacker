@@ -1,0 +1,24 @@
+1. Отредачить хосты
+sudo nano /etc/hosts
+127.0.0.1       sipacker.test
+между айпи и доменом ТАБ
+
+2. Заходим в папку keys в этом репозитории
+cd keys
+
+3. Создаем свой корневой центр
+openssl req -x509 -newkey rsa:2048 -out existing/SIPackerCA.cer -outform PEM -keyout existing/SIPackerCA.pvk -days 398 -verbose -config SIPackerCA.cnf -nodes -sha256 -subj "/CN=SIPacker CA"
+
+4. Создаем ключ
+openssl req -newkey rsa:2048 -keyout existing/SIPackerLocalhost.pvk -out existing/SIPackerLocalhost.req -subj /CN=sipacker.test -sha256 -nodes
+
+5. Создаем сертификат и подписываем его
+openssl x509 -req -CA existing/SIPackerCA.cer -CAkey existing/SIPackerCA.pvk -in existing/SIPackerLocalhost.req -out existing/SIPackerLocalhost.cer -days 398 -extfile SIPackerLocalhost.ext -sha256 -set_serial 0x1111
+
+6. Включаем сервер
+cd ../build
+http-server -S -C ../keys/existing/SIPackerLocalhost.cer -K ../keys/existing/SIPackerLocalhost.pvk
+
+7. Устанавливаем сертификат existing/SIPackerCA.cer в ОС и ставим в настройках ключей доверие ему
+
+8. При необходимости удалить или обновить сертификат удаляем все из папки existing, но не удаляем два файла cnf и ext из этой папки и начинаем с 1 пункта

@@ -2,5 +2,6 @@
   "root": "",
   "rounds": "/rounds/\\d+",
   "settings": "/settings",
-  "question": "/rounds/\\d+/themes/\\d+/questions/(\\d+|add)"
+  "question": "/rounds/\\d+/themes/\\d+/questions/(\\d+|add)",
+  "questionNoAdd": "/rounds/\\d+/themes/\\d+/questions/\\d+"
 }

@@ -9,7 +9,7 @@ import { useBeforeunload } from 'react-beforeunload'
 import FormFields from './FormFields'
 import Scenario from './Scenario'
 import NoScenario from './NoScenario'
-import { mapPackState, initValues } from '../../../../utils'
+import { mapPackState, initValues } from 'utils'
 import { connect } from 'react-redux'
 import { saveLocalPack } from 'localStorage/localPacks'
 import { validate } from './validation'
@@ -80,7 +80,7 @@ function QuestionContent(props) {
     validate: values => validate(values, props, params), validationSchema,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       const pack = { ...props.pack }
       const theme = params.themeIndex
       const question = newQuestion ? { ...values } : {
@@ -97,8 +97,8 @@ function QuestionContent(props) {
       questions = questions.sort((a, b) => a.price - b.price)
       await saveLocalPack(pack)
       props.dispatch({ type: 'pack/load', pack })
-      formik.resetForm()
-      history.push(`/pack/${pack.uuid}/rounds/${round}/themes/${theme}/questions/${question.price}`)
+      await history.push(`/pack/${pack.uuid}/rounds/${round}/themes/${theme}/questions/${question.price}`)
+      resetForm({ values })
     },
   })
 

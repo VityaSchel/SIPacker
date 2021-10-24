@@ -4,13 +4,13 @@ import styles from './styles.module.scss'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { getFile } from 'localStorage/fileStorage'
-import filesize from 'filesize'
-export const symbols = { B: 'Б', kB: 'кБ', MB: 'МБ', GB: 'ГБ', TB: 'ТБ', PB: 'ПБ', EB: 'ЭБ', ZB: 'ЗБ', YB: 'ЙБ' }
 import FileStorage from 'components/FileStorage'
 import { connect } from 'react-redux'
 import CircularProgress from '@mui/material/CircularProgress'
 import { MdErrorOutline } from 'react-icons/md'
 import store from 'reducers/index'
+import { filesize } from 'utils'
+import unknownFileType from 'assets/unknownFileType.svg'
 
 ImageField.propTypes = {
   label: PropTypes.string,
@@ -48,12 +48,17 @@ function ImageField(props) {
         const size = file.size
         setSrc({ name, size })
 
-        const url = file.url ?? URL.createObjectURL(blob)
-        setSrcUrl(url)
+        let url
+        if(file.url) {
+          setSrcUrl(file.type === 'unknown' ? unknownFileType : file.url)
+        } else {
+          url = URL.createObjectURL(blob)
+          setSrcUrl(url)
+        }
         props.dispatch({ type: 'fileRendering/fileRenderingStarted', fileURI: file.fileURI, callback: () => setNoFile(true) })
 
         cleanup = () => {
-          url.startsWith('blob:') && URL.revokeObjectURL(url)
+          url?.startsWith('blob:') && URL.revokeObjectURL(url)
           store.dispatch({ type: 'fileRendering/fileRenderingStopped', fileURI: file.fileURI })
         }
       })()
@@ -65,7 +70,7 @@ function ImageField(props) {
   }, [props.value])
 
   const handleClick = async () => {
-    let result = await new Promise(resolve => fileStorage.current.open(props.pack.uuid, resolve))
+    let result = await new Promise(resolve => fileStorage.current.open(props.pack.uuid, 'image', resolve))
     if(!result) { return }
     props.onChange(result)
   }
@@ -95,7 +100,7 @@ function ImageField(props) {
         <div className={styles.info}>
           { noFile
             ? <FileMissing />
-            : src.size
+            : src.size !== undefined
               ? <FileInfo src={src} />
               : <FileNotSelected />
           }
@@ -141,7 +146,7 @@ function FileInfo({ src }) {
   return (
     <>
       <span>Название файла: {src.name}</span>
-      <span>Размер файла: {filesize(src.size, { symbols })}</span>
+      <span>Размер файла: {filesize(src.size)}</span>
     </>
   )
 }
