@@ -1,3 +1,4 @@
+import React from 'react'
 import { createBrowserHistory } from 'history'
 import filesizeToText from 'filesize'
 
@@ -103,3 +104,32 @@ export const hasScenarioInEachQuestion = pack => Boolean(
 
 const symbols = { B: 'Б', kB: 'кБ', MB: 'МБ', GB: 'ГБ', TB: 'ТБ', PB: 'ПБ', EB: 'ЭБ', ZB: 'ЗБ', YB: 'ЙБ' }
 export const filesize = size => size === null ? 'Неизвестно' : filesizeToText(size, { symbols })
+
+export function useEventListener(eventName, handler, element = window) {
+  // Create a ref that stores handler
+  const savedHandler = React.useRef()
+  // Update ref.current value if handler changes.
+  // This allows our effect below to always get latest handler ...
+  // ... without us needing to pass it in effect deps array ...
+  // ... and potentially cause effect to re-run every render.
+  React.useEffect(() => {
+    savedHandler.current = handler
+  }, [handler])
+  React.useEffect(
+    () => {
+      // Make sure element supports addEventListener
+      // On
+      const isSupported = element && element.addEventListener
+      if (!isSupported) return
+      // Create event listener that calls handler function stored in ref
+      const eventListener = (event) => savedHandler.current(event)
+      // Add event listener
+      element.addEventListener(eventName, eventListener)
+      // Remove event listener on cleanup
+      return () => {
+        element.removeEventListener(eventName, eventListener)
+      }
+    },
+    [eventName, element] // Re-run if eventName or element changes
+  )
+}

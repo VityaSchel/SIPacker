@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import styles from '../styles.module.scss'
 import Dropzone from 'react-dropzone'
@@ -9,6 +10,7 @@ import * as yup from 'yup'
 import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import contentType from 'content-type'
+import { useEventListener } from 'utils'
 
 AddForm.propTypes = {
   setTab: PropTypes.func,
@@ -20,6 +22,24 @@ AddForm.propTypes = {
 }
 
 function AddForm(props) {
+  React.useEffect(() => {
+    const handlePaste = event => {
+      const items = (event.clipboardData || event.originalEvent.clipboardData).items
+      const files = []
+      for (let file of items) {
+        if (file.kind === 'file') {
+          const blob = file.getAsFile()
+          files.push(blob)
+        }
+      }
+      if(!files.length) return
+      props.setFiles(files)
+      props.setStage('preview')
+    }
+    document.addEventListener('paste', handlePaste)
+    return () => document.removeEventListener('paste', handlePaste)
+  }, [])
+
   const handleDrop = async files => {
     props.setFiles(files)
     props.setStage('preview')
@@ -96,7 +116,7 @@ function AddForm(props) {
         {({ getRootProps, getInputProps }) => (
           <div className={styles.dropzone} {...getRootProps()}>
             <input {...getInputProps()} />
-            <span className={styles.flex}><MdFileUpload /> Загрузить медиа-файл</span>
+            <span className={styles.flex}><MdFileUpload /> Загрузите, перетащите или вставьте медиа-файлы</span>
             <span className={styles.supportedTypes}>
               <span>Поддерживаемые типы файлов:</span>
               <span>Фото: png, jpeg, gif</span>

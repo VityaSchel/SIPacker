@@ -42,11 +42,16 @@ registerRoute(
   createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
 )
 
-// An example runtime caching route for requests that aren't handled by the
-// precache, in this case same-origin .png requests like those from in public/
 registerRoute(
   // Add external resources to cache
-  ({ request }) => request.headers.get('X-SIPacker-External-Media') || request.headers.get('sec-fetch-dest'),
+  ({ request }) => {
+    const requestFromAddForm = request.headers.get('X-SIPacker-External-Media')
+    if(requestFromAddForm === 'True') return true
+  
+    if(['image','video','audio'].includes(request.destination)) return true
+
+    return false
+  },
   new StaleWhileRevalidate({
     cacheName: 'external',
     plugins: [

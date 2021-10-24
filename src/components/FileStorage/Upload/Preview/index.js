@@ -117,7 +117,7 @@ function VersionChoose(props) {
   const [choosedVersion, setChoosedVersion] = React.useState('original')
   const original = props.originals?.get(props.selectedFile.blob)
   const compressed = props.compresses?.get(props.selectedFile.blob)
-  const compressedPercent = 100-(compressed.size/original.size*100).toFixed(2)
+  const compressedPercent = 100-(compressed.size/original.size*100)
 
   const handleChangeVersion = (_, newValue) => {
     if(newValue === 'original') props.setFile(props.selectedFile.index, original.blob)
@@ -129,7 +129,7 @@ function VersionChoose(props) {
     <div className={styles.choose}>
       <div className={styles.versionsPreview}>
         <div onClick={() => handleChangeVersion(null, 'original')}><img src={original.src} alt='Оригинал' /></div>
-        <div onClick={() => handleChangeVersion(null, 'compressed')}><img src={compressed.src} alt='Сжатая версия' /></div>
+        <div onClick={() => compressedPercent !== 0 && handleChangeVersion(null, 'compressed')}><img src={compressed.src} alt='Сжатая версия' /></div>
       </div>
       <RadioGroup
         value={choosedVersion}
@@ -149,12 +149,13 @@ function VersionChoose(props) {
         />
         <FormControlLabel
           value='compressed'
+          disabled={compressedPercent === 0}
           control={<Radio />}
           label={
             <RadioLabel
               label='Сжать изображение'
               sublabel={
-                `${filesize(compressed.size)} (-${compressedPercent}%)`
+                `${filesize(compressed.size)} (-${compressedPercent.toFixed(2)}%)`
               }
             />
           }
