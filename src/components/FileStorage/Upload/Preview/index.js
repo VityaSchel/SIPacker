@@ -143,7 +143,7 @@ function VersionChoose(props) {
           label={
             <RadioLabel
               label='Использовать оригинал'
-              sublabel={filesize(original.size, { symbols })}
+              sublabel={filesize(original.size)}
             />
           }
         />
@@ -154,7 +154,7 @@ function VersionChoose(props) {
             <RadioLabel
               label='Сжать изображение'
               sublabel={
-                `${filesize(compressed.size, { symbols })} (-${compressedPercent}%)`
+                `${filesize(compressed.size)} (-${compressedPercent}%)`
               }
             />
           }

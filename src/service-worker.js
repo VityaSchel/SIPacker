@@ -1,4 +1,5 @@
 import { clientsClaim } from 'workbox-core'
+import { CacheableResponsePlugin } from 'workbox-cacheable-response'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
@@ -45,14 +46,15 @@ registerRoute(
 // precache, in this case same-origin .png requests like those from in public/
 registerRoute(
   // Add external resources to cache
-  ({ url }) => url.origin !== self.location.origin,
+  ({ request }) => request.headers.get('X-SIPacker-External-Media') || request.headers.get('sec-fetch-dest'),
   new StaleWhileRevalidate({
     cacheName: 'external',
     plugins: [
-      // Ensure that once this runtime cache reaches a maximum size the
-      // least-recently used images are removed.
-      new ExpirationPlugin({ maxEntries: 250 }),
-    ],
+      new CacheableResponsePlugin({
+        statuses: [200]
+      }),
+      new ExpirationPlugin({ maxEntries: 100 }),
+    ]
   })
 )
 

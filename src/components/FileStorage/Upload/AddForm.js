@@ -43,24 +43,25 @@ function AddForm(props) {
         name: urlName
       }
     } else {
-      let responseRaw
+      let response
       try {
-        responseRaw = await fetch(url)
-        if(responseRaw?.status !== 200) throw {}
+        response = await fetch(url, { headers: { 'X-SIPacker-External-Media': 'True' }})
+        if(response?.status !== 200) throw `Couldn't get the image. Status: ${response?.status}`
       } catch(e) {
+        console.error(e)
         return { url: 'Не удалось получить изображение' }
       }
       values.file = {}
-      const contentTypeHeader = responseRaw?.headers?.get?.('content-type')
+      const contentTypeHeader = response?.headers?.get?.('content-type')
       console.log(contentTypeHeader)
       const actualMimeType = contentType.parse(contentTypeHeader).type
       console.log(actualMimeType)
       values.file.type = actualMimeType
       if(!allowedFileTypes.includes(values.file.type))
         return { url: 'Неподдерживаемый тип файла' }
-      const blob = await responseRaw.blob()
+      const blob = await response.blob()
       values.file.size = blob.size
-      values.file.name = blob.name || responseRaw?.headers?.get?.('content-disposition') || urlName
+      values.file.name = blob.name || response?.headers?.get?.('content-disposition') || urlName
     }
   }
 
