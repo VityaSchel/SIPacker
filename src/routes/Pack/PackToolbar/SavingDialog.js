@@ -1,4 +1,5 @@
 import React from 'react'
+import styles from './styles.module.scss'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -79,7 +80,7 @@ const SavingDialog = React.forwardRef((props, ref) => {
           { Boolean(warnings.length) && <>
             <p>Во время генерации возникли возникли следующие предупреждения, их не требуется исправлять:</p>
             <ul>
-              { warnings.map((warning, i) => <li key={i}>{warning}</li>) }
+              { warnings.map((warning, i) => <li key={i} className={styles.warnings}>{warning}</li>) }
             </ul>
           </> }
         </DialogContentText>

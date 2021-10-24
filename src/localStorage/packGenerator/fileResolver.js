@@ -21,9 +21,12 @@ export default class FileResolver {
     const file = await getFile(fileURI)
     if(!file) throw `Файл не найден: Проверьте поле ${error}`
 
-    if(file.url) return file.url
+    if(file.url) {
+      if(file.url.startsWith('https://')) this.warnings.push(`Файл «${file.fileName}» по адресу ${file.url} будет недоступен в SIGame последних версий, потому что игра не поддерживает протокол https. Поменяйте протокол на http или проголосуйте за поддержку https в официальной группе SIGame ВКонтакте. В веб-версии SIGame файлы с протоколом https отображаются корректно.`)
+      return file.url
+    }
 
-    if(file.blob.size > 1024*1024) this.warnings.push(`Файл «${file.fileName}» весит больше 1 МБ`)
+    if(file.blob.size > 1024*1024) this.warnings.push(`Размер файла «${file.fileName}» превышает 1 МБ`)
 
     let id, extension
     switch(file.type) {
