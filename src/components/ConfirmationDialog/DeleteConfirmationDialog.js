@@ -2,9 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ConfirmationDialog from 'components/ConfirmationDialog'
 import { deleteFilesOfPack, getAllURIsFromPack } from 'localStorage/fileStorage'
-import { deleteLocalPack } from 'localStorage/localPacks'
+import { deleteLocalPack, saveLocalPack } from 'localStorage/localPacks'
 import { useHistory } from 'react-router-dom'
 import store from 'reducers/index'
+import { mapPackState } from 'utils'
+import { connect } from 'react-redux'
 
 const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
   const confirmationDialogRef = React.useRef()
@@ -36,10 +38,20 @@ const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
       return confirmed
     },
 
-    async confirmDeleteQuestion() {
+    async confirmDeleteQuestion(round, themeIndex, questionPrice) {
       const { confirmed } = await confirmationDialogRef.current
         .open('Вы уверены, что хотите удалить вопрос?', 'Удалить')
-      return confirmed
+      if(!confirmed) return false
+      const pack = { ...props.pack }
+
+      questionPrice = parseInt(questionPrice)
+      const theme = props.pack.rounds[round].themes[themeIndex]
+      const questionIndex = theme.questions.findIndex(({ price }) => price === Number(questionPrice))
+      theme.questions.splice(questionIndex, 1)
+      theme.questions = theme.questions.sort((a, b) => a.price - b.price)
+      await saveLocalPack(pack)
+      props.dispatch({ type: 'pack/load', pack: pack })
+      return true
     }
   }))
 
@@ -50,8 +62,10 @@ const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
 
 DeleteConfirmationDialog.propTypes = {
   title: PropTypes.string,
-  description: PropTypes.string
+  description: PropTypes.string,
+  pack: PropTypes.object,
+  dispatch: PropTypes.func
 }
 
 DeleteConfirmationDialog.displayName = 'DeleteConfirmationDialog'
-export default DeleteConfirmationDialog
+export default connect(mapPackState, null, null, { forwardRef: true })(DeleteConfirmationDialog)

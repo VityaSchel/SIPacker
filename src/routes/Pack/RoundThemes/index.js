@@ -69,9 +69,7 @@ function RoundThemes(props) {
     updateThemes(roundThemes)
   }
 
-  React.useEffect(() => {
-    round && setThemes(round.themes)
-  }, [])
+  React.useEffect(() => round && setThemes(round.themes), [round.themes])
 
   return (
     found !== undefined && (

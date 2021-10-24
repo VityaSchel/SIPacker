@@ -73,9 +73,7 @@ function AddForm(props) {
       }
       values.file = {}
       const contentTypeHeader = response?.headers?.get?.('content-type')
-      console.log(contentTypeHeader)
       const actualMimeType = contentType.parse(contentTypeHeader).type
-      console.log(actualMimeType)
       values.file.type = actualMimeType
       if(!allowedFileTypes.includes(values.file.type))
         return { url: 'Неподдерживаемый тип файла' }
