@@ -1,5 +1,5 @@
 import JSZip from 'jszip'
-import { saveLocalPack } from 'localStorage/localPacks'
+import { saveLocalPack, loadLocalPack } from 'localStorage/localPacks'
 import { removeUndefined } from 'utils'
 import xmlJS from 'xml-js'
 
@@ -17,13 +17,77 @@ export default async function parse(blob) {
     }
 
     const mapText = array => {
-      if(!array) { return undefined }
+      if(!array?.elements) { return [] }
       return array.elements.map(t => t.elements[0].text)
     }
 
     const packageTag = n(content, 'package')
     const { id, name, version, difficulty, restriction, date, publisher, logo, language } = packageTag.attributes
+
+    if(await loadLocalPack(id) !== null) return { error: 'packExist' }
+
     const infoTag = n(packageTag, 'info')
+    const rounds = n(packageTag, 'rounds').elements.map(round => ({
+      name: round.attributes.name,
+      themes: n(round, 'themes').elements.map(theme => ({
+        name: theme.attributes.name,
+        questions: n(theme, 'questions').elements.map(question => {
+          const type = n(question, 'type')?.attributes.name ?? 'simple'
+
+          const typeParam = name => {
+            const type = n(question, 'type')
+            const param = type.elements.find(({ attributes }) => attributes.name === name)
+            return param.elements[0].text
+          }
+
+          const questionPriceType = ['bagcat', 'cat'].includes(type) && (isNaN(typeParam('cost'))
+            ? 'byPlayer' : Number(typeParam('cost')) > 0 ? 'fixed' : 'minMax')
+
+          var realpriceFrom, realpriceStep, realpriceTo, playerSelectingPrice = false
+          if(type === 'bagcat' && questionPriceType === 'byPlayer') {
+            playerSelectingPrice = true
+            var [,realpriceFrom,realpriceTo,realpriceStep] = typeParam('cost').match(/^[\\d+;\\d+]\/\\d*$/)
+          }
+
+          return {
+            correctAnswers: mapText(n(question, 'right')),
+            detailsDisclosure: type === 'bagcat' ? typeParam('knows') : undefined,
+            incorrectAnswers: mapText(n(question, 'wrong')),
+            price: Number(question.attributes.price),
+            realprice: type === 'cat' || (type === 'bagcat' && questionPriceType === 'fixed')
+              ? Number(typeParam('cost')) || 100 : undefined,
+            realpriceFrom: playerSelectingPrice ? Number(realpriceFrom) || 0 : undefined,
+            realpriceStep: playerSelectingPrice ? Number(realpriceStep) || 0 : undefined,
+            realpriceTo: playerSelectingPrice ? Number(realpriceTo) || 0 : undefined,
+            realtheme: ['bagcat', 'cat'].includes(type) ? typeParam('theme') : undefined,
+            scenario: n(question, 'scenario').elements.map(atom => ({
+              type: atom.attributes.type,
+              duration: Number(atom.attributes.time) || 3,
+              data: (() => {
+                const atomType = atom.attributes.type
+                const atomContent = atom.elements?.[0]?.text
+                switch(atomType) {
+                  case 'text':
+                    return { text: atomContent }
+
+                  case 'say':
+                    return { say: atomContent }
+
+                  case 'image':
+                    return { imageField: atomContent }
+
+                  case 'marker':
+                    return {}
+                }
+              })()
+            })),
+            transferToSelf: type === 'bagcat' ? typeParam('self') : undefined,
+            type
+          }
+        })
+      }))
+    }))
+
     const authors = mapText(n(infoTag, 'authors'))
     const tags = mapText(n(packageTag, 'tags'))
 
@@ -35,15 +99,17 @@ export default async function parse(blob) {
       creationTime: Date.now(),
       over18: restriction === '18+',
       date,
-      authors: authors.join(','),
+      authors,
       publisher,
-      tags: tags?.join(','),
+      tags,
       logo,
-      language: language || ''
+      language: language || '',
+      rounds
     })
     await saveLocalPack(pack)
     return true
   } catch(e) {
+    console.error(e)
     return { error: e }
   }
 }

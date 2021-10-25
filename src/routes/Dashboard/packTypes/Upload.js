@@ -27,14 +27,15 @@ function Upload(props) {
       parsePackGenerator(pack).then(result => {
         if(result.error) {
           const error = {
-            noContentXML: 'Не найден файл content.xml в паке. Возможно, архив поврежден или неправильно создан, например, с абсолютными путями вместо относительных.'
-          }[result.error]
+            noContentXML: 'Не найден файл content.xml в паке. Возможно, архив поврежден или неправильно создан, например, с абсолютными путями вместо относительных.',
+            packExist: 'Пак с таким идентификатором уже существует'
+          }[result.error] ?? result.error
           const date = Date.now()
           setContent(content.concat({ date, text: `Ошибка при загрузке пака «${pack.name}»: ${error}` }))
         } else {
           props.reloadPacks()
         }
-        props.dispatch({ type: 'dashboard/setUploading', uploading: store.getState().pack?.uploading.filter(pack => id !== pack.id) })
+        props.dispatch({ type: 'dashboard/setUploading', uploading: store.getState().dashboard?.uploading?.filter(pack => id !== pack.id) })
       })
     }
   }
