@@ -1,9 +1,16 @@
 import { getFile } from '../fileStorage'
 import { nanoid } from 'nanoid'
+import { getUrlFileInfo } from 'components/FileStorage/Upload/AddForm'
+import { saveFile, saveFileAsURL } from 'localStorage/fileStorage'
+import signatures from './signatures.json'
+
+// resolve = pack -> zip (downloading)
+// connect = zip -> pack (uploading)
 
 export default class FileResolver {
-  constructor(zip) {
+  constructor(zip, packUUID) {
     this.zip = zip
+    this.packUUID = packUUID
     this.resolvedFiles = {}
     this.folders = {}
     this.warnings = []
@@ -26,20 +33,95 @@ export default class FileResolver {
       return file.url
     }
 
+    if(this.resolvedFiles[fileURI]) return this.resolvedFiles[fileURI]
+
     if(file.blob.size > 1024*1024) this.warnings.push(`Размер файла «${file.fileName}» превышает 1 МБ`)
 
     let id, extension
     switch(file.type) {
       case 'image':
         id = nanoid()
-        while(Object.keys(this.resolvedFiles).includes(id))
+        while(Object.values(this.resolvedFiles).includes(id))
           id = nanoid()
 
-        this.resolvedFiles[id] = true
+        this.resolvedFiles[fileURI] = id
         const images = this.getDir('Images')
         extension = {'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif'}[file.blob.type]
         images.file(`${id}.${extension}`, file.blob)
     }
     return `@${id}.${extension}`
   }
+
+  async connect(fileID) {
+    if(!fileID) return
+
+    let file
+    if(fileID.startsWith('@')) {
+      fileID = fileID.substring(1)
+
+      const images = this.zip.folder('Images')
+      const audio = this.zip.folder('Audio')
+      const video = this.zip.folder('Video')
+
+      const recursiveSearch = () => {
+        for (let folder of [images, audio, video]) {
+          const file = folder?.file(fileID)
+          if(file) return file
+        }
+      }
+
+      file = await recursiveSearch()
+      if(!file) throw { error: 'File not found', file: fileID }
+      else file = await file.async('blob')
+
+      const mimeType = await getMimeType(file)
+      file = new Blob([file], { type: mimeType })
+      file.filename = fileID
+
+      const fileURI = await saveFile(file, this.packUUID)
+      return fileURI
+    } else {
+      try {
+        const file = getUrlFileInfo(fileID)
+        if(!file) throw { error: 'URL error', file: fileID }
+        const fileURI = await saveFileAsURL(fileID, file, this.packUUID)
+        return fileURI
+      } catch(e) {
+        throw { error: e }
+      }
+    }
+  }
+}
+
+async function getMimeType(blob) {
+  for(let { signs, mime } of signatures){
+    for(let signature of signs) {
+      let [offset, bytes] = signature.split(',')
+      offset = Number(offset)
+
+      const fileBytes = await getBytes(blob, offset, bytes.length/2)
+      if(fileBytes === bytes) return mime
+    }
+  }
+}
+
+function getBytes(blob, start, length) {
+  return new Promise(resolve => {
+    let fileReader = new FileReader()
+
+    fileReader.onloadend = event => {
+      if(event.target.readyState === FileReader.DONE) {
+        const uint = new Uint8Array(event.target.result)
+        let bytes = []
+
+        uint.forEach((byte) => { // DO NOT use .map because it won't work with 16 hex
+          bytes.push(byte.toString(16))
+        })
+
+        resolve(bytes.join('').toUpperCase())
+      }
+    }
+
+    fileReader.readAsArrayBuffer(blob.slice(start, start+length))
+  })
 }

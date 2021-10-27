@@ -2,6 +2,7 @@ import JSZip from 'jszip'
 import { saveLocalPack, loadLocalPack } from 'localStorage/localPacks'
 import { removeUndefined } from 'utils'
 import xmlJS from 'xml-js'
+import FileResolver from './fileResolver'
 
 export default async function parse(blob) {
   try {
@@ -26,12 +27,14 @@ export default async function parse(blob) {
 
     if(await loadLocalPack(id) !== null) return { error: 'packExist' }
 
+    const files = new FileResolver(zip, id)
+
     const infoTag = n(packageTag, 'info')
-    const rounds = n(packageTag, 'rounds').elements.map(round => ({
+    const rounds = await Promise.all(n(packageTag, 'rounds').elements.map(async round => ({
       name: round.attributes.name,
-      themes: n(round, 'themes').elements.map(theme => ({
+      themes: await Promise.all(n(round, 'themes').elements.map(async theme => ({
         name: theme.attributes.name,
-        questions: n(theme, 'questions').elements.map(question => {
+        questions: await Promise.all(n(theme, 'questions').elements.map(async question => {
           const type = n(question, 'type')?.attributes.name ?? 'simple'
 
           const typeParam = name => {
@@ -60,33 +63,37 @@ export default async function parse(blob) {
             realpriceStep: playerSelectingPrice ? Number(realpriceStep) || 0 : undefined,
             realpriceTo: playerSelectingPrice ? Number(realpriceTo) || 0 : undefined,
             realtheme: ['bagcat', 'cat'].includes(type) ? typeParam('theme') : undefined,
-            scenario: n(question, 'scenario').elements.map(atom => ({
-              type: atom.attributes.type,
-              duration: Number(atom.attributes.time) || 3,
-              data: (() => {
-                const atomType = atom.attributes.type
-                const atomContent = atom.elements?.[0]?.text
-                switch(atomType) {
-                  case 'text':
-                    return { text: atomContent }
+            scenario: await Promise.all(
+              n(question, 'scenario').elements.map(
+                async atom => ({
+                  type: atom.attributes.type,
+                  duration: Number(atom.attributes.time) || 3,
+                  data: await (async () => {
+                    const atomType = atom.attributes.type
+                    const atomContent = atom.elements?.[0]?.text
+                    switch(atomType) {
+                      case 'text':
+                        return { text: atomContent }
 
-                  case 'say':
-                    return { say: atomContent }
+                      case 'say':
+                        return { say: atomContent }
 
-                  case 'image':
-                    return { imageField: atomContent }
+                      case 'image':
+                        return { imageField: await files.connect(atomContent) }
 
-                  case 'marker':
-                    return {}
-                }
-              })()
-            })),
+                      case 'marker':
+                        return {}
+                    }
+                  })()
+                })
+              )
+            ),
             transferToSelf: type === 'bagcat' ? typeParam('self') : undefined,
             type
           }
-        })
-      }))
-    }))
+        }))
+      })))
+    })))
 
     const authors = mapText(n(infoTag, 'authors'))
     const tags = mapText(n(packageTag, 'tags'))
@@ -102,7 +109,7 @@ export default async function parse(blob) {
       authors,
       publisher,
       tags,
-      logo,
+      logo: await files.connect(logo),
       language: language || '',
       rounds
     })
