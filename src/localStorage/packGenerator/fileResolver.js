@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid'
 import { getUrlFileInfo } from 'components/FileStorage/Upload/AddForm'
 import { saveFile, saveFileAsURL } from 'localStorage/fileStorage'
 import signatures from './signatures.json'
+import { extensionsMimeTypes } from 'utils'
 
 // resolve = pack -> zip (downloading)
 // connect = zip -> pack (uploading)
@@ -46,7 +47,7 @@ export default class FileResolver {
 
         this.resolvedFiles[fileURI] = id
         const images = this.getDir('Images')
-        extension = {'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif'}[file.blob.type]
+        extension = Object.keys(Object.values(extensionsMimeTypes).indexOf(file.blob.type))
         images.file(`${id}.${extension}`, file.blob)
     }
     return `@${id}.${extension}`
@@ -65,7 +66,7 @@ export default class FileResolver {
 
       const recursiveSearch = () => {
         for (let folder of [images, audio, video]) {
-          const file = folder?.file(fileID)
+          const file = folder?.file(fileID) ?? folder?.file(encodeURIComponent(fileID))
           if(file) return file
         }
       }
@@ -74,7 +75,7 @@ export default class FileResolver {
       if(!file) throw { error: 'File not found', file: fileID }
       else file = await file.async('blob')
 
-      const mimeType = await getMimeType(file)
+      const mimeType = await getMimeType(file, fileID.split('.').splice(-1))
       file = new Blob([file], { type: mimeType })
       file.filename = fileID
 
@@ -93,7 +94,7 @@ export default class FileResolver {
   }
 }
 
-async function getMimeType(blob) {
+async function getMimeType(blob, extension) {
   for(let { signs, mime } of signatures){
     for(let signature of signs) {
       let [offset, bytes] = signature.split(',')
@@ -103,6 +104,7 @@ async function getMimeType(blob) {
       if(fileBytes === bytes) return mime
     }
   }
+  return extensionsMimeTypes[extension]
 }
 
 function getBytes(blob, start, length) {

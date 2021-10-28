@@ -10,7 +10,9 @@ const mimeTypes = {
 }
 export const allowedFileTypes = [...mimeTypes.image, ...mimeTypes.audio, ...mimeTypes.video]
 export async function saveFile(blob, packUUID) {
-  if(!allowedFileTypes.includes(blob.type)) { throw 'Mime-type is not supported' }
+  if(!allowedFileTypes.includes(blob.type)) {
+    throw 'File mime-type is not supported'
+  }
   if(!blob.filename) { throw 'Blob instance must have filename propery' }
 
   const db = init()

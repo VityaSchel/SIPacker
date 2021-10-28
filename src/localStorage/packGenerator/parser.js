@@ -39,8 +39,8 @@ export default async function parse(blob) {
 
           const typeParam = name => {
             const type = n(question, 'type')
-            const param = type.elements.find(({ attributes }) => attributes.name === name)
-            return param.elements[0].text
+            const param = type?.elements?.find(({ attributes }) => attributes.name === name)
+            return param?.elements?.[0]?.text
           }
 
           const questionPriceType = ['bagcat', 'cat'].includes(type) && (isNaN(typeParam('cost'))
@@ -65,27 +65,30 @@ export default async function parse(blob) {
             realtheme: ['bagcat', 'cat'].includes(type) ? typeParam('theme') : undefined,
             scenario: await Promise.all(
               n(question, 'scenario').elements.map(
-                async atom => ({
-                  type: atom.attributes.type,
-                  duration: Number(atom.attributes.time) || 3,
-                  data: await (async () => {
-                    const atomType = atom.attributes.type
-                    const atomContent = atom.elements?.[0]?.text
-                    switch(atomType) {
-                      case 'text':
-                        return { text: atomContent }
+                async atom => {
+                  const type = atom.attributes?.type ?? 'text'
+                  return {
+                    type,
+                    duration: Number(atom.attributes?.time) || 3,
+                    data: await (async () => {
+                      const atomType = type
+                      const atomContent = atom.elements?.[0]?.text
+                      switch(atomType) {
+                        case 'text':
+                          return { text: atomContent }
 
-                      case 'say':
-                        return { say: atomContent }
+                        case 'say':
+                          return { say: atomContent }
 
-                      case 'image':
-                        return { imageField: await files.connect(atomContent) }
+                        case 'image':
+                          return { imageField: await files.connect(atomContent) }
 
-                      case 'marker':
-                        return {}
-                    }
-                  })()
-                })
+                        default:
+                          return {}
+                      }
+                    })()
+                  }
+                }
               )
             ),
             transferToSelf: type === 'bagcat' ? typeParam('self') : undefined,
@@ -117,6 +120,6 @@ export default async function parse(blob) {
     return true
   } catch(e) {
     console.error(e)
-    return { error: e }
+    return e.error ? e : { error: e }
   }
 }
