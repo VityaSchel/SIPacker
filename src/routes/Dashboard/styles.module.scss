@@ -170,3 +170,11 @@
   max-width: 400px;
   transition: height 500ms;
 }
+
+.url {
+  margin-top: 15px;
+
+  div, input {
+    width: 100%;
+  }
+}

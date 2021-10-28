@@ -10,7 +10,31 @@ import * as yup from 'yup'
 import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import contentType from 'content-type'
-import { useEventListener } from 'utils'
+
+const urlName = url => url.split('/').splice(-1) || 'Без названия'
+
+export async function getUrlFileInfo(url) {
+  let response
+  try {
+    response = await fetch(url, { headers: { 'X-SIPacker-External-Media': 'True' }})
+  } catch(e) {
+    throw 'Couldn\'t get the image'
+  }
+  if(response?.status !== 200) throw 'Couldn\'t get the image'
+
+  const file = {}
+  const contentTypeHeader = response?.headers?.get?.('content-type')
+  const actualMimeType = contentType.parse(contentTypeHeader).type
+  file.type = actualMimeType
+  if(!allowedFileTypes.includes(file.type))
+    throw 'File mime-type is not supported'
+
+  const blob = await response.blob()
+  file.size = blob.size
+  file.name = blob.name || response?.headers?.get?.('content-disposition') || urlName(url)
+
+  return file
+}
 
 AddForm.propTypes = {
   setTab: PropTypes.func,
@@ -47,7 +71,6 @@ function AddForm(props) {
 
   const validate = async values => {
     const url = values.url.startsWith('!') ? values.url.substring(1) : values.url
-    const urlName = url.split('/').splice(-1) || 'Без названия'
     try {
       await yup
         .string()
@@ -60,26 +83,24 @@ function AddForm(props) {
       values.file = {
         type: 'unknown',
         size: null,
-        name: urlName
+        name: urlName(url)
       }
     } else {
-      let response
       try {
-        response = await fetch(url, { headers: { 'X-SIPacker-External-Media': 'True' }})
-        if(response?.status !== 200) throw `Couldn't get the image. Status: ${response?.status}`
+        const file = await getUrlFileInfo(url)
+        values.file = file
       } catch(e) {
-        console.error(e)
-        return { url: 'Не удалось получить изображение' }
+        switch(e) {
+          case 'Couldn\'t get the image':
+            return { url: 'Не удалось получить изображение' }
+
+          case 'File mime-type is not supported':
+            return { url: 'Неподдерживаемый тип файла' }
+
+          default:
+            return { url: 'Неизвестная ошибка' }
+        }
       }
-      values.file = {}
-      const contentTypeHeader = response?.headers?.get?.('content-type')
-      const actualMimeType = contentType.parse(contentTypeHeader).type
-      values.file.type = actualMimeType
-      if(!allowedFileTypes.includes(values.file.type))
-        return { url: 'Неподдерживаемый тип файла' }
-      const blob = await response.blob()
-      values.file.size = blob.size
-      values.file.name = blob.name || response?.headers?.get?.('content-disposition') || urlName
     }
   }
 

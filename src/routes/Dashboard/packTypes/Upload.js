@@ -6,10 +6,9 @@ import Snackbar from '@mui/material/Snackbar'
 import Slide from '@mui/material/Slide'
 import Alert from '@mui/material/Alert'
 import { connect } from 'react-redux'
-import store from '../../../reducers'
+import { uploadPack } from '../PackUploader'
 import { MdFileUpload } from 'react-icons/md'
 import Dropzone from 'react-dropzone'
-import { parse as parsePackGenerator } from 'localStorage/packGenerator'
 
 const SlideTransition = props => <Slide {...props} direction="right" />
 
@@ -17,25 +16,17 @@ function Upload(props) {
   const [entered, setEntered] = React.useState(false)
   const [content, setContent] = React.useState([])
 
-  const handleDrop = acceptedFiles => {
+  const handleDrop = async acceptedFiles => {
     setEntered(false)
     if(!acceptedFiles) { return }
     for (let pack of acceptedFiles) {
-      let previousState = props.dashboard?.uploading ?? []
-      const id = Date.now()
-      props.dispatch({ type: 'dashboard/setUploading', uploading: previousState.concat({ id, name: pack.name }) })
-      parsePackGenerator(pack).then(result => {
-        if(result.error) {
-          const error = {
-            noContentXML: 'Не найден файл content.xml в паке. Возможно, архив поврежден или неправильно создан, например, с абсолютными путями вместо относительных.'
-          }[result.error]
-          const date = Date.now()
-          setContent(content.concat({ date, text: `Ошибка при загрузке пака «${pack.name}»: ${error}` }))
-        } else {
-          props.reloadPacks()
-        }
-        props.dispatch({ type: 'dashboard/setUploading', uploading: store.getState().pack?.uploading.filter(pack => id !== pack.id) })
-      })
+      try {
+        await uploadPack(pack)
+        props.reloadPacks()
+      } catch (e) {
+        const date = Date.now()
+        setContent(content.concat({ date, text: `Ошибка при загрузке пака «${pack.name}»: ${e}` }))
+      }
     }
   }
 

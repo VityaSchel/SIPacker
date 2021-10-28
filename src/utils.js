@@ -133,3 +133,15 @@ export function useEventListener(eventName, handler, element = window) {
     [eventName, element] // Re-run if eventName or element changes
   )
 }
+
+export const extensionsMimeTypes = {
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  jpe: 'image/jpeg',
+  gif: 'image/gif',
+  mp3: 'audio/mpeg',
+  ogg: 'audio/ogg',
+  wav: 'audio/x-wav',
+  mp4: 'video/mpeg'
+}

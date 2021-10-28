@@ -41,6 +41,7 @@ module.exports = {
       'error'
     ],
     'no-case-declarations': 'off',
+    'no-redeclare': 'off',
     'no-unused-vars': [
       'error',
       { 'ignoreRestSiblings': true }

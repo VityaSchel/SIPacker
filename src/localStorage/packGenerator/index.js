@@ -211,7 +211,7 @@ export async function generate(pack) {
                                           type: scenarioEvent.type,
                                           time: scenarioEvent.duration
                                         },
-                                        elements: !['say', 'marker'].includes(scenarioEvent.type) ? [
+                                        elements: scenarioEvent.type !== 'marker' ? [
                                           {
                                             type: 'text',
                                             text: {
@@ -220,6 +220,7 @@ export async function generate(pack) {
                                                 scenarioEvent.data.imageField,
                                                 `сценарий вопроса за ${question.price} в теме «${theme.name}» в раунде «${round.name}»`
                                               ),
+                                              say: xmlescape(scenarioEvent.data.say ?? '').replaceAll('\n', '\\n')
                                             }[scenarioEvent.type]
                                           }
                                         ] : []

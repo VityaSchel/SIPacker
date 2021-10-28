@@ -154,6 +154,14 @@ export default function ScenarioEvent(props) {
                 onChange={newValue => setEventData({ imageField: newValue })}
                 label='Изображение'
               />,
+              'say': <TextField
+                value={eventData?.say}
+                onChange={e => setEventData({ say: e.target.value })}
+                label='Фраза, которую произносит ведущий'
+                multiline
+                rows={4}
+                fullWidth
+              />,
               'marker': <Typography variant='caption'>
                 Все события, идущие после этого, будут проигрываться после ответа игрока.
               </Typography>
