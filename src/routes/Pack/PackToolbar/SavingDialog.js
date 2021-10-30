@@ -21,27 +21,24 @@ const SavingDialog = React.forwardRef((props, ref) => {
   const [generating, setGenerating] = React.useState(false)
   const [errors, setErrors] = React.useState([])
   const [warnings, setWarnings] = React.useState([])
-  const [pack, setPack] = React.useState()
 
   React.useImperativeHandle(ref, () => ({
     save(pack) {
       setOpen(true)
-      setPack(pack)
+      startProcessing(pack)
     }
   }))
 
-  React.useEffect(() => pack?.uuid && startProcessing(), [pack])
-
-  const startProcessing = async () => {
+  const startProcessing = async pack => {
     const errors = await check(pack)
     setErrors(errors)
     if(errors.length) return
 
     setGenerating(true)
-    setTimeout(bundlePack, 500)
+    setTimeout(() => bundlePack(pack), 500)
   }
 
-  const bundlePack = async () => {
+  const bundlePack = async pack => {
     let zip, warnings = []
     try {
       const result = await generate(pack)

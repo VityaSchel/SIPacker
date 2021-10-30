@@ -9,6 +9,7 @@ import Radio from '@mui/material/Radio'
 import { filesize, getType } from 'utils'
 import Compressor from 'compressorjs'
 import { MdInfoOutline } from 'react-icons/md'
+import { mimeTypes } from 'localStorage/fileStorage/saveFile'
 
 Preview.propTypes = {
   onContinue: PropTypes.func,
@@ -88,7 +89,9 @@ export default function Preview(props) {
         <h2>{selectedFile.blob.name}</h2>
         <h4>{getType(selectedFile.blob.type)}</h4>
         { compressableTypes.includes(selectedFile.blob.type)
-          ? originals && compresses && <VersionChoose
+            && originals && compresses
+            && originals.get(selectedFile.blob).size !== compresses.get(selectedFile.blob).size
+          ? <VersionChoose
             originals={originals}
             compresses={compresses}
             selectedFile={selectedFile}
@@ -186,12 +189,15 @@ function FileInfo(props) {
 
   return (
     <div className={styles.fileInfo}>
-      {['image/png', 'image/jpeg', 'image/gif'].includes(props.file.blob.type) &&
-        <img src={src} />
-      }
+      {mimeTypes.image.includes(props.file.blob.type) && <img src={src} />}
+      {mimeTypes.audio.includes(props.file.blob.type) && <audio controls src={src} />}
+      {mimeTypes.video.includes(props.file.blob.type) && <video controls src={src} />}
       <div className={styles.info}>
         <span>Размер: {filesize(props.file.blob.size)}</span>
-        <span className={styles.hint}><MdInfoOutline /> Сжатие файла этого типа в браузере невозможно, попробуйте сжать файл самостоятельно и загрузить сжатую версию.</span>
+        <span className={styles.hint}>
+          <MdInfoOutline /> Сжатие файла этого типа в браузере невозможно, попробуйте сжать файл самостоятельно и
+          загрузить сжатую версию.
+        </span>
       </div>
     </div>
   )

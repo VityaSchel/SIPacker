@@ -144,8 +144,10 @@ export const extensionsMimeTypes = {
   mp3: 'audio/mpeg',
   ogg: 'audio/ogg',
   wav: 'audio/x-wav',
-  mp4: 'video/mpeg'
+  mp4: 'video/mp4'
 }
+
+export const swapObject = obj => Object.assign({}, ...Object.entries(obj).map(([a,b]) => ({ [b]: a })))
 
 export const getType = mimeType => ({
   'image/png': 'Изображение PNG',
@@ -154,7 +156,7 @@ export const getType = mimeType => ({
   'audio/mpeg': 'Аудио-файл mpeg',
   'audio/x-wav': 'Аудио-файл wav',
   'audio/ogg': 'Аудио-файл ogg',
-  'video/mpeg': 'Видео-файл mpeg',
+  'video/mp4': 'Видео-файл mpeg',
 }[mimeType] ?? 'Неизвестный формат')
 
 export const generateWaveform = (width, height, srcUrl) => {

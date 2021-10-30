@@ -67,10 +67,16 @@ function Audio(props) {
   )
 }
 
-function Video() {
+function Video(props) {
   return (
     <div>
-
+      <video
+        src={props.srcUrl}
+        onClick={props.onClick}
+        className={styles.file}
+        onCanPlay={e => e.target.playbackRate = 2}
+        loop autoPlay mute
+      ></video>
     </div>
   )
 }

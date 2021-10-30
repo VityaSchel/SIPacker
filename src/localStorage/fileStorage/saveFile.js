@@ -3,10 +3,10 @@ import { nanoid } from 'nanoid'
 import { init } from '../indexeddb'
 import drawTransparentPattern from 'checkerboardjs'
 
-const mimeTypes = {
+export const mimeTypes = {
   image: ['image/png', 'image/jpeg', 'image/gif'],
   audio: ['audio/mpeg', 'audio/wav', 'audio/ogg'],
-  video: ['video/mpeg']
+  video: ['video/mp4']
 }
 export const allowedFileTypes = [...mimeTypes.image, ...mimeTypes.audio, ...mimeTypes.video]
 export async function saveFile(blob, packUUID) {

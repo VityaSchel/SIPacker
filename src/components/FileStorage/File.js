@@ -59,6 +59,7 @@ export default function File(props) {
         break
 
       case 'image':
+      case 'video':
         setPreviewSrc(fileSrc)
         break
     }
@@ -118,7 +119,7 @@ export default function File(props) {
             >
               <MdInfoOutline />
             </IconButton>
-            {['audio', 'video'].includes(props.file.type) && <IconButton
+            {props.file.type === 'audio' && <IconButton
               className={styles.button}
               size='small'
               onClick={handlePlayStop}
@@ -127,8 +128,9 @@ export default function File(props) {
             </IconButton>}
           </div>
           <div className={styles.preview} ref={ref}>
-            {previewSrc && <img src={previewSrc} className={styles.foreground} />}
+            {previewSrc && props.file.type !== 'video' && <img src={previewSrc} className={styles.foreground} />}
             {props.file.type === 'image' && <img src={previewSrc} className={styles.background} />}
+            {props.file.type === 'video' && <video src={previewSrc} loop autoPlay mute className={styles.video} onCanPlay={e => e.target.playbackRate = 2} />}
           </div>
           <audio src={fileSrc} ref={audioRef} onEnded={() => setIsPlayingFile(false)}></audio>
           <div className={styles.fileName}>{props.file.fileName}</div>
