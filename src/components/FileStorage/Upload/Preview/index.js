@@ -6,7 +6,7 @@ import cx from 'classnames'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
-import { filesize } from 'utils'
+import { filesize, getType } from 'utils'
 import Compressor from 'compressorjs'
 import { MdInfoOutline } from 'react-icons/md'
 
@@ -15,12 +15,6 @@ Preview.propTypes = {
   onCancel: PropTypes.func,
   files: PropTypes.array,
 }
-
-const type = mimeType => ({
-  'image/png': 'Изображение PNG',
-  'image/jpeg': 'Изображение JPEG',
-  'image/gif': 'Анимация GIF',
-}[mimeType] ?? 'Неизвестный формат')
 
 const compressableTypes = ['image/png', 'image/jpeg']
 
@@ -92,7 +86,7 @@ export default function Preview(props) {
       </div>
       <div className={styles.file}>
         <h2>{selectedFile.blob.name}</h2>
-        <h4>{type(selectedFile.blob.type)}</h4>
+        <h4>{getType(selectedFile.blob.type)}</h4>
         { compressableTypes.includes(selectedFile.blob.type)
           ? originals && compresses && <VersionChoose
             originals={originals}

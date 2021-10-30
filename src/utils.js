@@ -1,6 +1,7 @@
 import React from 'react'
 import { createBrowserHistory } from 'history'
 import filesizeToText from 'filesize'
+import generatePeaks from 'waveformer'
 
 export const removeUndefined = object => Object.fromEntries(Object.entries(object).filter(([, val]) => val !== undefined))
 
@@ -144,4 +145,41 @@ export const extensionsMimeTypes = {
   ogg: 'audio/ogg',
   wav: 'audio/x-wav',
   mp4: 'video/mpeg'
+}
+
+export const getType = mimeType => ({
+  'image/png': 'Изображение PNG',
+  'image/jpeg': 'Изображение JPEG',
+  'image/gif': 'Анимация GIF',
+  'audio/mpeg': 'Аудио-файл mpeg',
+  'audio/x-wav': 'Аудио-файл wav',
+  'audio/ogg': 'Аудио-файл ogg',
+  'video/mpeg': 'Видео-файл mpeg',
+}[mimeType] ?? 'Неизвестный формат')
+
+export const generateWaveform = (width, height, srcUrl) => {
+  return new Promise(resolve => {
+    const virtualCanvas = document.createElement('canvas')
+    const context = virtualCanvas.getContext('2d')
+    virtualCanvas.width = width
+    virtualCanvas.height = height
+
+    generatePeaks(width, srcUrl).then(peaks => {
+      const gradient = context.createLinearGradient(0, 0, width, height)
+      gradient.addColorStop(0, '#5b60f8')
+      gradient.addColorStop(1, '#2e33c3')
+      context.strokeStyle = gradient
+
+      for(let x = 0; x < width; x++) {
+        context.beginPath()
+        const center = height/2
+        const halfPeak = peaks[x]*height / 2
+        context.moveTo(x, center-halfPeak)
+        context.lineTo(x, center+halfPeak)
+        context.stroke()
+      }
+
+      virtualCanvas.toBlob(resolve)
+    })
+  })
 }
