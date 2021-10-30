@@ -10,11 +10,11 @@
 
 [https://vityaschel.github.io/SIPacker](https://vityaschel.github.io/SIPacker) (ветка gh-pages)
 
-## Сравнение с другими редакторами
+## Сравнение SIPacker с другими редакторами
 
 <!-- ✅ ❌ ⏳ -->
 
-[SIQuester](https://vladimirkhil.com/si/siquester) — официальный клиент
+[SIQuester](https://vladimirkhil.com/si/siquester) — официальный редактор паков для Своей Игры
 
 &nbsp;|SIPacker|SIQuester
 ---|---|---

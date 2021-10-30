@@ -218,7 +218,15 @@ export async function generate(pack) {
                                               text: xmlescape(scenarioEvent.data.text ?? '').replaceAll('\n', '\\n'),
                                               image: await files.resolve(
                                                 scenarioEvent.data.imageField,
-                                                `сценарий вопроса за ${question.price} в теме «${theme.name}» в раунде «${round.name}»`
+                                                `изображения в сценарии вопроса за ${question.price} в теме «${theme.name}» в раунде «${round.name}»`
+                                              ),
+                                              voice: await files.resolve(
+                                                scenarioEvent.data.audioField,
+                                                `аудио-файла в сценарии вопроса за ${question.price} в теме «${theme.name}» в раунде «${round.name}»`
+                                              ),
+                                              video: await files.resolve(
+                                                scenarioEvent.data.videoField,
+                                                `видео-файла в сценарии вопроса за ${question.price} в теме «${theme.name}» в раунде «${round.name}»`
                                               ),
                                               say: xmlescape(scenarioEvent.data.say ?? '').replaceAll('\n', '\\n')
                                             }[scenarioEvent.type]

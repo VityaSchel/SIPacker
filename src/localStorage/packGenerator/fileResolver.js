@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid'
 import { getUrlFileInfo } from 'components/FileStorage/Upload/AddForm'
 import { saveFile, saveFileAsURL } from 'localStorage/fileStorage'
 import signatures from './signatures.json'
-import { extensionsMimeTypes } from 'utils'
+import { extensionsMimeTypes, swapObject } from 'utils'
 
 // resolve = pack -> zip (downloading)
 // connect = zip -> pack (uploading)
@@ -24,8 +24,8 @@ export default class FileResolver {
 
   async resolve(fileURI, error) {
     if(!fileURI) return
-    // this.getDir('Audio')
-    // this.getDir('Video')
+    const folders = {'image': 'Images', 'audio': 'Audio', 'video': 'Video'}
+
     const file = await getFile(fileURI)
     if(!file) throw `Файл не найден: Проверьте поле ${error}`
 
@@ -38,18 +38,15 @@ export default class FileResolver {
 
     if(file.blob.size > 1024*1024) this.warnings.push(`Размер файла «${file.fileName}» превышает 1 МБ`)
 
-    let id, extension
-    switch(file.type) {
-      case 'image':
-        id = nanoid()
-        while(Object.values(this.resolvedFiles).includes(id))
-          id = nanoid()
+    let id = nanoid()
+    while(Object.values(this.resolvedFiles).includes(id))
+      id = nanoid()
 
-        this.resolvedFiles[fileURI] = id
-        const images = this.getDir('Images')
-        extension = Object.keys(Object.values(extensionsMimeTypes).indexOf(file.blob.type))
-        images.file(`${id}.${extension}`, file.blob)
-    }
+    this.resolvedFiles[fileURI] = id
+    const folder = this.getDir(folders[file.type])
+    const extension = swapObject(extensionsMimeTypes)[file.blob.type]
+    folder.file(`${id}.${extension}`, file.blob)
+
     return `@${id}.${extension}`
   }
 

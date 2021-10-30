@@ -22,6 +22,7 @@ const FileStorage = React.forwardRef((props, ref) => {
   const [packUUID, setPackUUID] = React.useState([])
   const [checkboxes, setCheckboxes] = React.useState([])
   const [acceptableType, setAcceptableType] = React.useState()
+  const listRef = React.useRef()
 
   const handleClose = () => {
     setOpen(false)
@@ -77,6 +78,8 @@ const FileStorage = React.forwardRef((props, ref) => {
     )
   )
 
+  React.useEffect(() => listRef.current?.reset(), [checkboxes])
+
   return (
     <Dialog
       open={open}
@@ -112,6 +115,7 @@ const FileStorage = React.forwardRef((props, ref) => {
               reloadPacks={loadPacks}
             />
             <List
+              ref={listRef}
               packs={filteredPacks}
               handleSelect={handleSelect}
               acceptableType={acceptableType}

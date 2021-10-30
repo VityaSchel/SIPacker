@@ -5,23 +5,36 @@ import Grid from '@mui/material/Grid'
 import { getRecent } from 'localStorage/fileStorage'
 import File from './File'
 import Typography from '@mui/material/Typography'
+import { useBottomScrollListener } from 'react-bottom-scroll-listener'
+import mergeRefs from 'react-merge-refs'
 
-List.propTypes = {
-  packs: PropTypes.array,
-  handleSelect: PropTypes.func,
-  acceptableType: PropTypes.string,
-}
+const List = React.forwardRef((props, ref) => {
+  const [fetchedFiles, setFetchedFiles] = React.useState([])
+  const [mappedFiles, setMappedFiles] = React.useState([])
+  const [offset, setOffset] = React.useState(0)
+  const scrollRef = useBottomScrollListener(() => setOffset(offset+20))
+  const contentRef = React.useRef()
 
-export default function List(props) {
-  const [files, setFiles] = React.useState([])
+  React.useImperativeHandle(ref, () => ({
+    reset() {
+      setOffset(0)
+      setFetchedFiles([])
+      setMappedFiles([])
+      contentRef.current.scrollTop = 0
+    }
+  }))
 
-  React.useEffect(() => { mapFiles() }, [props.packs])
+  React.useEffect(() => setOffset(0), [props.packs])
+  React.useEffect(() => mapFiles(offset), [offset])
 
-  const mapFiles = async () => {
-    const files = await getRecent(Object.keys(props.packs))
+  const mapFiles = async offset => {
+    const newFiles = await getRecent(Object.keys(props.packs), offset)
+    const newFetchedFiles = fetchedFiles.concat(newFiles)
+    setFetchedFiles(newFetchedFiles)
+
     const mappedFiles = []
     let packSwitchUUID
-    for (let file of files) {
+    for (let file of newFetchedFiles) {
       if(packSwitchUUID !== file.packUUID){
         packSwitchUUID = file.packUUID
         mappedFiles.push({
@@ -32,15 +45,16 @@ export default function List(props) {
         mappedFiles[mappedFiles.length - 1].files.push(file)
       }
     }
-    setFiles(mappedFiles)
+
+    setMappedFiles(mappedFiles)
   }
 
   return (
     <div className={styles.list}>
-      <div className={styles.content}>
+      <div className={styles.content} ref={mergeRefs([contentRef, scrollRef])}>
         {
-          files.length
-            ? files.map((packGroup, i) => <div key={i}>
+          mappedFiles.length
+            ? mappedFiles.map((packGroup, i) => <div key={i}>
               <div className={styles.packDivider}>
                 {packGroup.packName
                   ? <>Пак <b>{packGroup.packName}</b></>
@@ -68,4 +82,13 @@ export default function List(props) {
       </div>
     </div>
   )
+})
+
+List.propTypes = {
+  packs: PropTypes.array,
+  handleSelect: PropTypes.func,
+  acceptableType: PropTypes.string,
 }
+List.displayName = 'List'
+
+export default List

@@ -11,17 +11,19 @@ import { MdErrorOutline } from 'react-icons/md'
 import store from 'reducers/index'
 import { filesize } from 'utils'
 import unknownFileType from 'assets/unknownFileType.svg'
+import File from './File'
 
-ImageField.propTypes = {
+FileField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
+  type: PropTypes.string,
   name: PropTypes.string,
   pack: PropTypes.object,
   dispatch: PropTypes.func,
   onChange: PropTypes.func,
 }
 
-function ImageField(props) {
+function FileField(props) {
   const [src, setSrc] = React.useState({})
   const [srcUrl, setSrcUrl] = React.useState(null)
   const [noFile, setNoFile] = React.useState(false)
@@ -40,10 +42,9 @@ function ImageField(props) {
       (async () => {
         const file = await getFile(fileURI)
         if(!file) return setNoFile(true)
+        else setNoFile(false)
 
-        setNoFile(false)
-
-        const blob = file.miniature
+        const blob = file.miniature ?? file.blob
         const name = file.fileName
         const size = file.size
         setSrc({ name, size })
@@ -70,7 +71,7 @@ function ImageField(props) {
   }, [props.value])
 
   const handleClick = async () => {
-    let result = await new Promise(resolve => fileStorage.current.open(props.pack.uuid, 'image', resolve))
+    let result = await new Promise(resolve => fileStorage.current.open(props.pack.uuid, props.type, resolve))
     if(!result) { return }
     props.onChange(result)
   }
@@ -93,9 +94,15 @@ function ImageField(props) {
           ? <Placeholder onClick={handleClick} />
           : noFile
             ? <FileMissingIcon onClick={handleClick} />
-            : srcUrl !== undefined
-              ? <Image src={src} srcUrl={srcUrl} label={props.label} onClick={handleClick} />
-              : <Loading />
+            : srcUrl === undefined
+              ? <Loading />
+              : <File
+                type={props.type}
+                src={src}
+                srcUrl={srcUrl}
+                label={props.label}
+                onClick={handleClick}
+              />
         }
         <div className={styles.info}>
           { noFile
@@ -115,6 +122,8 @@ function ImageField(props) {
     </div>
   )
 }
+
+export default connect(state => ({ pack: state.pack, fileRendering: state.fileRendering }))(FileField)
 
 Placeholder.propTypes = FileMissingIcon.propTypes = { onClick: PropTypes.func }
 function Placeholder({ onClick }) {
@@ -167,22 +176,3 @@ function Loading() {
     </div>
   )
 }
-
-Image.propTypes = {
-  src: PropTypes.object,
-  srcUrl: PropTypes.string,
-  onClick: PropTypes.func,
-  label: PropTypes.string
-}
-function Image({ src, srcUrl, onClick, label }) {
-  return (
-    <img
-      src={srcUrl}
-      alt={srcUrl ? `Изображение для поля ${label} с именем «${src.name}»` : ''}
-      onClick={onClick}
-      className={styles.image}
-    />
-  )
-}
-
-export default connect(state => ({ pack: state.pack, fileRendering: state.fileRendering }))(ImageField)

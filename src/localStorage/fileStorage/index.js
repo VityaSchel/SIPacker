@@ -32,7 +32,8 @@ export async function deleteFile(fileURI) {
 }
 
 const size = 20
-export async function getRecent(filters) {
+export async function getRecent(filters, offset = 0) {
+  console.log('getting recent with offset', offset)
   const db = init()
   if(filters.includes('null')){
     filters.splice(filters.indexOf('null'), 1)
@@ -40,8 +41,8 @@ export async function getRecent(filters) {
     filters.push(...deletedPacks)
   }
   const files = await db.files.where('packUUID').anyOf(filters)
+    .offset(offset)
     .limit(size)
-    .offset(0)
     .reverse()
     .sortBy('addedAt')
   return files

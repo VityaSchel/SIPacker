@@ -12,7 +12,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Decimal from 'decimal.js'
-import ImageField from 'components/ImageField'
+import FileField from 'components/FileField'
 import Fade from '@mui/material/Fade'
 
 ScenarioEvent.propTypes = {
@@ -149,10 +149,23 @@ export default function ScenarioEvent(props) {
                 rows={4}
                 fullWidth
               />,
-              'image': <ImageField
+              'image': <FileField
+                type='image'
                 value={eventData?.imageField}
                 onChange={newValue => setEventData({ imageField: newValue })}
                 label='Изображение'
+              />,
+              'voice': <FileField
+                type='audio'
+                value={eventData?.audioField}
+                onChange={newValue => setEventData({ audioField: newValue })}
+                label='Аудио-файл'
+              />,
+              'video': <FileField
+                type='video'
+                value={eventData?.videoField}
+                onChange={newValue => setEventData({ videoField: newValue })}
+                label='Видео-файл'
               />,
               'say': <TextField
                 value={eventData?.say}

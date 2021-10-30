@@ -11,7 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import Slider from '@mui/material/Slider'
 import styles from './styles.module.scss'
-import ImageField from 'components/ImageField'
+import FileField from 'components/FileField'
 
 const formikMuiErrors = (formik, name) => ({
   error: Boolean(formik.errors[name]),
@@ -182,8 +182,9 @@ export function FormikImageField(props) {
   }
 
   return (
-    <ImageField
+    <FileField
       {...field}
+      type='image'
       value={formik.values[name]}
       onChange={handleChange}
     />
