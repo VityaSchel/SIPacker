@@ -46,5 +46,8 @@ module.exports = {
       'error',
       { 'ignoreRestSiblings': true }
     ]
+  },
+  'globals': {
+    'process': true
   }
 }

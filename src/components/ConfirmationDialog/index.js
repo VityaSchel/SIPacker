@@ -36,7 +36,7 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
 
   return (
     <MuiDialog
-      maxWidth="xs"
+      maxWidth='xs'
       open={open}
       onClose={() => handleAction(false)}
     >
@@ -55,10 +55,10 @@ const ConfirmationDialog = React.forwardRef((props, ref) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={() => handleAction(false)} color="primary">
+        <Button autoFocus onClick={() => handleAction(false)} color='primary'>
           Отмена
         </Button>
-        <Button onClick={() => handleAction(true)} color="primary">
+        <Button onClick={() => handleAction(true)} color='primary'>
           {confirmText ?? 'Продолжить'}
         </Button>
       </DialogActions>

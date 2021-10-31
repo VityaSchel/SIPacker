@@ -51,10 +51,10 @@ const RenameDialog = React.forwardRef((props, ref) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={handleCancel} color="primary">
+        <Button autoFocus onClick={handleCancel} color='primary'>
           Отмена
         </Button>
-        <Button onClick={handleRename} color="primary" disabled={!value.length}>
+        <Button onClick={handleRename} color='primary' disabled={!value.length}>
           Переименовать
         </Button>
       </DialogActions>

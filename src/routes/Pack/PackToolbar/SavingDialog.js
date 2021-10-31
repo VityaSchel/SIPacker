@@ -56,7 +56,7 @@ const SavingDialog = React.forwardRef((props, ref) => {
 
   return (
     <MuiDialog
-      maxWidth="xs"
+      maxWidth='xs'
       open={open}
       TransitionComponent={Transition}
       onClose={() => errors.length && setOpen(false)}

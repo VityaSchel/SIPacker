@@ -67,7 +67,7 @@ function ItemName(props) {
 
   return (
     <FormControl variant='outlined' className={props.className}>
-      <InputLabel size="small">{props.label}</InputLabel>
+      <InputLabel size='small'>{props.label}</InputLabel>
       <OutlinedInput
         label={props.label}
         size='small'

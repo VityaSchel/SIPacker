@@ -67,7 +67,7 @@
     "sw-start": "http-server build",
     "build": "react-app-rewired build",
     "netlify-build": "react-app-rewired build && echo \"/* /index.html 200\" > build/_redirects",
-    "ghp-build": "PUBLIC_URL=/SIPacker REACT_APP_PREFIX=/SIPacker react-app-rewired build",
+    "ghp-build": "PUBLIC_URL=/SIPacker react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },

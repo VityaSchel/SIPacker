@@ -65,7 +65,7 @@ export default function Navigation() {
                 службы <a
                   href='https://vk.com/id245297843'
                   target='_blank'
-                  rel="noreferrer"
+                  rel='noreferrer'
                   className='onHover'
                 >Роме Кучину</a>, который своим комментарием натолкнул меня на идею создания этого сайта, но не может
                 работать со мной по причине Я в армии.
