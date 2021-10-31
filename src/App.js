@@ -30,14 +30,14 @@ function Head() {
   return (
     <Helmet>
       <meta charSet='utf-8' />
-      <link rel='icon' href={`${process.env.PUBLIC_URL}/favicon.ico`} />
+      <link rel='icon' href={`${window.location.origin}${process.env.PUBLIC_URL}/favicon.ico`} />
       <meta name='viewport' content='width=device-width, initial-scale=1' />
       <meta name='theme-color' content='#03053e' />
       <meta name='description' content='Простой и мощный онлайн-редактор паков к SIGame для всех платформ, работающий без сети и поддерживающий все типы вопросов, события сценария и паков' />
-      <link rel='apple-touch-icon' href={`${process.env.PUBLIC_URL}/logo192.png`} />
-      <link rel='manifest' href={`${process.env.PUBLIC_URL}/manifest.json`} />
+      <link rel='apple-touch-icon' href={`${window.location.origin}${process.env.PUBLIC_URL}/logo192.png`} />
+      <link rel='manifest' href={`${window.location.origin}${process.env.PUBLIC_URL}/manifest.json`} />
       <meta property='og:type' content='website' />
-      <meta property='og:image' content={`${process.env.PUBLIC_URL}/logo512.png`} />
+      <meta property='og:image' content={`${window.location.origin}${process.env.PUBLIC_URL}/logo512.png`} />
       <title>SIPacker</title>
     </Helmet>
   )
