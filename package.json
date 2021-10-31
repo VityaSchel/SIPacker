@@ -1,7 +1,6 @@
 {
   "name": "sipacker",
-  "version": "1.1.2",
-  "homepage": ".",
+  "version": "1.2.0",
   "description": "Онлайн-редактор паков для Своей Игры (SiGame Владимиря Хиля)",
   "dependencies": {
     "@emotion/react": "^11.4.1",
@@ -67,7 +66,8 @@
     "start": "react-app-rewired start",
     "sw-start": "http-server build",
     "build": "react-app-rewired build",
-    "ghp-build": "DISABLE_ESLINT_PLUGIN=true REACT_APP_PREFIX=/SIPacker react-app-rewired build",
+    "netlify-build": "react-app-rewired build && echo \"/* /index.html 200\" > build/_redirects",
+    "ghp-build": "PUBLIC_URL=/SIPacker REACT_APP_PREFIX=/SIPacker react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
