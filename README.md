@@ -1,5 +1,5 @@
 # SIPacker
-![Netlify Build](https://img.shields.io/netlify/fb6c0bf2-2808-4dfe-a4c8-0b8efce9e769)
+![Netlify Status](https://api.netlify.com/api/v1/badges/fb6c0bf2-2808-4dfe-a4c8-0b8efce9e769/deploy-status)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/VityaSchel/SIPacker)
 ![GitHub Repo stars](https://img.shields.io/github/stars/VityaSchel/SIPacker)
 ![Localization](https://img.shields.io/badge/English%20(US)-0%25-red)
