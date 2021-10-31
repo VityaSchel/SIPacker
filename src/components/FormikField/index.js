@@ -49,6 +49,8 @@ export function FormikTextField(props) {
 
 export function FormikAutocomplete(props) {
   const { formik, name, ...field } = props
+  const textFieldRef = React.useRef()
+  const [inputValue, setInputValue] = React.useState('')
 
   const handleChange = (_, value) => {
     formik.setFieldValue(name, value)
@@ -60,6 +62,9 @@ export function FormikAutocomplete(props) {
 
   const handleKeyDown = e => {
     if(e.key === 'Enter') {
+      e.preventDefault()
+    } else if(e.key === ',') { // (for mobile)
+      handleChange(null, value.concat(inputValue))
       e.preventDefault()
     }
   }
@@ -73,6 +78,9 @@ export function FormikAutocomplete(props) {
       getOptionLabel={(option) => option}
       freeSolo clearOnBlur={true}
       onChange={handleChange}
+      inputValue={inputValue}
+      onInputChange={(_, value) => setInputValue(value)}
+      ref={textFieldRef}
       renderInput={props => (
         <TextField
           {...field}
@@ -80,6 +88,7 @@ export function FormikAutocomplete(props) {
           {...formikMuiErrors(formik, name)}
           placeholder='Нажмите Enter, чтобы добавить'
           onKeyDown={handleKeyDown}
+          tabIndex={-1}
         />
       )}
     />
