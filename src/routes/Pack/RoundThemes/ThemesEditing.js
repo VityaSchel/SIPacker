@@ -7,7 +7,7 @@ import Theme from './Theme'
 ThemesEditing.propTypes = {
   onDragEnd: PropTypes.func,
   themes: PropTypes.array,
-  expand: PropTypes.bool,
+  expand: PropTypes.number,
   setExpand: PropTypes.func,
   setEditing: PropTypes.func,
   handleAddTheme: PropTypes.func,
@@ -29,7 +29,6 @@ export default function ThemesEditing(props) {
         }}
         noItemsLabel='Еще нет созданных тем'
         itemComponent={Theme}
-        useIdAsKey={true}
       />
       <AddItem
         onAdd={props.handleAddTheme}

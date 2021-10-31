@@ -44,11 +44,11 @@ function Theme(props) {
   return (
     <Item
       index={props.index}
-      draggableId={theme.id.toString()}
+      draggableId={props.draggableId.toString()}
     >
       {(provided) => <Accordion
         expanded={expand}
-        onChange={(_, isExpand) => props.setExpand(isExpand ? theme.id : undefined)}
+        onChange={(_, isExpand) => props.setExpand(isExpand ? props.draggableId : undefined)}
       >
         <AccordionSummary
           expandIcon={<MdExpandMore />}

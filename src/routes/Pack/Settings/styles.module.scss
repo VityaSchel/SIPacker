@@ -3,6 +3,10 @@
   display: flex;
   gap: 20px;
 
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+
   .form {
     display: flex;
     flex-direction: column;

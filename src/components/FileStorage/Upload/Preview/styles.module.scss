@@ -64,10 +64,21 @@
     }
 
     .choose {
+      display: flex;
+      flex-direction: column;
+
+      @media screen and (max-width: 768px) {
+        flex-direction: row;
+      }
+
       .versionsPreview {
         display: flex;
         gap: 20px;
         width: 100%;
+
+        @media screen and (max-width: 768px) {
+          flex-direction: column;
+        }
 
         div {
           flex: 1;
@@ -78,17 +89,32 @@
             max-height: 500px;
             object-fit: contain;
             background-color: #2f2f2f;
+
+            @media screen and (max-width: 768px) {
+              width: 100px;
+            }
           }
         }
       }
 
       .row {
         margin-top: 10px;
+        display: flex;
+
+        @media screen and (max-width: 768px) {
+          width: max-content;
+          flex-direction: column;
+          margin-left: 10px;
+        }
 
         label {
           flex: 1;
           word-break: break-word;
           hyphens: auto;
+
+          @media screen and (max-width: 768px) {
+            width: max-content;
+          }
         }
       }
     }
