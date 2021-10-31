@@ -41,7 +41,7 @@ function ContextMenu(props) {
         ReactDOM.createPortal(
           <Menu
             open={props.menu?.position}
-            anchorReference="anchorPosition"
+            anchorReference='anchorPosition'
             anchorPosition={props.menu?.position && { top: props.menu.position[1], left: props.menu.position[0] }}
             onClose={close}
           >

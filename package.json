@@ -32,6 +32,7 @@
     "react-bottom-scroll-listener": "^5.0.0",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.1",
+    "react-helmet": "^6.1.0",
     "react-icons": "^4.2.0",
     "react-merge-refs": "^1.1.0",
     "react-redux": "^7.2.5",
@@ -66,7 +67,7 @@
     "sw-start": "http-server build",
     "build": "react-app-rewired build",
     "netlify-build": "react-app-rewired build && echo \"/* /index.html 200\" > build/_redirects",
-    "ghp-build": "PUBLIC_URL=/SIPacker REACT_APP_PREFIX=/SIPacker react-app-rewired build",
+    "ghp-build": "PUBLIC_URL=/SIPacker react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },

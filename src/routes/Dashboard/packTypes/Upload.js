@@ -10,7 +10,7 @@ import { uploadPack } from '../PackUploader'
 import { MdFileUpload } from 'react-icons/md'
 import Dropzone from 'react-dropzone'
 
-const SlideTransition = props => <Slide {...props} direction="right" />
+const SlideTransition = props => <Slide {...props} direction='right' />
 
 function Upload(props) {
   const [entered, setEntered] = React.useState(false)
@@ -64,7 +64,7 @@ function Upload(props) {
         onClose={() => setContent([])}
         TransitionComponent={SlideTransition}
       >
-        <Alert severity="error" className={styles.alert}>
+        <Alert severity='error' className={styles.alert}>
           {content.map((c, i) => <p key={i}>{c.text}</p>)}
         </Alert>
       </Snackbar>
