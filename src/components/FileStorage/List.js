@@ -61,7 +61,7 @@ const List = React.forwardRef((props, ref) => {
                   : <>Удаленный пак</>
                 }
               </div>
-              <Grid container spacing={2} className={styles.grid}>
+              <div className={styles.grid}>
                 {packGroup.files.map((file, j) =>
                   <File
                     file={file}
@@ -71,7 +71,7 @@ const List = React.forwardRef((props, ref) => {
                     disabled={file.type !== 'unknown' && file.type !== props.acceptableType}
                   />
                 )}
-              </Grid>
+              </div>
             </div>)
             : <div className={styles.noFilesYet}>
               <Typography className={styles.hint}>Файлы не найдены</Typography>

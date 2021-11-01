@@ -83,6 +83,12 @@ export default async function parse(blob) {
                         case 'image':
                           return { imageField: await files.connect(atomContent) }
 
+                        case 'voice':
+                          return { audioField: await files.connect(atomContent) }
+
+                        case 'video':
+                          return { videoField: await files.connect(atomContent) }
+
                         default:
                           return {}
                       }

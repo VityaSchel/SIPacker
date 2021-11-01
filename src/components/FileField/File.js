@@ -32,7 +32,7 @@ function Image(props) {
       src={props.srcUrl}
       alt={props.srcUrl ? `Изображение для поля ${props.label} с именем «${props.src.name}»` : ''}
       onClick={props.onClick}
-      className={styles.file}
+      className={[styles.file, styles.image].join(' ')}
     />
   )
 }

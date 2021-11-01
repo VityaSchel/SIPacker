@@ -185,3 +185,12 @@ export const generateWaveform = (width, height, srcUrl) => {
     })
   })
 }
+
+export const blockedByCors = async url => {
+  try {
+    await fetch(url, { method: 'HEAD', cors: 'no-cors', redirect: 'manual' })
+  } catch(e) {
+    return false
+  }
+  return true
+}

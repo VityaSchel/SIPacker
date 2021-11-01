@@ -11,8 +11,9 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import TextField from '@mui/material/TextField'
 import ClickIsolator from 'components/ClickIsolator'
-import { mapPackState } from '../../../utils'
+import { mapPackState } from 'utils'
 import Handle from 'components/ItemsList/Handle'
+import DeleteConfirmationDialog from 'components/ConfirmationDialog/DeleteConfirmationDialog'
 
 Theme.propTypes = {
   item: PropTypes.object,
@@ -29,10 +30,11 @@ function Theme(props) {
   const theme = props.item
   const expand = props.draggableId === props.expandId
   const [themeName, setThemeName] = React.useState(theme.name)
+  const confDialogRef = React.useRef()
 
   const handleDelete = e => {
     e.stopPropagation()
-    props.handleRemoveTheme(props.index)
+    confDialogRef.current.confirmThemeDeletion().then(confirmed => confirmed && props.handleRemoveTheme(props.index))
   }
 
   const handleChangeThemeName = e => {
@@ -42,42 +44,45 @@ function Theme(props) {
   }
 
   return (
-    <Item
-      index={props.index}
-      draggableId={props.draggableId.toString()}
-    >
-      {(provided) => <Accordion
-        expanded={expand}
-        onChange={(_, isExpand) => props.setExpand(isExpand ? props.draggableId : undefined)}
+    <>
+      <Item
+        index={props.index}
+        draggableId={props.draggableId.toString()}
       >
-        <AccordionSummary
-          expandIcon={<MdExpandMore />}
+        {(provided) => <Accordion
+          expanded={expand}
+          onChange={(_, isExpand) => props.setExpand(isExpand ? props.draggableId : undefined)}
         >
-          <div className={styles.toolbar}>
-            <Handle provided={provided} />
-            <ClickIsolator className={styles.name}>
-              <TextField
-                value={themeName}
-                label='Название темы'
-                variant='outlined'
-                onChange={handleChangeThemeName}
-                size='small'
-                fullWidth
-              />
-            </ClickIsolator>
-            <IconButton
-              onClick={handleDelete}
-              className={styles.delete}
-            >
-              <MdDelete className={styles.delete} />
-            </IconButton>
-          </div>
-        </AccordionSummary>
-        <AccordionDetails>
-          <ItemContent theme={theme} themeIndex={props.index} />
-        </AccordionDetails>
-      </Accordion>}
-    </Item>
+          <AccordionSummary
+            expandIcon={<MdExpandMore />}
+          >
+            <div className={styles.toolbar}>
+              <Handle provided={provided} />
+              <ClickIsolator className={styles.name}>
+                <TextField
+                  value={themeName}
+                  label='Название темы'
+                  variant='outlined'
+                  onChange={handleChangeThemeName}
+                  size='small'
+                  fullWidth
+                />
+              </ClickIsolator>
+              <IconButton
+                onClick={handleDelete}
+                className={styles.delete}
+              >
+                <MdDelete className={styles.delete} />
+              </IconButton>
+            </div>
+          </AccordionSummary>
+          <AccordionDetails>
+            <ItemContent theme={theme} themeIndex={props.index} />
+          </AccordionDetails>
+        </Accordion>}
+      </Item>
+      <DeleteConfirmationDialog ref={confDialogRef}/>
+    </>
   )
 }
 

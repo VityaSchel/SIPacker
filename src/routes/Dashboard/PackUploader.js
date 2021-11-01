@@ -9,6 +9,7 @@ import MuiDialog from '@mui/material/Dialog'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { DashboardContext } from './index'
+import { blockedByCors } from 'utils'
 
 export async function uploadPack(file) {
   let previousState = store.getState().dashboard?.uploading ?? []
@@ -66,7 +67,15 @@ const PackUploader = React.forwardRef((props, ref) => {
     setImporting(true)
     let response, blob
     try { response = await fetch(value) } catch(e) {
-      return exit('Не удалось получить пак по указанному адресу. Возможно, автор сайта настроил политику CORS, блокирующую возможность импортирования паков по URL')
+      if(await blockedByCors(value)) {
+        try {
+          response = await fetch(`https://api.allorigins.win/raw?url=${value}`)
+        } catch(e) {
+          return exit('Не удалось получить пак по указанному адресу, потому что автор сайта настроил политику CORS, блокирующую возможность импортирования паков по URL')
+        }
+      } else {
+        return exit('Не удалось получить файл пака по указанному адресу')
+      }
     }
     try { blob = await response.blob() } catch(e) {
       return exit('Не удалось получить файл пака по указанному адресу')

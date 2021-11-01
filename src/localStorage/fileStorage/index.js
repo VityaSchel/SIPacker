@@ -33,7 +33,6 @@ export async function deleteFile(fileURI) {
 
 const size = 20
 export async function getRecent(filters, offset = 0) {
-  console.log('getting recent with offset', offset)
   const db = init()
   if(filters.includes('null')){
     filters.splice(filters.indexOf('null'), 1)

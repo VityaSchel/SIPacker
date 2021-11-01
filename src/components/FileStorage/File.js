@@ -104,8 +104,7 @@ export default function File(props) {
 
   return (
     <>
-      <Grid
-        item xs={4} md={6} sm={12}
+      <div
         className={cx(styles.item, { [styles.disabled]: props.disabled })}
         onClick={handleSelect}
         onContextMenu={handleOpenMenu}
@@ -135,7 +134,7 @@ export default function File(props) {
           <audio src={fileSrc} ref={audioRef} onEnded={() => setIsPlayingFile(false)}></audio>
           <div className={styles.fileName}>{props.file.fileName}</div>
         </div>
-      </Grid>
+      </div>
       <Dialog
         open={infoDialogueOpen}
         onClose={handleCloseInfo}
