@@ -78,9 +78,16 @@
         .grid {
           margin: 0;
           width: 100%;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          grid-column-gap: 20px;
+          grid-row-gap: 20px;
+
+          @media screen and (max-width: 768px) {
+            grid-template-columns: repeat(1, 1fr);
+          }
 
           .item {
-            padding: 10px;
             height: 140px;
             min-width: 150px;
 
@@ -141,6 +148,7 @@
                 padding: 10px;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                white-space: nowrap;
 
                 &:hover {
                   overflow: auto;
