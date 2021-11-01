@@ -69,8 +69,7 @@ UploadingFiles.propTypes = {
   setStage: PropTypes.func,
   setTab: PropTypes.func,
   pack: PropTypes.object,
-  display: PropTypes.bool,
-  // setUploadingFileIndex: PropTypes.number,
+  display: PropTypes.bool
 }
 UploadingFiles.displayName = 'UploadingFiles'
 

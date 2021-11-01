@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
-import Grid from '@mui/material/Grid'
 import { getRecent } from 'localStorage/fileStorage'
 import File from './File'
 import Typography from '@mui/material/Typography'
@@ -17,36 +16,37 @@ const List = React.forwardRef((props, ref) => {
 
   React.useImperativeHandle(ref, () => ({
     reset() {
-      setOffset(0)
       setFetchedFiles([])
       setMappedFiles([])
       contentRef.current.scrollTop = 0
+      setOffset(0)
     }
   }))
 
-  React.useEffect(() => setOffset(0), [props.packs])
+  React.useEffect(() => setOffset(-1), [props.packs])
   React.useEffect(() => mapFiles(offset), [offset])
 
   const mapFiles = async offset => {
+    offset = Math.max(offset, 0)
     const newFiles = await getRecent(Object.keys(props.packs), offset)
     const newFetchedFiles = fetchedFiles.concat(newFiles)
     setFetchedFiles(newFetchedFiles)
 
-    const mappedFiles = []
+    const newMappedFiles = []
     let packSwitchUUID
     for (let file of newFetchedFiles) {
       if(packSwitchUUID !== file.packUUID){
         packSwitchUUID = file.packUUID
-        mappedFiles.push({
+        newMappedFiles.push({
           packName: props.packs[packSwitchUUID],
           files: [file]
         })
       } else {
-        mappedFiles[mappedFiles.length - 1].files.push(file)
+        newMappedFiles[newMappedFiles.length - 1].files.push(file)
       }
     }
 
-    setMappedFiles(mappedFiles)
+    setMappedFiles(newMappedFiles)
   }
 
   return (

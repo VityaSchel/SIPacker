@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './styles.module.scss'
-import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import { MdInfoOutline, MdDelete, MdPlayCircleOutline } from 'react-icons/md'
 import { RiStopCircleLine } from 'react-icons/ri'
