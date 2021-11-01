@@ -64,7 +64,9 @@ export default class FileResolver {
       const recursiveSearch = () => {
         for (let folder of [images, audio, video]) {
           const file = folder?.file(fileID) ?? folder?.file(encodeURIComponent(fileID))
-          if(file) return file
+          if(file) {
+            return file
+          }
         }
       }
 
