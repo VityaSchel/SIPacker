@@ -34,13 +34,19 @@ const DeleteConfirmationDialog = React.forwardRef((props, ref) => {
 
     async confirmRoundDeletion() {
       const { confirmed } = await confirmationDialogRef.current
-        .open('Вы уверены, что хотите удалить раунд? Все вопросы также будут удалены.', 'Удалить')
+        .open('Вы уверены, что хотите удалить раунд? Все вопросы и темы также будут удалены безвозвратно.', 'Удалить')
+      return confirmed
+    },
+
+    async confirmThemeDeletion() {
+      const { confirmed } = await confirmationDialogRef.current
+        .open('Вы уверены, что хотите удалить тему? Все вопросы также будут удалены безвозвратно.', 'Удалить')
       return confirmed
     },
 
     async confirmDeleteQuestion(round, themeIndex, questionPrice) {
       const { confirmed } = await confirmationDialogRef.current
-        .open('Вы уверены, что хотите удалить вопрос?', 'Удалить')
+        .open('Вы уверены, что хотите удалить вопрос безвозвратно?', 'Удалить')
       if(!confirmed) return false
       const pack = { ...props.pack }
 

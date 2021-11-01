@@ -27,9 +27,8 @@ export default function Pack(props) {
     ])
   }
 
-  const handleDeletePack = async () => {
-    if(await confDialogRef.current.confirmPackDeletion(props.pack.uuid))
-      dashboardActions.reloadPacks()
+  const handleDeletePack = () => {
+    confDialogRef.current.confirmPackDeletion(props.pack.uuid).then(confirmed => confirmed && dashboardActions.reloadPacks())
   }
 
   const handleRenamePack = async () => {
