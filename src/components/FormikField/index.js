@@ -60,13 +60,27 @@ export function FormikAutocomplete(props) {
   let value = formik.values[name] ?? []
   if(value.length === 1 && value[0] === '') value = []
 
+  const handleInputChange = (event, value) => {
+    if(!event) return
+    if(value.slice(-1) === ',') {
+      addItem()
+    } else {
+      setInputValue(value)
+    }
+  }
+
   const handleKeyDown = e => {
     if(e.key === 'Enter') {
       e.preventDefault()
     } else if(e.key === ',') { // (for mobile)
-      handleChange(null, value.concat(inputValue))
+      addItem()
       e.preventDefault()
     }
+  }
+
+  const addItem = () => {
+    setInputValue('')
+    handleChange(null, value.concat(inputValue))
   }
 
   return (
@@ -79,14 +93,14 @@ export function FormikAutocomplete(props) {
       freeSolo clearOnBlur={true}
       onChange={handleChange}
       inputValue={inputValue}
-      onInputChange={(_, value) => setInputValue(value)}
+      onInputChange={handleInputChange}
       ref={textFieldRef}
       renderInput={props => (
         <TextField
           {...field}
           {...props}
           {...formikMuiErrors(formik, name)}
-          placeholder='Нажмите Enter, чтобы добавить'
+          placeholder={'Нажмите Enter или запятую, чтобы добавить'}
           onKeyDown={handleKeyDown}
           tabIndex={-1}
         />
