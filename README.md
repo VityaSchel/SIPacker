@@ -88,6 +88,4 @@ $ PUBLIC_URL=/SIPacker npm run build
 
 ## Спонсирование
 
-Пожалуйста задонатьте мне пожалуйста [https://donationalerts.com/r/vityaschel](https://donationalerts.com/r/vityaschel).
-
-Как только получу статус самозанятого так сразу перейду куда-то еще, а пока будьте добры донатить не меньше 250 руб чтобы я мог их вывести :)))
+Пожалуйста задонатьте мне пожалуйста [https://donate.qiwi.com/payin/vityaschel](https://donate.qiwi.com/payin/vityaschel) прошу вас пожалуйста.
