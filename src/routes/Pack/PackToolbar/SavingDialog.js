@@ -49,7 +49,7 @@ const SavingDialog = React.forwardRef((props, ref) => {
       return setErrors([e?.message])
     }
     setGenerating(false)
-    saveAs(zip, `${slugify(pack.name)}.siq`, { autoBom: true })
+    saveAs(zip, `${slugify(pack.name) || '_'}.siq`, { autoBom: true })
     setWarnings(warnings)
     setOpen(warnings.length)
   }
