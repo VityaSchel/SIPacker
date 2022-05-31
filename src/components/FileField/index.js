@@ -164,7 +164,7 @@ function FileNotSelected() {
   return (
     <>
       <span>Файл не выбран</span>
-      <span>Выберете файл, нажав на кнопку левее.</span>
+      <span>Выберите файл, нажав на кнопку левее.</span>
     </>
   )
 }
