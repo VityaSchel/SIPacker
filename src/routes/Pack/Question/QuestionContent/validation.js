@@ -7,10 +7,10 @@ export const validate = (values, props, params) => {
   }
 
   const checkRealPrice = () => {
-    checkNumber('realprice', 'Выберете настоящую стоимость вопроса', 'Настоящая стоимость вопроса должна быть больше 0')
+    checkNumber('realprice', 'Выберите настоящую стоимость вопроса', 'Настоящая стоимость вопроса должна быть больше 0')
   }
 
-  const checkNumber = (propertyName, noValueError = 'Выберете значение', zeroError = 'Значение должно быть больше 0') => {
+  const checkNumber = (propertyName, noValueError = 'Выберите значение', zeroError = 'Значение должно быть больше 0') => {
     if(values[propertyName] === undefined || values[propertyName] === '') {
       errors[propertyName] = noValueError
     } else if (values[propertyName] === 0) {
@@ -25,7 +25,7 @@ export const validate = (values, props, params) => {
 
     case 'bagcat':
       if(!values.questionPriceType) {
-        errors.questionPriceType = 'Выберете способ определения стоимость вопроса'
+        errors.questionPriceType = 'Выберите способ определения стоимость вопроса'
       } else {
         switch(values.questionPriceType) {
           case 'fixed':
@@ -38,7 +38,7 @@ export const validate = (values, props, params) => {
             break
         }
       }
-      if(!values.detailsDisclosure) errors.detailsDisclosure = 'Выберете момент, когда узнается стоимость вопроса'
+      if(!values.detailsDisclosure) errors.detailsDisclosure = 'Выберите момент, когда узнается стоимость вопроса'
       break
   }
 
