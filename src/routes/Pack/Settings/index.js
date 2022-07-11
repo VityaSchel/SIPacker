@@ -33,7 +33,7 @@ const validationSchema = yup.object({
   publisher: yup
     .string('Введите издателя'),
   difficulty: yup
-    .number('Выберете сложность пака')
+    .number('Выберите сложность пака')
     .positive()
     .min(1)
     .max(10)

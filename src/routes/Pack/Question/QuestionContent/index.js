@@ -21,12 +21,12 @@ const priceSchema = yup
   .max(4294967295) // max of uint32
 
 const validationSchema = yup.object({
-  price: priceSchema.required('Выберете стоимость вопроса'),
+  price: priceSchema.required('Выберите стоимость вопроса'),
   realprice: priceSchema,
   realtheme: yup.string(),
   type: yup
     .string()
-    .required('Выберете тип вопроса'),
+    .required('Выберите тип вопроса'),
   transferToSelf: yup.bool(),
   detailsDisclosure: yup.string(),
   realpriceFrom: yup.number(),
