@@ -66,6 +66,15 @@
         padding-top: 0;
         width: 100%;
 
+        .sortSelector {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 10px;
+          margin: 10px 0;
+        }
+
         .packDivider {
           position: sticky;
           top: 0;
