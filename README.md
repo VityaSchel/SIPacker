@@ -18,7 +18,7 @@
 
 ## Развернутая версия
 
-[https://sipacker.ru/](https://sipacker.ru/)
+[sipacker.netlify.app](https://sipacker.netlify.app)
 
 Все обновления с ветки master загружаются на развернутую версию автоматически в течение 5 минут.
 
