@@ -1,16 +1,16 @@
 # SIPacker
 ![Netlify Status](https://api.netlify.com/api/v1/badges/fb6c0bf2-2808-4dfe-a4c8-0b8efce9e769/deploy-status)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/VityaSchel/SIPacker)
-![GitHub Repo stars](https://img.shields.io/github/stars/VityaSchel/SIPacker)
+![Code size in bytes](https://img.shields.io/github/languages/code-size/VityaSchel/SIPacker)
+![Repo stars](https://git.hloth.dev/hloth/sipacker/badges/stars.svg)
 ![Localization](https://img.shields.io/badge/English%20(US)-0%25-red)
 
 Онлайн-редактор паков для Своей Игры (SiGame Владимиря Хиля)
 
 > [!CAUTION]
-> ПРОЕКТ НЕ ПОДДЕРЖИВАЕТСЯ И СОДЕРЖИТ НЕКОТОРЫЕ ПРОБЛЕМЫ С ГЕНЕРАЦИЕЙ ПАКОВ! см. https://github.com/VityaSchel/SIPacker/issues/42
+> ПРОЕКТ НЕ ПОДДЕРЖИВАЕТСЯ И СОДЕРЖИТ НЕКОТОРЫЕ ПРОБЛЕМЫ С ГЕНЕРАЦИЕЙ ПАКОВ! см. https://git.hloth.dev/hloth/sipacker/issues/42
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/59040542/137257961-73f0aceb-19c9-4e1f-a3fe-80204f145f2d.png" />
+  <img src="./docs/137257961-73f0aceb-19c9-4e1f-a3fe-80204f145f2d.png" />
 </p>
 
 > [!IMPORTANT]
@@ -58,7 +58,7 @@
 
 Если по какой-то причине развернутая версия вам не подходит, то вы можете развернуть приложение самостоятельно:
 
-1. Выберите ветку: master (стабильная) или dev (разработка). Остальные ветки временные и предназначены для больших изменений, которые впоследствие могут быть или отменены или добавлены в ветку dev. Перейдите на страницу выбранной ветки на GitHub
+1. Выберите ветку: master (стабильная) или dev (разработка). Остальные ветки временные и предназначены для больших изменений, которые впоследствие могут быть или отменены или добавлены в ветку dev. Перейдите на страницу выбранной ветки
 
 2. Скачайте репозиторий как zip или клонируйте его
 
@@ -78,7 +78,7 @@ $ PUBLIC_URL=/SIPacker npm run build
 
 ## Поддержка браузерами
 
-![Поддержка браузерами](./.github/README/compatibility-table.svg)
+![Поддержка браузерами](./docs/compatibility-table.svg)
 
 Если вы все еще пользуетесь Safari то просто пожалуйста прекратите. Вот неполный список того, что не будет работать в SIPacker, открытом в Safari:
 

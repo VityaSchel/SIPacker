@@ -28,8 +28,9 @@ export default function Navigation() {
           </Link>
         </div>
         <div>
-          <a href='https://github.com/VityaSchel/SIPacker' target='_blank' rel='noreferrer'>
+          <a href='https://git.hloth.dev/hloth/sipacker' target='_blank' rel='noreferrer'>
             <IconButton>
+              {/* TODO: change to general git icon */}
               <ImGithub />
             </IconButton>
           </a>

@@ -105,7 +105,7 @@ export async function generate(pack) {
     elements: [
       {
         type: 'comment',
-        comment: 'This package was generated using SIPacker — free open-source online tool for generating SIGame packs. Feel free to leave feedback on https://github.com/VityaSchel/SIPacker'
+        comment: 'This package was generated using SIPacker — free open-source online tool for generating SIGame packs. Feel free to leave feedback on https://git.hloth.dev/hloth/sipacker'
       },
       {
         type: 'element',
