@@ -94,4 +94,8 @@ $ PUBLIC_URL=/SIPacker npm run build
 
 ## Спонсирование
 
-Пожалуйста задонатьте мне пожалуйста [https://donate.qiwi.com/payin/vityaschel](https://donate.qiwi.com/payin/vityaschel) прошу вас пожалуйста.
+Пожалуйста задонатьте мне пожалуйста [https://hloth.dev/donate](https://hloth.dev/donate) прошу вас пожалуйста.
+
+## Лицензия
+
+[MIT](./LICENSE)
